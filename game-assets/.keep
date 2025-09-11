@@ -1,0 +1,2762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Steal a Fluff</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-y: auto;
+            background-color: #1f2937; /* bg-gray-800 */
+        }
+        .conveyor-belt {
+            width: 100%;
+            height: 150px;
+            background-color: #4a5568;
+            position: relative;
+            overflow: hidden;
+        }
+        .fluff-container {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.2s ease-in-out;
+        }
+        .fluff-container:hover {
+            transform: translateY(-50%) scale(1.1);
+            z-index: 10;
+        }
+        .fluff-info {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            white-space: nowrap;
+            margin-bottom: 5px;
+            text-align: center;
+            line-height: 1.2;
+        }
+        .fluff-body {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px; /* Larger panda */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        .base-fluff-wrapper {
+            position: relative;
+        }
+        .mutation-icon {
+            position: absolute;
+            bottom: -2px;
+            right: -2px;
+            font-size: 16px;
+            text-shadow: 0 0 3px black;
+            pointer-events: none;
+        }
+        .base-fluff {
+            width: 40px;
+            height: 40px;
+            font-size: 24px;
+            cursor: help;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .base-fluff:hover {
+            transform: scale(1.1);
+        }
+        .base.sell-mode .base-fluff {
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' style='font-size: 24px;'><text y='24' fill='%23fef08a'>💲</text></svg>") 16 16, auto !important;
+            border: 2px dashed #ef4444;
+        }
+        .base.favorite-mode .base-fluff {
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' style='font-size: 24px;'><text y='24' fill='%23facc15'>⭐</text></svg>") 16 16, auto !important;
+        }
+        .base-fluff.is-favorite {
+            box-shadow: 0 0 15px #facc15;
+        }
+        .mystery-box-timer {
+            position: absolute;
+            bottom: -8px;
+            font-size: 10px;
+            font-weight: bold;
+            color: white;
+            background-color: rgba(0,0,0,0.7);
+            padding: 1px 4px;
+            border-radius: 4px;
+        }
+
+
+
+
+        /* Rarity Colors */
+        .common { background-color: #9ca3af; border: 2px solid #6b7280; }
+        .uncommon { background-color: #6ee7b7; border: 2px solid #047857; color: #064e3b; }
+        .rare { background-color: #3b82f6; border: 2px solid #1d4ed8; }
+        .epic { background-color: #8b5cf6; border: 2px solid #5b21b6; }
+        .mythical { background-color: #ec4899; border: 2px solid #9d174d; }
+        .legendary { background-color: #f97316; border: 2px solid #9a3412; }
+        .secret { background: linear-gradient(45deg, #ef4444, #f97316, #facc15, #4ade80, #3b82f6, #8b5cf6); background-size: 200% 200%; animation: rainbow 3s ease infinite; border: 2px solid white;}
+        .brainrot { background: linear-gradient(45deg, #a855f7, #ec4899, #f97316); background-size: 200% 200%; animation: rainbow 2s ease infinite; border: 2px solid #fbcfe8; color: #fdf2f8; }
+        .countries { background: linear-gradient(45deg, #ef4444, #ffffff, #3b82f6); background-size: 200% 200%; animation: rainbow 4s ease infinite; border: 2px solid #d1d5db; color: #1f2937;}
+        .god { background: linear-gradient(45deg, #fef08a, #fde047, #eab308, #fef9c3); background-size: 200% 200%; animation: rainbow 5s ease infinite; border: 2px solid #fef08a; color: #713f12; }
+        .hybrid { background: linear-gradient(90deg, #4b5563, #d1d5db, #4b5563); background-size: 300% 300%; animation: rainbow 4s ease infinite; border: 2px solid #e5e7eb; color: #1f2937;}
+        .og { background: linear-gradient(45deg, #1f2937, #4b5563, #111827); background-size: 200% 200%; animation: rainbow 6s ease infinite; border: 2px solid #9ca3af; color: #e5e7eb;}
+        .fusion { background: linear-gradient(45deg, #4f46e5, #c026d3, #ec4899); background-size: 200% 200%; animation: rainbow 4s ease infinite; border: 2px solid #a78bfa; color: #f5d0fe;}
+        .heavenly { background: linear-gradient(45deg, #f0f9ff, #e0f2fe, #bae6fd); background-size: 200% 200%; animation: rainbow 8s ease infinite; border: 2px solid #7dd3fc; color: #075985;}
+
+
+
+
+        @keyframes rainbow {
+            0%{background-position:0% 50%}
+            50%{background-position:100% 50%}
+            100%{background-position:0% 50%}
+        }
+        #tooltip {
+            position: absolute;
+            display: none;
+            background-color: #111827;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #4b5563;
+            font-size: 14px;
+            z-index: 1000;
+            pointer-events: none;
+        }
+        #notification-container {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .notification {
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+        }
+        .notification.error { background-color: #ef4444; } /* red-500 */
+        .notification.success { background-color: #22c55e; } /* green-500 */
+        .notification.rebirth { background: linear-gradient(45deg, #f97316, #ec4899); }
+        .notification.discovery { background: linear-gradient(45deg, #3b82f6, #8b5cf6); }
+        .notification.offline { background: linear-gradient(45deg, #14b8a6, #3b82f6); }
+        .notification.achievement { background: linear-gradient(45deg, #facc15, #fbbf24); color: #422006;}
+        .notification.fade-out {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        .btn-disabled {
+            background-color: #4b5563 !important;
+            cursor: not-allowed !important;
+            color: #9ca3af !important;
+        }
+        .modal-backdrop {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: #374151;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+        #weather-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+            z-index: 1500;
+            transform: translateY(-100%);
+            transition: transform 0.5s ease-in-out;
+        }
+        #weather-banner.visible {
+            transform: translateY(0);
+        }
+        .scrollable-content {
+            max-height: 70vh;
+            overflow-y: auto;
+            padding-right: 1rem;
+        }
+        .firework {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background-color: white;
+            border-radius: 50%;
+            opacity: 1;
+            animation: firework-explode 0.7s forwards;
+            pointer-events: none;
+        }
+        @keyframes firework-explode {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(30); opacity: 0; }
+        }
+        #event-banner {
+            display: none;
+            position: fixed;
+            top: 60px;
+            left: 20px;
+            transform: none;
+            background: linear-gradient(45deg, #ef4444, #000000, #ef4444);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            z-index: 3000;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        .req-fluff {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4px;
+            border-radius: 6px;
+            border: 2px solid #4b5563; /* gray-600 */
+            background-color: rgba(0,0,0,0.2);
+        }
+        .req-fluff.has-fluff {
+            border-color: #22c55e; /* green-500 */
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center min-h-screen pb-8">
+
+
+    <div id="weather-banner"></div>
+    <div id="notification-container"></div>
+    <div id="modal-container"></div>
+    <div id="fireworks-container"></div>
+    <div id="event-banner">EVENT ACTIVE</div>
+
+
+    <div class="w-full max-w-4xl mx-auto p-4 mt-12">
+        <h1 id="game-title" class="text-4xl font-bold text-center mb-2 text-white cursor-pointer">Steal a Fluff!</h1>
+        
+        <!-- Settings Bar -->
+        <div id="settings-bar" class="flex justify-center flex-wrap gap-4 mb-4">
+            <button id="pause-button" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition-colors">Pause</button>
+            <button id="save-button" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg shadow-md transition-colors">Save Game</button>
+            <button id="load-button" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-lg shadow-md transition-colors">Load Game</button>
+            <button id="fluffpedia-button" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg shadow-md transition-colors">Fluffpedia</button>
+            <button id="stats-button" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-semibold rounded-lg shadow-md transition-colors">Stats</button>
+            <button id="achievements-button" class="px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white font-semibold rounded-lg shadow-md transition-colors">Achievements</button>
+        </div>
+
+
+        <div class="flex justify-between items-center bg-gray-700 p-4 rounded-lg mb-4 shadow-lg text-white">
+            <div>
+                <h2 class="text-2xl font-semibold">Money: $<span id="money">100</span></h2>
+                <p class="text-sm text-gray-400">per second: $<span id="mps">0</span></p>
+            </div>
+            <div>
+                <h2 class="text-2xl font-semibold">Base: <span id="fluff-count">0</span> / <span id="fluff-capacity">10</span></h2>
+            </div>
+        </div>
+
+
+        <div id="conveyor-belt" class="conveyor-belt rounded-lg shadow-inner"></div>
+
+
+        <div class="mt-4 p-4 bg-gray-700 rounded-lg shadow-lg">
+            <div class="flex justify-center items-center mb-2 gap-4">
+                <h2 class="text-2xl font-bold text-center text-white">Your Base</h2>
+                <button id="sell-button" class="px-4 py-1 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg shadow-md transition-colors">Sell Fluff</button>
+                <button id="fusion-button" class="px-4 py-1 bg-pink-500 hover:bg-pink-600 text-white font-semibold rounded-lg shadow-md transition-colors">Fuse</button>
+            </div>
+            <div id="base" class="grid grid-cols-5 sm:grid-cols-10 gap-2 min-h-[50px] p-2 rounded-md bg-gray-900/50"></div>
+        </div>
+
+
+        <!-- Upgrades Section -->
+        <div class="mt-4 p-4 bg-gray-700 rounded-lg shadow-lg">
+            <h2 class="text-2xl font-bold mb-4 text-center text-white">Upgrades</h2>
+            <div id="upgrades-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+            <div id="special-upgrades-container" class="mt-4"></div>
+        </div>
+
+
+        <!-- Rebirth Section -->
+        <div class="mt-4 p-4 bg-gray-900 border-2 border-yellow-400 rounded-lg shadow-lg">
+            <h2 class="text-3xl font-bold mb-2 text-center text-yellow-300">Rebirth</h2>
+            <div class="text-center text-white space-y-1 mb-4">
+                <p>Rebirths: <span id="rebirth-count" class="font-bold">0</span></p>
+                <p>Money Multiplier: <span id="rebirth-multiplier" class="font-bold">1.0</span>x</p>
+                <p>Golden Bamboo: <span id="golden-bamboo" class="font-bold text-yellow-300">0</span> 🎍</p>
+            </div>
+            <p class="text-center text-sm text-gray-400 mb-2">Requires specific fluffs to rebirth:</p>
+            <div id="rebirth-requirements-container" class="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-4"></div>
+            <button id="rebirth-button" class="w-full p-3 bg-yellow-500 hover:bg-yellow-600 text-gray-900 font-bold rounded-lg shadow-lg transition-colors">
+                Rebirth for $<span id="rebirth-cost">1,000,000</span>
+            </button>
+            <div id="prestige-upgrades-container" class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+        </div>
+    </div>
+
+
+    <div id="tooltip"></div>
+
+
+    <script>
+        // --- GAME STATE ---
+        let money = 100;
+        let fluffCount = 0;
+        let moneyPerSecond = 0;
+        let baseFluffs = [];
+        let sellMode = false;
+        let applyFavoriteMode = false;
+        let fluffCapacity = 10;
+        let sellMultiplier = 0.5;
+        let conveyorSpeed = 1;
+        let activeWeathers = {};
+        let discoveredFluffs = new Set();
+        let gameStats = {
+            totalMoneyEarned: 0,
+            totalFluffsCollected: 0,
+            timePlayed: 0 // in seconds
+        };
+        let setBonusMultiplier = 1;
+        let activeWeekendEvent = null;
+        let mutationChanceBonus = 0;
+        let isPaused = false;
+        let titleClickCount = 0;
+        let lastLoginDate = null;
+        let loginStreak = 0;
+        let isEventActive = false;
+        let eventSequenceRunning = false;
+        let godMode = false;
+        let luckBoost = 1;
+        
+        // --- REBIRTH STATE ---
+        let rebirths = 0;
+        let rebirthMultiplier = 1;
+        let rebirthCost = 1000000;
+        let favoritedFluffId = null;
+        let goldenBamboo = 0;
+
+
+        // --- DOM ELEMENTS ---
+        const moneyEl = document.getElementById('money');
+        const mpsEl = document.getElementById('mps');
+        const fluffCountEl = document.getElementById('fluff-count');
+        const fluffCapacityEl = document.getElementById('fluff-capacity');
+        const conveyorBeltEl = document.getElementById('conveyor-belt');
+        const baseEl = document.getElementById('base');
+        const tooltipEl = document.getElementById('tooltip');
+        const notificationContainer = document.getElementById('notification-container');
+        const modalContainer = document.getElementById('modal-container');
+        const fireworksContainer = document.getElementById('fireworks-container');
+        const eventBanner = document.getElementById('event-banner');
+        const settingsBar = document.getElementById('settings-bar');
+        const gameTitleEl = document.getElementById('game-title');
+        const pauseButton = document.getElementById('pause-button');
+        const sellButton = document.getElementById('sell-button');
+        const fusionButton = document.getElementById('fusion-button');
+        const saveButton = document.getElementById('save-button');
+        const loadButton = document.getElementById('load-button');
+        const fluffpediaButton = document.getElementById('fluffpedia-button');
+        const statsButton = document.getElementById('stats-button');
+        const achievementsButton = document.getElementById('achievements-button');
+        const upgradesContainer = document.getElementById('upgrades-container');
+        const specialUpgradesContainer = document.getElementById('special-upgrades-container');
+        const prestigeUpgradesContainer = document.getElementById('prestige-upgrades-container');
+        const rebirthCountEl = document.getElementById('rebirth-count');
+        const rebirthMultiplierEl = document.getElementById('rebirth-multiplier');
+        const rebirthButton = document.getElementById('rebirth-button');
+        const rebirthCostEl = document.getElementById('rebirth-cost');
+        const goldenBambooEl = document.getElementById('golden-bamboo');
+        const weatherBanner = document.getElementById('weather-banner');
+        const rebirthRequirementsContainer = document.getElementById('rebirth-requirements-container');
+
+
+
+
+        // --- GAME CONFIG ---
+        const MUTATIONS = {
+            gold: { name: 'Gold', multiplier: 1.25, icon: '💰', color: 'bg-yellow-400' },
+            diamond: { name: 'Diamond', multiplier: 1.50, icon: '💎', color: 'bg-blue-300' },
+            rainbow: { name: 'Rainbow', multiplier: 10, icon: '🌈', color: 'bg-gradient-to-r from-red-500 to-purple-500' },
+            lava: { name: 'Lava', multiplier: 6, icon: '🔥', color: 'bg-red-600' },
+            bloodrot: { name: 'Bloodrot', multiplier: 2, icon: '🩸', color: 'bg-red-800' },
+            celestial: { name: 'Celestial', multiplier: 4, icon: '✨', color: 'bg-indigo-400' },
+            candy: { name: 'Candy', multiplier: 4, icon: '🍬', color: 'bg-pink-400' },
+            disco: { name: 'Disco', multiplier: 5, icon: '🕺', color: 'bg-pink-500' },
+            fluffrain: { name: 'Fluff Rain', multiplier: 10, icon: '🌧️', color: 'bg-blue-400' },
+            meteor: { name: 'Meteor', multiplier: 10, icon: '☄️', color: 'bg-orange-500' },
+            ping: { name: '999 Ping', multiplier: 15, icon: '📶', color: 'bg-red-500' },
+            jaycerain: { name: 'Baby Jayce Rain', multiplier: 20, icon: '👶', color: 'bg-teal-400' },
+            infected: { name: 'Infected', multiplier: 20, icon: '🧟', color: 'bg-green-700' },
+            brainrot: { name: 'Brainrot', multiplier: 15, icon: '🧠', color: 'bg-pink-300' },
+            voidtouched: { name: 'Voidtouched', multiplier: 25, icon: '🌌', color: 'bg-black' },
+            plasma: { name: 'Plasma', multiplier: 30, icon: '💥', color: 'bg-purple-500' },
+            shocked: { name: 'Shocked', multiplier: 30, icon: '⚡', color: 'bg-yellow-300' },
+            bombed: { name: 'Bombed', multiplier: 10, icon: '💣', color: 'bg-gray-700' },
+            meteoric: { name: 'Meteoric', multiplier: 30, icon: '🌠', color: 'bg-orange-400' },
+            op: { name: 'OP', multiplier: 100, icon: '👑', color: 'bg-gradient-to-r from-yellow-400 to-red-500' },
+            chocolate: { name: 'Chocolate', multiplier: 20, icon: '🍫', color: 'bg-yellow-900' },
+            bricked: { name: 'Bricked', multiplier: 40, icon: '🧱', color: 'bg-red-800' },
+            loager: { name: 'Loager', multiplier: 60, icon: '🍞', color: 'bg-yellow-600' },
+            stormsurgeshrek: { name: 'Storm Surge Shrek', multiplier: 4, icon: '🧅', color: 'bg-green-600' },
+            lightningmcqueenzap: { name: 'Lightning McQueen Zap', multiplier: 7, icon: '🏎️', color: 'bg-red-600' },
+            amongusthunder: { name: 'Among Us Thunder', multiplier: 6, icon: 'ඞ', color: 'bg-red-500' },
+            susnado: { name: 'Susnado', multiplier: 8, icon: '🌪️', color: 'bg-gray-500' },
+            tornadofortnitedance: { name: 'Tornado Fortnite Dance', multiplier: 9, icon: '💃', color: 'bg-blue-400' },
+            gigachadstorm: { name: 'Gigachad Storm', multiplier: 10, icon: '💪', color: 'bg-gray-700' },
+            ohiohurricane: { name: 'Ohio Hurricane', multiplier: 12, icon: '🌀', color: 'bg-indigo-600' },
+            thunderrizzler: { name: 'Thunder Rizzler', multiplier: 15, icon: '😏', color: 'bg-yellow-400' },
+            sigmastormcloud: { name: 'Sigma Stormcloud', multiplier: 20, icon: '☁️', color: 'bg-gray-400' },
+            stormsurgetrollface: { name: 'Storm Surge Trollface', multiplier: 18, icon: ' Troll ', color: 'bg-black' },
+            blackholedoge: { name: 'Black Hole Doge', multiplier: 20, icon: '🐶', color: 'bg-yellow-500' },
+            galaxyrizz: { name: 'Galaxy Rizz', multiplier: 25, icon: '🌌', color: 'bg-purple-500' },
+            nebulasus: { name: 'Nebula Sus', multiplier: 30, icon: '✨', color: 'bg-pink-500' },
+            wormholesigma: { name: 'Wormhole Sigma', multiplier: 40, icon: '🌀', color: 'bg-blue-600' },
+            cosmicohio: { name: 'Cosmic Ohio', multiplier: 50, icon: '🪐', color: 'bg-indigo-700' },
+            bruhmomentstorm: { name: '“Bruh Moment” Storm', multiplier: 35, icon: '🤦', color: 'bg-gray-500' },
+            meteorsaul: { name: 'Meteor Saul', multiplier: 28, icon: '👨‍⚖️', color: 'bg-orange-600' },
+            catgirlcomet: { name: 'Catgirl Comet', multiplier: 22, icon: '🐱', color: 'bg-pink-400' },
+            gigastormsurge: { name: 'Giga Storm Surge', multiplier: 60, icon: '🌊', color: 'bg-blue-700' },
+            vineboomthunder: { name: 'Vine Boom Thunder', multiplier: 70, icon: '💥', color: 'bg-green-700' },
+            '1911': { name: '1911', multiplier: 15, icon: '🔫', color: 'bg-gray-500' },
+            what_is_a_kilometer: { name: 'WHAT IS A KILOMETER', multiplier: 30, icon: '🦅', color: 'bg-blue-600' },
+            baby: { name: 'Baby', multiplier: 1.1, icon: '👶', color: 'bg-pink-200' },
+            butcher: { name: 'Butcher', multiplier: 40, icon: '🔪', color: 'bg-red-800' },
+            phonk: { name: 'Phonk', multiplier: 67, icon: '🎵', color: 'bg-green-400' },
+            banger: { name: 'Banger', multiplier: 70, icon: '🎤', color: 'bg-red-500' }
+        };
+
+
+        const WEATHER_EVENTS = [
+            { type: 'mutation', name: "Golden Shower", mutation: "gold", chance: 0.3, duration: 30000, message: "A Golden Shower is passing by! Fluffs might get gilded!", color: "bg-yellow-500" },
+            { type: 'mutation', name: "Diamond Hail", mutation: "diamond", chance: 0.25, duration: 25000, message: "Diamond Hail is falling! Fluffs are getting crystallized!", color: "bg-blue-400" },
+            { type: 'mutation', name: "Rainbow Gust", mutation: "rainbow", chance: 0.05, duration: 10000, message: "A rare Rainbow Gust! Fluffs are becoming prismatic!", color: "bg-gradient-to-r from-red-500 via-yellow-500 to-blue-500" },
+            { type: 'mutation', name: "Volcanic Ash", mutation: "lava", chance: 0.1, duration: 20000, message: "Volcanic Ash is in the air! Fluffs are getting fiery!", color: "bg-red-700" },
+            { type: 'mutation', name: "Blood Moon", mutation: "bloodrot", chance: 0.15, duration: 28000, message: "A Blood Moon rises! Fluffs are tainted!", color: "bg-red-900" },
+            { type: 'mutation', name: "Cosmic Ray Burst", mutation: "celestial", chance: 0.1, duration: 22000, message: "A Cosmic Ray Burst! Fluffs are becoming stellar!", color: "bg-indigo-500" },
+            { type: 'mutation', name: "Candy Storm", mutation: "candy", chance: 0.1, duration: 26000, message: "A sweet Candy Storm is here! Fluffs are getting sugary!", color: "bg-pink-500" },
+            { type: 'mutation', name: "Chocolate Rain", mutation: "chocolate", chance: 1, duration: 18000, message: "Chocolate Rain! Some stay dry and others feel the pain (20x)!", color: "bg-yellow-900" },
+            { type: 'mutation', name: "Brick Rain", mutation: "bricked", chance: 1, duration: 12000, message: "It's raining bricks! Fluffs are getting bricked up (40x)!", color: "bg-red-800" },
+            { type: 'mutation', name: "Loager Rain", mutation: "loager", chance: 1, duration: 8000, message: "A shower of Loagers! Fluffs are getting a massive boost (60x)!", color: "bg-yellow-600" },
+            { type: 'mutation', name: "Storm Surge Shrek", mutation: "stormsurgeshrek", chance: 1, duration: 30000, message: "A Storm Surge Shrek is coming! (4x)", color: "bg-green-600"},
+            { type: 'mutation', name: "Lightning McQueen Zap", mutation: "lightningmcqueenzap", chance: 1, duration: 25000, message: "Lightning McQueen is zapping by! (7x)", color: "bg-red-600"},
+            { type: 'mutation', name: "Among Us Thunder", mutation: "amongusthunder", chance: 1, duration: 20000, message: "An Among Us Thunder is rumbling! (6x)", color: "bg-red-500"},
+            { type: 'mutation', name: "Susnado", mutation: "susnado", chance: 1, duration: 20000, message: "A Susnado is forming! (8x)", color: "bg-gray-500"},
+            { type: 'mutation', name: "Tornado Fortnite Dance", mutation: "tornadofortnitedance", chance: 1, duration: 15000, message: "A Tornado of Fortnite Dances! (9x)", color: "bg-blue-400"},
+            { type: 'mutation', name: "Gigachad Storm", mutation: "gigachadstorm", chance: 1, duration: 15000, message: "A Gigachad Storm approaches! (10x)", color: "bg-gray-700"},
+            { type: 'mutation', name: "Ohio Hurricane", mutation: "ohiohurricane", chance: 1, duration: 12000, message: "An Ohio Hurricane is here! (12x)", color: "bg-indigo-600"},
+            { type: 'mutation', name: "Thunder Rizzler", mutation: "thunderrizzler", chance: 1, duration: 10000, message: "The Thunder Rizzler has arrived! (15x)", color: "bg-yellow-400"},
+            { type: 'mutation', name: "Sigma Stormcloud", mutation: "sigmastormcloud", chance: 1, duration: 10000, message: "A Sigma Stormcloud is brewing! (20x)", color: "bg-gray-400"},
+            { type: 'mutation', name: "Storm Surge Trollface", mutation: "stormsurgetrollface", chance: 1, duration: 10000, message: "A Storm Surge of Trollfaces! (18x)", color: "bg-black"},
+            { type: 'mutation', name: "Black Hole Doge", mutation: "blackholedoge", chance: 1, duration: 9000, message: "A Black Hole Doge has appeared! (20x)", color: "bg-yellow-500"},
+            { type: 'mutation', name: "Galaxy Rizz", mutation: "galaxyrizz", chance: 1, duration: 8000, message: "A wave of Galaxy Rizz! (25x)", color: "bg-purple-500"},
+            { type: 'mutation', name: "Nebula Sus", mutation: "nebulasus", chance: 1, duration: 7000, message: "A Nebula of Sus! (30x)", color: "bg-pink-500"},
+            { type: 'mutation', name: "Wormhole Sigma", mutation: "wormholesigma", chance: 1, duration: 6000, message: "A Wormhole of Sigma! (40x)", color: "bg-blue-600"},
+            { type: 'mutation', name: "Cosmic Ohio", mutation: "cosmicohio", chance: 1, duration: 5000, message: "Cosmic Ohio has been revealed! (50x)", color: "bg-indigo-700"},
+            { type: 'mutation', name: "Bruh Moment Storm", mutation: "bruhmomentstorm", chance: 1, duration: 6000, message: "A “Bruh Moment” Storm is upon us! (35x)", color: "bg-gray-500"},
+            { type: 'mutation', name: "Meteor Saul", mutation: "meteorsaul", chance: 1, duration: 7000, message: "A Meteor Shower of Sauls! (28x)", color: "bg-orange-600"},
+            { type: 'mutation', name: "Catgirl Comet", mutation: "catgirlcomet", chance: 1, duration: 8000, message: "A Catgirl Comet is passing by! (22x)", color: "bg-pink-400"},
+            { type: 'mutation', name: "Giga Storm Surge", mutation: "gigastormsurge", chance: 1, duration: 5000, message: "A Giga Storm Surge is here! (60x)", color: "bg-blue-700"},
+            { type: 'mutation', name: "Vine Boom Thunder", mutation: "vineboomthunder", chance: 1, duration: 4000, message: "The Vine Boom Thunder echoes! (70x)", color: "bg-green-700"},
+            { type: 'mutation', name: "Jayce Rain", mutation: "op", chance: 1, duration: 5000, message: "JAYCE RAIN! ALL FLUFFS ARE BECOMING OVERPOWERED (100X)!", color: "bg-gradient-to-r from-yellow-300 to-red-600", rarity: 0.001 },
+            { type: 'mutation', name: "Disco Fever", mutation: "disco", chance: 1, duration: 60000, message: "A Disco Fever is taking over!", color: "bg-pink-500" },
+            { type: 'mutation', name: "B-2 Bombing Run", mutation: "bombed", chance: 1, duration: 30000, message: "Incoming B-2 Bombing Run!", color: "bg-gray-700" },
+            { type: 'mutation', name: "Brazilian Phonk", mutation: "phonk", chance: 1, duration: 60000, message: "Brazilian Phonk is taking over! (67x)", color: "bg-gradient-to-r from-green-400 to-yellow-500", adminOnly: true },
+            { type: 'mutation', name: "Steal A Fluff Rap", mutation: "banger", chance: 1, duration: 60000, message: "This new track is a banger! (70x)", color: "bg-gradient-to-r from-red-500 to-black", adminOnly: true }
+        ];
+
+
+        const FLUFF_TYPES = {
+            common: { rarityName: 'Common', color: 'common', chance: 0.451998998, fluffs: [ { name: 'Flufflet', cost: 10, moneyPerSec: 0.5 }, { name: 'Sleepy Fluff', cost: 15, moneyPerSec: 0.75 }, { name: 'Crumbs', cost: 20, moneyPerSec: 1 }, { name: 'Lazy Panda', cost: 25, moneyPerSec: 1.2 }, { name: 'Sneaky Jr.', cost: 30, moneyPerSec: 1.5 }, { name: 'Dustball', cost: 35, moneyPerSec: 1.7 }, { name: 'Cheeky Fluff', cost: 40, moneyPerSec: 2 } ] },
+            uncommon: { rarityName: 'Uncommon', color: 'uncommon', chance: 0.25, fluffs: [ { name: 'Bamboo Bandit', cost: 75, moneyPerSec: 4 }, { name: 'Pudge', cost: 100, moneyPerSec: 5 }, { name: 'Rollie', cost: 125, moneyPerSec: 6 }, { name: 'Nibbles', cost: 150, moneyPerSec: 7 }, { name: 'Moon Fluff', cost: 175, moneyPerSec: 8 }, { name: 'Tiny Trouble', cost: 200, moneyPerSec: 9 }, { name: 'Chonklet', cost: 225, moneyPerSec: 10 } ] },
+            rare: { rarityName: 'Rare', color: 'rare', chance: 0.15, fluffs: [ { name: 'Stealth Fluff', cost: 300, moneyPerSec: 15 }, { name: 'Fluffzilla', cost: 400, moneyPerSec: 18 }, { name: 'Sir Snuggles', cost: 500, moneyPerSec: 20 }, { name: 'Shadow Paws', cost: 600, moneyPerSec: 23 }, { name: 'Cozy Phantom', cost: 700, moneyPerSec: 26 }, { name: 'Sneaky Cheeks', cost: 800, moneyPerSec: 29 }, { name: 'Midnight Muncher', cost: 900, moneyPerSec: 32 }, { name: 'Zombie', cost: 1000, moneyPerSec: 35} ] },
+            epic: { rarityName: 'Epic', color: 'epic', chance: 0.08, fluffs: [ { name: 'Master Fluff', cost: 2400, moneyPerSec: 60 }, { name: 'Fluffnado', cost: 3000, moneyPerSec: 75 }, { name: 'Agent P.', cost: 3600, moneyPerSec: 90 }, { name: 'Commander Bamboozle', cost: 4200, moneyPerSec: 105 }, { name: 'Pancake the Great', cost: 4800, moneyPerSec: 120 }, { name: 'Supreme Chonk', cost: 5400, moneyPerSec: 135 }, { name: 'Fluff Ninja', cost: 6000, moneyPerSec: 150 }, { name: 'Creeper', cost: 6400, moneyPerSec: 165} ] },
+            legendary: { rarityName: 'Legendary', color: 'legendary', chance: 0.04, fluffs: [ { name: 'The Fluffinator', cost: 20000, moneyPerSec: 450 }, { name: 'Panda Prime', cost: 24000, moneyPerSec: 510 }, { name: 'King Chub', cost: 28000, moneyPerSec: 570 }, { name: 'Void Fluff', cost: 32000, moneyPerSec: 630 }, { name: 'Fluff of Destiny', cost: 36000, moneyPerSec: 690 }, { name: 'Bamboomaster', cost: 40000, moneyPerSec: 750 }, { name: 'Ghost of Fluff', cost: 44000, moneyPerSec: 810 }, { name: 'Steve', cost: 48000, moneyPerSec: 900} ] },
+            mythical: { rarityName: 'Mythical', color: 'mythical', chance: 0.0245, fluffs: [ { name: 'Golden Fluff', cost: 120000, moneyPerSec: 2100 }, { name: 'RoboFluff 3000', cost: 140000, moneyPerSec: 2400 }, { name: 'Candyfloss Panda', cost: 160000, moneyPerSec: 2700 }, { name: 'Pirate Fluffbeard', cost: 184000, moneyPerSec: 3000 }, { name: 'Santa Fluff', cost: 208000, moneyPerSec: 3300 }, { name: 'Alien Fluff-X', cost: 232000, moneyPerSec: 3600 }, { name: 'Rainbow Rollie', cost: 256000, moneyPerSec: 3900 }, { name: '9+10=21 Fluff', cost: 280000, moneyPerSec: 4200 }, { name: 'Skibidi Fluff', cost: 304000, moneyPerSec: 4500 }, { name: 'Business Fluff', cost: 336000, moneyPerSec: 4920 }, { name: 'Rich Fluff', cost: 368000, moneyPerSec: 5400 }, { name: 'UPS Driver Fluff', cost: 400000, moneyPerSec: 6000 } ] },
+            secret: { rarityName: 'Secret', color: 'secret', chance: 0.002, fluffs: [ { name: 'Big Fluff', cost: 750000, moneyPerSec: 22500 }, { name: 'Jiggle Fluff', cost: 900000, moneyPerSec: 39375 }, { name: 'Fluff Store', cost: 1050000, moneyPerSec: 56250 }, { name: 'Baby Fluff', cost: 1500000, moneyPerSec: 135000 }, { name: '7-11 Worker Fluff', cost: 1800000, moneyPerSec: 168750 }, { name: 'JerryMrChuckles', cost: 2400000, moneyPerSec: 225000 }, { name: 'BefordMcChuckleBerry', cost: 3000000, moneyPerSec: 315000 }, { name: 'Bellyfullbill', cost: 5250000, moneyPerSec: 450000 }, { name: 'Napoleon Fluff', cost: 7500000, moneyPerSec: 675000 }, { name: 'Funko Pop Fluff', cost: 11250000, moneyPerSec: 956250 }, { name: 'Hot Fudge Fluff', cost: 15000000, moneyPerSec: 1237500 }, { name: 'J.S. Jiggle Fluff', cost: 30000000, moneyPerSec: 2250000 }, { name: 'Employed Fluff', cost: 52500000, moneyPerSec: 3600000 }, { name: 'Showered Fluff', cost: 75000000, moneyPerSec: 5062500 }, { name: 'Tired Fluff', cost: 82500000, moneyPerSec: 5625000 }, { name: 'Netflix Fluff', cost: 90000000, moneyPerSec: 6187500 }, { name: 'SpongeFluff', cost: 97500000, moneyPerSec: 6750000 }, { name: 'SquidFluff', cost: 105000000, moneyPerSec: 7312500 }, { name: 'Patrick Fluff', cost: 112500000, moneyPerSec: 7875000 }, { name: 'My Garden Fluff', cost: 120000000, moneyPerSec: 8437500 }, { name: 'German Fluff', cost: 157500000, moneyPerSec: 11250000 }, { name: 'Da Baby Fluff', cost: 165000000, moneyPerSec: 11812500 }, { name: 'Reddit Mod Fluff', cost: 172500000, moneyPerSec: 12375000 }, { name: 'Discord Mod Fluff', cost: 180000000, moneyPerSec: 12937500 }, { name: '600lbs Fluff', cost: 187500000, moneyPerSec: 13500000 }, { name: 'Dead Fluff', cost: 195000000, moneyPerSec: 14062500 }, { name: 'Lanky L', cost: 202500000, moneyPerSec: 14625000 }, { name: 'Yellow Hat Man', cost: 210000000, moneyPerSec: 15187500 }, { name: 'Big Ape', cost: 217500000, moneyPerSec: 15750000 }, { name: 'Mushroom Boy', cost: 225000000, moneyPerSec: 16312500 }, { name: 'Green Dino', cost: 232500000, moneyPerSec: 16875000 }, { name: 'Princess Apricot', cost: 240000000, moneyPerSec: 17437500 }, { name: 'Turtle King', cost: 247500000, moneyPerSec: 18000000 }, { name: 'Green Plumber', cost: 255000000, moneyPerSec: 18562500 }, { name: 'Red Plumber', cost: 262500000, moneyPerSec: 19125000 }, { name: 'Quagmire', cost: 270000000, moneyPerSec: 19687500 }, { name: 'Meg', cost: 277500000, moneyPerSec: 20250000 }, { name: 'Brian', cost: 285000000, moneyPerSec: 20812500 }, { name: 'Stewie', cost: 292500000, moneyPerSec: 21375000 }, { name: 'Lois', cost: 300000000, moneyPerSec: 21937500 }, { name: 'Peter', cost: 307500000, moneyPerSec: 22500000 }, { name: 'Enderman', cost: 315000000, moneyPerSec: 23062500 } ] },
+            brainrot: { rarityName: 'Brainrot', color: 'brainrot', chance: 0.001, fluffs: [
+                { name: 'Tralalero Tralala', cost: 225000000, moneyPerSec: 16875000 },
+                { name: 'Sigma Boy', cost: 240000000, moneyPerSec: 18000000 },
+                { name: 'Ta Ta Ta Ta Ta Ta Sahur', cost: 255000000, moneyPerSec: 19125000 },
+                { name: 'Matteo', cost: 270000000, moneyPerSec: 20250000 },
+                { name: 'Bombombini Gusini', cost: 285000000, moneyPerSec: 21375000 },
+                { name: 'Brr Brr Patapim', cost: 300000000, moneyPerSec: 22500000 },
+                { name: 'Ballerina Cappuccina', cost: 315000000, moneyPerSec: 23625000 },
+                { name: 'Chef Crabracadabra', cost: 330000000, moneyPerSec: 24750000 },
+                { name: 'Cannelloni Dragoni', cost: 345000000, moneyPerSec: 25875000 },
+                { name: 'Bombardiro Crocodilo', cost: 360000000, moneyPerSec: 27000000 },
+                { name: 'Job Job Sahur', cost: 375000000, moneyPerSec: 28125000 },
+                { name: 'Tung Tung Tung Sahur', cost: 390000000, moneyPerSec: 29250000 },
+                { name: 'Strawberry Elephant', cost: 420000000, moneyPerSec: 31500000 }
+            ]},
+            countries: { rarityName: 'Countries', color: 'countries', chance: 0.0015, fluffs: [
+                { name: 'China', cost: 600000000, moneyPerSec: 45000000 },
+                { name: 'Russia', cost: 640000000, moneyPerSec: 48000000 },
+                { name: 'UK', cost: 680000000, moneyPerSec: 51000000 },
+                { name: 'France', cost: 720000000, moneyPerSec: 54000000 },
+                { name: 'Germany', cost: 760000000, moneyPerSec: 57000000 },
+                { name: 'Canada', cost: 800000000, moneyPerSec: 60000000 },
+                { name: 'India', cost: 840000000, moneyPerSec: 63000000 },
+                { name: 'Australia', cost: 880000000, moneyPerSec: 66000000 },
+                { name: 'USA', cost: 920000000, moneyPerSec: 69000000 },
+                { name: 'European Union', cost: 960000000, moneyPerSec: 72000000 },
+                { name: 'American Union', cost: 1000000000, moneyPerSec: 75000000 },
+                { name: 'African Union', cost: 1040000000, moneyPerSec: 78000000 },
+                { name: 'Eurasian Union', cost: 1080000000, moneyPerSec: 81000000 },
+                { name: 'Mongol Empire', cost: 1120000000, moneyPerSec: 84000000 },
+                { name: 'Napoleonic France', cost: 1160000000, moneyPerSec: 87000000 },
+                { name: 'German Empire', cost: 1200000000, moneyPerSec: 90000000 },
+                { name: 'Austria-Hungary', cost: 1240000000, moneyPerSec: 93000000 },
+                { name: 'British Empire', cost: 1280000000, moneyPerSec: 96000000 },
+                { name: 'USSR', cost: 1320000000, moneyPerSec: 99000000 },
+                { name: 'Prussia', cost: 1360000000, moneyPerSec: 102000000 },
+                { name: 'Russian Empire', cost: 1400000000, moneyPerSec: 105000000 },
+                { name: 'Roman Empire', cost: 1440000000, moneyPerSec: 108000000 },
+                { name: 'Holy Roman Empire', cost: 1480000000, moneyPerSec: 111000000 },
+                { name: 'Pax Americano', cost: 1520000000, moneyPerSec: 114000000 }
+            ]},
+            god: { rarityName: 'God', color: 'god', chance: 0.0005, fluffs: [ { name: 'Massive Jiggle Fluff', cost: 2400000000, moneyPerSec: 180000000 }, { name: 'Mcdonalds Fluff', cost: 2460000000, moneyPerSec: 184500000 }, { name: 'L.T.F.M.I.S.M Fluff', cost: 2520000000, moneyPerSec: 189000000 }, { name: 'T.I.N.W.C.D Fluff', cost: 2580000000, moneyPerSec: 193500000 }, { name: 'Wiggly Wobbly Fluff', cost: 2640000000, moneyPerSec: 198000000 }, { name: 'Baby Jayce', cost: 2700000000, moneyPerSec: 202500000 }, { name: 'No Poop July Fluff', cost: 2760000000, moneyPerSec: 207000000 }, { name: 'Arthur Morgan', cost: 2820000000, moneyPerSec: 211500000 }, { name: 'Dutch Van Der Linde', cost: 2880000000, moneyPerSec: 216000000 }, { name: 'Hosea Matthews', cost: 2940000000, moneyPerSec: 220500000 }, { name: 'Lenny Summers', cost: 3000000000, moneyPerSec: 225000000 }, { name: 'Bill Williamson', cost: 3060000000, moneyPerSec: 229500000 }, { name: 'Javier Escualla', cost: 3120000000, moneyPerSec: 234000000 }, { name: 'Fluff Van Der Linde', cost: 3180000000, moneyPerSec: 238500000 }, { name: 'Kieran Duffy', cost: 3240000000, moneyPerSec: 243000000 }, { name: 'Micah Bell', cost: 3300000000, moneyPerSec: 247500000 }, { name: 'Dexter Morgan', cost: 3360000000, moneyPerSec: 252000000 }, { name: 'Mrs Grimshaw', cost: 3420000000, moneyPerSec: 256500000 }, { name: 'Mary-Beth', cost: 3480000000, moneyPerSec: 261000000 }, { name: 'Abigail Roberts', cost: 3540000000, moneyPerSec: 265500000 }, { name: 'Fluff Da Smurf', cost: 3600000000, moneyPerSec: 270000000 }, { name: 'John Marston', cost: 3660000000, moneyPerSec: 274500000 }, { name: 'sdiybt Fluff', cost: 3720000000, moneyPerSec: 279000000 }, { name: 'Player 456', cost: 3780000000, moneyPerSec: 283500000 }, { name: 'I.H.P.T.G.B Fluff', cost: 3840000000, moneyPerSec: 288000000 }, { name: 'Player 001', cost: 3900000000, moneyPerSec: 292500000 }, { name: 'Player 333', cost: 3960000000, moneyPerSec: 297000000 }, { name: 'Player 222', cost: 4020000000, moneyPerSec: 301500000 }, { name: 'Frontman', cost: 4080000000, moneyPerSec: 306000000 }, { name: 'Jack Marston', cost: 4140000000, moneyPerSec: 310500000 }, { name: 'SpiderFluff', cost: 4200000000, moneyPerSec: 315000000 }, { name: 'GREENBEAN FLUFF', cost: 4260000000, moneyPerSec: 319500000 }, { name: 'Sammy Fluff', cost: 4320000000, moneyPerSec: 324000000 }, { name: 'Jandel Fluff', cost: 4380000000, moneyPerSec: 328500000 }, { name: 'Baseball Player Fluff', cost: 4440000000, moneyPerSec: 333000000 }, { name: 'Football Player Fluff', cost: 4500000000, moneyPerSec: 337500000 }, { name: 'Bedridden Fluff', cost: 4560000000, moneyPerSec: 342000000 }, { name: 'President Fluff', cost: 4620000000, moneyPerSec: 346500000 }, { name: 'Zombie Fluff', cost: 4680000000, moneyPerSec: 351000000 }, { name: '100th Fluff', cost: 4740000000, moneyPerSec: 355500000 }, { name: '24K Gold Fluff', cost: 4800000000, moneyPerSec: 360000000 }, { name: 'Silver Fluff', cost: 4860000000, moneyPerSec: 364500000 }, { name: 'Tiny Fluff', cost: 4920000000, moneyPerSec: 369000000 }, { name: '3D Printed Fluff', cost: 4980000000, moneyPerSec: 373500000 }, { name: 'Melatonin Fluff', cost: 5040000000, moneyPerSec: 378000000 }, { name: 'Knight Fluff', cost: 5100000000, moneyPerSec: 382500000 }, { name: 'Dragon', cost: 5160000000, moneyPerSec: 387000000 }, { name: 'Gingy', cost: 5220000000, moneyPerSec: 391500000 }, { name: 'Lord Farquaad', cost: 5280000000, moneyPerSec: 396000000 }, { name: 'Fiona', cost: 5340000000, moneyPerSec: 400500000 }, { name: 'Puss in Boots', cost: 5400000000, moneyPerSec: 405000000 }, { name: 'Donkey', cost: 5460000000, moneyPerSec: 409500000 }, { name: 'Shrek', cost: 5520000000, moneyPerSec: 414000000 }, { name: 'Quandale Dingle', cost: 5580000000, moneyPerSec: 418500000 }, { name: 'Goofy Ahh Sonic', cost: 5640000000, moneyPerSec: 423000000 }, { name: 'Sigma Patrick', cost: 5700000000, moneyPerSec: 427500000 }, { name: 'Rizzler', cost: 5760000000, moneyPerSec: 432000000 }, { name: 'Skibidi Toilet', cost: 5820000000, moneyPerSec: 436500000 }, { name: 'Gigachad', cost: 5880000000, moneyPerSec: 441000000 }, { name: 'Shaggy Ultra Instinct', cost: 5940000000, moneyPerSec: 445500000 }, { name: 'Amogus Impostor', cost: 6000000000, moneyPerSec: 450000000 }, { name: 'Amogus Crewmate', cost: 6060000000, moneyPerSec: 454500000 }, { name: 'Walter', cost: 6120000000, moneyPerSec: 459000000 }, { name: 'Doge', cost: 6180000000, moneyPerSec: 463500000 }, { name: 'Cheems', cost: 6240000000, moneyPerSec: 468000000 }, { name: 'Big Chungus', cost: 6300000000, moneyPerSec: 472500000 }, { name: 'Fluff', cost: 6360000000, moneyPerSec: 477000000 }, { name: 'Mike Ehrmantraut', cost: 6420000000, moneyPerSec: 481500000 }, { name: 'Gus Fring', cost: 6480000000, moneyPerSec: 486000000 }, { name: 'Saul Goodman', cost: 6540000000, moneyPerSec: 490500000 }, { name: 'Jesse Pinkman', cost: 6600000000, moneyPerSec: 495000000 }, { name: 'Walter White', cost: 6660000000, moneyPerSec: 499500000 }, { name: 'Herobrine', cost: 6750000000, moneyPerSec: 506250000} ] },
+            hybrid: { rarityName: 'Hybrid', color: 'hybrid', chance: 0, fluffs: [
+                { name: 'Common Hybrid Fluff', cost: 500, moneyPerSec: 2.5 },
+                { name: 'Uncommon Hybrid Fluff', cost: 2500, moneyPerSec: 12 },
+                { name: 'Rare Hybrid Fluff', cost: 10000, moneyPerSec: 40 },
+                { name: 'Epic Hybrid Fluff', cost: 35000, moneyPerSec: 120 },
+                { name: 'Legendary Hybrid Fluff', cost: 120000, moneyPerSec: 300 },
+                { name: 'Mythical Hybrid Fluff', cost: 550000, moneyPerSec: 1200 },
+                { name: 'Secret Hybrid Fluff', cost: 10000000, moneyPerSec: 800000 },
+                { name: 'Hybrid God Fluff', cost: 200000000, moneyPerSec: 20000000 },
+                { name: 'Mega Hybrid Fluff', cost: 1000000000, moneyPerSec: 100000000 },
+                { name: 'Ultimate Hybrid Fluff', cost: 100000000000, moneyPerSec: 10000000000 }
+            ]},
+            og: { rarityName: 'OG', color: 'og', chance: 0.00001, fluffs: [ { name: 'King Fluff', cost: 500000000000, moneyPerSec: 37500000000 }, { name: 'Chicken Jockey', cost: 600000000000, moneyPerSec: 45000000000 }, { name: 'Everything Site Monkey', cost: 1000000000000, moneyPerSec: 75000000000 }, { name: 'The Real Fluff', cost: 1500000000000, moneyPerSec: 112500000000 } ] },
+            fusion: { rarityName: 'Fusion', color: 'fusion', chance: 0, fluffs: [
+                { name: 'MASSIVE Tralaleo', cost: 60000000, moneyPerSec: 8000000 },
+                { name: 'MASSIVE Tung Tung Sahur', cost: 104000000, moneyPerSec: 13000000 },
+                { name: 'Los Combinations', cost: 112000000, moneyPerSec: 15000000 },
+                { name: 'Kegerat ti Jerry', cost: 500000, moneyPerSec: 30000000 },
+                { name: 'Los Fluffs', cost: 848000000, moneyPerSec: 1200000000 },
+                { name: 'Fluff Combinations', cost: 120000000000, moneyPerSec: 18000000000 }
+            ]},
+            admin: { rarityName: 'Admin', color: 'og', chance: 0, fluffs: [ { name: '67 Fluff', cost: 0, moneyPerSec: 50000000 }, { name: 'TB', cost: 0, moneyPerSec: 40000000 }, { name: 'TFWMATW Fluff', cost: 0, moneyPerSec: 100000000 }, { name: 'Kegler', cost: 0, moneyPerSec: 20000000 }, { name: 'Baby Everything Site Monkey', cost: 0, moneyPerSec: 40000000 }, { name: 'Loager', cost: 0, moneyPerSec: 10000000 }, { name: 'Lions Player Fluff', cost: 0, moneyPerSec: 25000000 }, { name: 'Tiger Player Fluff', cost: 0, moneyPerSec: 25000000 }, { name: 'Saints Player Fluff', cost: 0, moneyPerSec: 30000000 } ] },
+            heavenly: { rarityName: 'Heavenly', color: 'heavenly', chance: 0.000000002, fluffs: [
+                { name: 'Lore Accurate Fluff', cost: 50e21, moneyPerSec: 100e12 }
+            ]}
+        };
+        let currentChances = JSON.parse(JSON.stringify(FLUFF_TYPES));
+
+
+        const FLUFF_SETS = {
+            foodie: { name: "Foodie Fluffs", bonus: 1.05, fluffs: ["Crumbs", "Pancake the Great", "Hot Fudge Fluff", "Mcdonalds Fluff"] },
+            spooky: { name: "Spooky Set", bonus: 1.10, fluffs: ["Cozy Phantom", "Ghost of Fluff", "Bloodrot", "Zombie Fluff"] },
+            meme: { name: "Meme Team", bonus: 1.15, fluffs: ["L.T.F.M.I.S.M Fluff", "T.I.N.W.C.D Fluff", "No Poop July Fluff", "Skibidi Fluff", "9+10=21 Fluff", "sdiybt Fluff", "Big Chungus", "Cheems", "Doge", "Walter", "Amogus Crewmate", "Amogus Impostor", "Shaggy Ultra Instinct", "Gigachad", "Skibidi Toilet", "Rizzler", "Sigma Patrick", "Goofy Ahh Sonic", "Quandale Dingle"] },
+            rdr: { name: "Van Der Linde Gang", bonus: 1.20, fluffs: ["Arthur Morgan", "Dutch Van Der Linde", "John Marston", "Jack Marston", "Fluff Van Der Linde", "Micah Bell", "Kieran Duffy", "Javier Escualla", "Abigail Roberts", "Mary-Beth", "Mrs Grimshaw", "Bill Williamson", "Hosea Matthews", "Lenny Summers"] },
+            squid: { name: "Squid Game", bonus: 1.25, fluffs: ["Player 456", "Player 001", "Player 222", "Player 333", "Frontman"] },
+            brainrot: { name: "Steal A Brainrot Set", bonus: 1.30, fluffs: ["Tralalero Tralala", "Sigma Boy", "Ta Ta Ta Ta Ta Ta Sahur", "Matteo", "Bombombini Gusini", "Brr Brr Patapim", "Ballerina Cappuccina", "Chef Crabracadabra", "Cannelloni Dragoni", "Bombardiro Crocodilo", "Job Job Sahur", "Tung Tung Tung Sahur", "Strawberry Elephant"]},
+            plumber: { name: "Plumber Pals", bonus: 1.20, fluffs: ["Red Plumber", "Green Plumber", "Turtle King", "Princess Apricot", "Green Dino", "Mushroom Boy", "Big Ape", "Yellow Hat Man", "Lanky L"] },
+            shrek: { name: "Shrek Set", bonus: 1.25, fluffs: ["Shrek", "Donkey", "Puss in Boots", "Fiona", "Lord Farquaad", "Gingy", "Dragon"] },
+            familyguy: { name: "Giggity Giggity Goo Set", bonus: 1.20, fluffs: ["Peter", "Lois", "Stewie", "Brian", "Meg", "Quagmire"] },
+            breakingbad: { name: "Heisenberg's Empire", bonus: 1.35, fluffs: ["Walter White", "Jesse Pinkman", "Saul Goodman", "Gus Fring", "Mike Ehrmantraut"] },
+            minecraft: { name: "The Blocky Bunch", bonus: 1.15, fluffs: ["Steve", "Creeper", "Zombie", "Enderman", "Herobrine"] },
+            countries: { name: "Countries of the World", bonus: 1.50, fluffs: ["China", "Russia", "UK", "France", "Germany", "Canada", "India", "Australia", "USA", "European Union", "American Union", "African Union", "Eurasian Union", "Mongol Empire", "Napoleonic France", "German Empire", "Austria-Hungary", "British Empire", "USSR", "Prussia", "Russian Empire", "Roman Empire", "Holy Roman Empire", "Pax Americano"] }
+        };
+
+
+        const REBIRTH_REQUIREMENTS = [ 'Lazy Panda', 'Chonklet', 'Zombie', 'Creeper', 'Steve', 'Skibidi Fluff' ];
+
+
+        const FUSION_RECIPES = {
+            'MASSIVE Tralaleo': { ingredients: { 'Tralalero Tralala': 4 }, result: 'MASSIVE Tralaleo' },
+            'MASSIVE Tung Tung Sahur': { ingredients: { 'Tung Tung Tung Sahur': 4 }, result: 'MASSIVE Tung Tung Sahur' },
+            'Los Combinations': { ingredients: { 'Strawberry Elephant': 4 }, result: 'Los Combinations' },
+            'Kegerat ti Jerry': { ingredients: { 'JerryMrChuckles': 3, 'Kegler': 1 }, result: 'Kegerat ti Jerry' },
+            'Los Fluffs': { ingredients: { 'Fluff': 4 }, result: 'Los Fluffs' },
+            'Fluff Combinations': { ingredients: { 'The Real Fluff': 4 }, result: 'Fluff Combinations' },
+        };
+
+
+        let UPGRADES;
+        function getDefaultUpgrades() {
+            return {
+                expandBase: { level: 1, cost: 250, costMultiplier: 2.5, action: () => { fluffCapacity += 5; }, get description() { return `Increase base capacity by 5. (Current: ${fluffCapacity})` } },
+                fluffMagnet: { level: 1, cost: 500, costMultiplier: 3, action: () => { 
+                    const reduction = currentChances.common.chance * 0.05; // Nerfed from 0.1 to 0.05
+                    currentChances.common.chance -= reduction; 
+                    const keysToBoost = ['uncommon', 'rare', 'epic', 'legendary', 'mythical', 'secret', 'brainrot', 'countries', 'god', 'og', 'heavenly'];
+                    const increase = reduction / keysToBoost.length;
+                    for (const key of keysToBoost) {
+                        if(currentChances[key]) {
+                             currentChances[key].chance += increase; 
+                        }
+                    }
+                }, get description() { return `Increase chance of finding rare fluffs. (Lvl ${this.level})` } },
+                negotiationSkills: { level: 1, cost: 1000, costMultiplier: 4, action: () => { sellMultiplier += 0.05; }, get description() { return `Increase fluff sell price by 5%. (Current: ${Math.round(sellMultiplier * 100)}%)` } },
+                conveyorOverclock: { level: 0, cost: 2000, costMultiplier: 3.5, action: () => { conveyorSpeed += 0.5; }, get description() { return `Increase conveyor belt speed. (Lvl ${this.level})` } },
+                beltUnderclock: { level: 0, cost: 5000, costMultiplier: 4, action: () => { conveyorSpeed = Math.max(0.5, conveyorSpeed - 0.2); }, get description() { return `Decrease conveyor belt speed. (Lvl ${this.level})` } },
+                mutationCatalyst: { level: 0, cost: 10000, costMultiplier: 5, action: () => { mutationChanceBonus += 0.005; }, get description() { return `Increase mutation chance by 0.5%. (Current Bonus: +${(mutationChanceBonus * 100).toFixed(1)}%)` } }
+            };
+        }
+        
+        let SPECIAL_UPGRADES;
+        function getDefaultSpecialUpgrades() {
+            return {
+                favoriteTool: { purchased: false, applied: false, cost: 1000000, action: () => {
+                    if (SPECIAL_UPGRADES.favoriteTool.applied) { showNotification("You have already applied the Favorite Tool this rebirth.", "error"); return; }
+                    SPECIAL_UPGRADES.favoriteTool.purchased = true;
+                    toggleFavoriteMode();
+                }, get description() { return `Select one fluff to protect from rebirth. Resets on use.` } },
+                weatherMachine: { purchased: false, cooldownUntil: 0, cost: 50000000, action: () => {
+                    if (!SPECIAL_UPGRADES.weatherMachine.purchased) {
+                         SPECIAL_UPGRADES.weatherMachine.purchased = true;
+                    }
+                    showWeatherMachineModal();
+                }, get description() { return `Trigger a weather event of your choice. Has a cooldown.` } }
+            }
+        }
+        
+        let PRESTIGE_UPGRADES;
+        function getDefaultPrestigeUpgrades() {
+            return {
+                bambooFortune: { level: 0, cost: 1, costMultiplier: 2, action: () => { money += 100 * Math.pow(2, PRESTIGE_UPGRADES.bambooFortune.level); }, get description() { return `Start with more money after a rebirth.` } },
+                enduringMultiplier: { level: 0, cost: 2, costMultiplier: 3, action: () => { rebirthMultiplier += 0.05; }, get description() { return `Permanently increase the money multiplier from all sources.` } },
+                goldenTicket: { level: 0, cost: 5, costMultiplier: 5, action: () => { for (const key in currentChances) { if (key !== 'common' && key !== 'hybrid' && key !== 'og') { currentChances[key].chance *= 1.05; } } }, get description() { return `Slightly increase the chance of finding all rare fluffs, forever.` } }
+            };
+        }
+
+
+        let ACHIEVEMENTS;
+        function getDefaultAchievements() {
+            return {
+                moneyMaker: { name: "Money Maker", description: "Earn a total of $1,000,000", goal: 1000000, unlocked: false, check: () => gameStats.totalMoneyEarned >= 1000000 },
+                billionaire: { name: "Billionaire", description: "Earn a total of $1,000,000,000", goal: 1000000000, unlocked: false, check: () => gameStats.totalMoneyEarned >= 1000000000 },
+                fluffHoarder: { name: "Fluff Hoarder", description: "Collect 100 total fluffs", goal: 100, unlocked: false, check: () => gameStats.totalFluffsCollected >= 100 },
+                fluffFanatic: { name: "Fluff Fanatic", description: "Collect 1,000 total fluffs", goal: 1000, unlocked: false, check: () => gameStats.totalFluffsCollected >= 1000 },
+                rebirthNewbie: { name: "A New Beginning", description: "Rebirth for the first time", goal: 1, unlocked: false, check: () => rebirths >= 1 },
+                timeLord: { name: "Time Lord", description: "Rebirth 10 times", goal: 10, unlocked: false, check: () => rebirths >= 10 },
+                collector: { name: "Collector", description: "Discover 25 unique fluffs", goal: 25, unlocked: false, check: () => discoveredFluffs.size >= 25 },
+                masterCollector: { name: "Master Collector", description: "Discover all fluffs", goal: Object.values(FLUFF_TYPES).filter(r => r.rarityName !== 'Admin' && r.rarityName !== 'Heavenly').reduce((acc, r) => acc + r.fluffs.length, 0), unlocked: false, check: () => discoveredFluffs.size >= ACHIEVEMENTS.masterCollector.goal }
+            }
+        }
+
+
+        UPGRADES = getDefaultUpgrades();
+        SPECIAL_UPGRADES = getDefaultSpecialUpgrades();
+        PRESTIGE_UPGRADES = getDefaultPrestigeUpgrades();
+        ACHIEVEMENTS = getDefaultAchievements();
+
+
+        // --- FUNCTIONS ---
+
+
+        function formatNumber(num) {
+            if (num < 1e9) return num.toLocaleString();
+            if (num >= 1e9 && num < 1e12) return (num / 1e9).toFixed(2) + ' B';
+            if (num >= 1e12 && num < 1e15) return (num / 1e12).toFixed(2) + ' T';
+            if (num >= 1e15 && num < 1e18) return (num / 1e15).toFixed(2) + ' QA';
+            if (num >= 1e18 && num < 1e21) return (num / 1e18).toFixed(2) + ' QI';
+            if (num >= 1e21) return (num / 1e21).toFixed(2) + ' SX';
+        }
+
+
+        function updateDisplay() {
+            const finalMultiplier = rebirthMultiplier * setBonusMultiplier;
+            moneyEl.textContent = formatNumber(Math.floor(money));
+            mpsEl.textContent = formatNumber(moneyPerSecond * finalMultiplier);
+            fluffCountEl.textContent = fluffCount;
+            fluffCapacityEl.textContent = fluffCapacity;
+            rebirthCountEl.textContent = rebirths;
+            rebirthMultiplierEl.textContent = `${finalMultiplier.toFixed(2)}x`;
+            rebirthCostEl.textContent = formatNumber(rebirthCost);
+            goldenBambooEl.textContent = goldenBamboo.toLocaleString();
+            
+            const canRebirth = checkRebirthRequirements() && money >= rebirthCost;
+            rebirthButton.disabled = !canRebirth;
+            rebirthButton.classList.toggle('btn-disabled', !canRebirth);
+            
+            updateUpgradeDisplay();
+            updateRebirthRequirementsDisplay();
+        }
+
+
+        function calculateMPS() {
+            moneyPerSecond = baseFluffs.reduce((total, fluff) => {
+                const mutationMultiplier = fluff.mutation ? MUTATIONS[fluff.mutation].multiplier : 1;
+                return total + (fluff.moneyPerSec * mutationMultiplier);
+            }, 0);
+            updateDisplay();
+        }
+
+
+        function showNotification(message, type = 'error') {
+            playSound('notification');
+            const notif = document.createElement('div');
+            notif.classList.add('notification', type);
+            notif.textContent = message;
+            notificationContainer.appendChild(notif);
+            setTimeout(() => {
+                notif.classList.add('fade-out');
+                notif.addEventListener('transitionend', () => notif.remove());
+            }, 10000);
+        }
+        
+        // --- SAVE/LOAD ---
+        function getSaveData() {
+            const saveData = {
+                money, baseFluffs, fluffCapacity, sellMultiplier, conveyorSpeed,
+                rebirths, rebirthMultiplier, rebirthCost, favoritedFluffId, goldenBamboo,
+                discoveredFluffs: Array.from(discoveredFluffs),
+                gameStats,
+                lastSaveTime: Date.now(),
+                achievements: ACHIEVEMENTS,
+                upgrades: {}, specialUpgrades: {}, prestigeUpgrades: {},
+                mutationChanceBonus,
+                lastLoginDate,
+                loginStreak
+            };
+            for (const key in UPGRADES) saveData.upgrades[key] = { level: UPGRADES[key].level, cost: UPGRADES[key].cost };
+            for (const key in SPECIAL_UPGRADES) saveData.specialUpgrades[key] = { purchased: SPECIAL_UPGRADES[key].purchased, applied: SPECIAL_UPGRADES[key].applied, cooldownUntil: SPECIAL_UPGRADES[key].cooldownUntil };
+            for (const key in PRESTIGE_UPGRADES) saveData.prestigeUpgrades[key] = { level: PRESTIGE_UPGRADES[key].level, cost: PRESTIGE_UPGRADES[key].cost };
+            return btoa(JSON.stringify(saveData));
+        }
+
+
+        function loadSaveData(saveString) {
+            try {
+                const data = JSON.parse(atob(saveString));
+                money = data.money;
+                baseFluffs = data.baseFluffs || [];
+                fluffCount = baseFluffs.length;
+                fluffCapacity = data.fluffCapacity;
+                sellMultiplier = data.sellMultiplier;
+                conveyorSpeed = data.conveyorSpeed;
+                rebirths = data.rebirths;
+                rebirthMultiplier = data.rebirthMultiplier;
+                rebirthCost = data.rebirthCost;
+                favoritedFluffId = data.favoritedFluffId;
+                goldenBamboo = data.goldenBamboo || 0;
+                discoveredFluffs = new Set(data.discoveredFluffs || []);
+                gameStats = data.gameStats || { totalMoneyEarned: 0, totalFluffsCollected: 0, timePlayed: 0 };
+                mutationChanceBonus = data.mutationChanceBonus || 0;
+                lastLoginDate = data.lastLoginDate || null;
+                loginStreak = data.loginStreak || 0;
+                
+                UPGRADES = getDefaultUpgrades();
+                for (const key in data.upgrades) if (UPGRADES[key]) { UPGRADES[key].level = data.upgrades[key].level; UPGRADES[key].cost = data.upgrades[key].cost; }
+                
+                SPECIAL_UPGRADES = getDefaultSpecialUpgrades();
+                for (const key in data.specialUpgrades) if (SPECIAL_UPGRADES[key]) { 
+                    SPECIAL_UPGRADES[key].purchased = data.specialUpgrades[key].purchased; 
+                    SPECIAL_UPGRADES[key].applied = data.specialUpgrades[key].applied; 
+                    SPECIAL_UPGRADES[key].cooldownUntil = data.specialUpgrades[key].cooldownUntil;
+                }
+                
+                PRESTIGE_UPGRADES = getDefaultPrestigeUpgrades();
+                for (const key in data.prestigeUpgrades) if (PRESTIGE_UPGRADES[key]) { PRESTIGE_UPGRADES[key].level = data.prestigeUpgrades[key].level; PRESTIGE_UPGRADES[key].cost = data.prestigeUpgrades[key].cost; }
+
+
+                ACHIEVEMENTS = getDefaultAchievements();
+                if (data.achievements) {
+                    for (const key in data.achievements) {
+                        if (ACHIEVEMENTS[key]) {
+                            ACHIEVEMENTS[key].unlocked = data.achievements[key].unlocked;
+                        }
+                    }
+                }
+
+
+                // Offline Progress Calculation
+                if (data.lastSaveTime) {
+                    const timeOffline = (Date.now() - data.lastSaveTime) / 1000; // in seconds
+                    const maxOfflineTime = 24 * 60 * 60; // 24 hours
+                    const effectiveOfflineTime = Math.min(timeOffline, maxOfflineTime);
+                    
+                    const offlineMps = baseFluffs.reduce((total, fluff) => {
+                        const mutationMultiplier = fluff.mutation ? MUTATIONS[fluff.mutation].multiplier : 1;
+                        return total + (fluff.moneyPerSec * mutationMultiplier);
+                    }, 0);
+
+
+                    const offlineEarnings = offlineMps * data.rebirthMultiplier * setBonusMultiplier * effectiveOfflineTime;
+                    if (offlineEarnings > 0) {
+                        money += offlineEarnings;
+                        gameStats.totalMoneyEarned += offlineEarnings;
+                        showNotification(`Welcome back! You earned $${formatNumber(offlineEarnings)} while you were away for ${formatTime(effectiveOfflineTime)}.`, 'offline');
+                    }
+                }
+
+
+                calculateSetBonuses();
+                renderAllFluffsInBase();
+                renderUpgrades();
+                calculateMPS();
+                showNotification("Game Loaded Successfully!", "success");
+            } catch (e) {
+                console.error("Failed to load save data:", e);
+                showNotification("Invalid or corrupted save code!", "error");
+            }
+        }
+
+
+        function showSaveModal() {
+            const code = getSaveData();
+            modalContainer.innerHTML = `<div class="modal-backdrop"><div class="modal-content text-white"><h3 class="text-2xl font-bold mb-4 text-center">Save Game</h3><p class="mb-2">Copy this code to save your progress. Keep it safe!</p><textarea id="save-code-area" class="w-full h-32 p-2 bg-gray-800 border border-gray-600 rounded-md text-sm break-all" readonly>${code}</textarea><div class="flex justify-end gap-4 mt-4"><button id="copy-save-btn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md">Copy</button><button id="close-modal-btn" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-md">Close</button></div></div></div>`;
+            document.getElementById('close-modal-btn').onclick = () => modalContainer.innerHTML = '';
+            document.getElementById('copy-save-btn').onclick = () => {
+                const textArea = document.getElementById('save-code-area');
+                textArea.select();
+                document.execCommand('copy');
+                showNotification("Save code copied to clipboard!", "success");
+            };
+        }
+
+
+        function showLoadModal() {
+            modalContainer.innerHTML = `<div class="modal-backdrop"><div class="modal-content text-white"><h3 class="text-2xl font-bold mb-4 text-center">Load Game</h3><p class="mb-2">Paste your save code below to load your progress.</p><textarea id="load-code-area" class="w-full h-32 p-2 bg-gray-800 border border-gray-600 rounded-md text-sm" placeholder="Paste your code here..."></textarea><div class="flex justify-end gap-4 mt-4"><button id="confirm-load-btn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md">Load</button><button id="close-modal-btn" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-md">Close</button></div></div></div>`;
+            document.getElementById('close-modal-btn').onclick = () => modalContainer.innerHTML = '';
+            document.getElementById('confirm-load-btn').onclick = () => {
+                const code = document.getElementById('load-code-area').value;
+                if (code) { loadSaveData(code); modalContainer.innerHTML = ''; } 
+                else { showNotification("Please paste a save code.", "error"); }
+            };
+        }
+
+
+        function showFluffpediaModal() {
+            let headerHTML = `<div class="flex justify-between items-center mb-4"><h3 class="text-2xl font-bold">Fluffpedia</h3><p class="text-lg font-semibold">Discovered: ${discoveredFluffs.size} / ${Object.values(FLUFF_TYPES).filter(r => r.rarityName !== 'Admin' && r.rarityName !== 'Heavenly').reduce((acc, r) => acc + r.fluffs.length, 0)}</p></div>`;
+            
+            let fluffGridHTML = '<div class="grid grid-cols-2 md:grid-cols-4 gap-4">';
+            for (const rarityKey in FLUFF_TYPES) {
+                if (rarityKey === 'admin' || rarityKey === 'hybrid' || rarityKey === 'fusion') continue;
+                if (rarityKey === 'og' && !discoveredFluffs.has('The Real Fluff') && !discoveredFluffs.has('King Fluff') && !discoveredFluffs.has('Chicken Jockey')) continue;
+                if (rarityKey === 'brainrot' && ![...FLUFF_TYPES.brainrot.fluffs].some(f => discoveredFluffs.has(f.name))) continue;
+                if (rarityKey === 'countries' && ![...FLUFF_TYPES.countries.fluffs].some(f => discoveredFluffs.has(f.name))) continue;
+                if (rarityKey === 'heavenly' && !discoveredFluffs.has('Lore Accurate Fluff')) continue;
+
+
+
+
+                const rarity = FLUFF_TYPES[rarityKey];
+                fluffGridHTML += `<h4 class="text-xl font-bold col-span-full ${rarity.color} text-white p-2 rounded-md mt-4">${rarity.rarityName}</h4>`;
+                rarity.fluffs.forEach(fluff => {
+                    if (discoveredFluffs.has(fluff.name)) {
+                        fluffGridHTML += `<div class="p-2 bg-gray-800 rounded-md text-center"><div class="fluff-body ${rarity.color} mx-auto" style="width:40px;height:40px;font-size:24px;">🐼</div><p class="text-sm font-semibold mt-1">${fluff.name}</p><p class="text-xs text-gray-400">$${formatNumber(fluff.moneyPerSec)}/s</p></div>`;
+                    } else {
+                        fluffGridHTML += `<div class="p-2 bg-gray-900 rounded-md text-center flex flex-col justify-center items-center"><div class="fluff-body bg-gray-700 mx-auto" style="width:40px;height:40px;font-size:24px;filter:blur(2px);color:transparent;text-shadow:0 0 0 #000;">🐼</div><p class="text-sm font-semibold mt-1">???</p></div>`;
+                    }
+                });
+            }
+            fluffGridHTML += '</div>';
+
+
+            let setsHTML = '<h3 class="text-2xl font-bold mt-6 mb-4 text-center">Fluff Sets</h3><div class="space-y-3">';
+            for (const setKey in FLUFF_SETS) {
+                const set = FLUFF_SETS[setKey];
+                if ((set.name === "Steal A Brainrot Set" || set.name === "Plumber Pals" || set.name === "Shrek Set" || set.name === "The Blocky Bunch" || set.name === "Heisenberg's Empire" || set.name === "Giggity Giggity Goo Set" || set.name === "Countries of the World") && ![...set.fluffs].some(f => discoveredFluffs.has(f))) {
+                    continue;
+                }
+                const hasAll = set.fluffs.every(fluffName => discoveredFluffs.has(fluffName));
+                const setStatusClass = hasAll ? 'border-green-500 bg-green-900/50' : 'border-gray-600 bg-gray-800/50';
+                setsHTML += `
+                    <div class="p-3 border-2 ${setStatusClass} rounded-lg">
+                        <div class="flex justify-between items-center">
+                            <p class="font-bold text-lg ${hasAll ? 'text-green-300' : ''}">${set.name}</p>
+                            <p class="font-semibold text-yellow-400">Bonus: ${set.bonus}x</p>
+                        </div>
+                        <p class="text-sm text-gray-300 mt-1">${set.fluffs.join(', ')}</p>
+                    </div>
+                `;
+            }
+            setsHTML += '</div>';
+
+
+            modalContainer.innerHTML = `
+                <div class="modal-backdrop">
+                    <div class="modal-content text-white">
+                        ${headerHTML}
+                        <div class="scrollable-content">
+                            ${fluffGridHTML}
+                            ${setsHTML}
+                        </div>
+                        <div class="flex justify-end mt-4">
+                            <button id="close-modal-btn" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-md">Close</button>
+                        </div>
+                    </div>
+                </div>`;
+            document.getElementById('close-modal-btn').onclick = () => modalContainer.innerHTML = '';
+        }
+
+
+
+
+        function showStatsModal() {
+             modalContainer.innerHTML = `<div class="modal-backdrop"><div class="modal-content text-white"><h3 class="text-2xl font-bold mb-4 text-center">Game Statistics</h3><div class="space-y-2 text-lg"><p><strong>Total Money Earned:</strong> $${formatNumber(gameStats.totalMoneyEarned)}</p><p><strong>Total Fluffs Collected:</strong> ${gameStats.totalFluffsCollected.toLocaleString()}</p><p><strong>Time Played:</strong> ${formatTime(gameStats.timePlayed)}</p></div><div class="flex justify-end mt-4"><button id="close-modal-btn" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-md">Close</button></div></div></div>`;
+            document.getElementById('close-modal-btn').onclick = () => modalContainer.innerHTML = '';
+        }
+
+
+        function showAchievementsModal() {
+            let achievementsHTML = '';
+            for (const key in ACHIEVEMENTS) {
+                const ach = ACHIEVEMENTS[key];
+                const progress = ach.unlocked ? 'border-yellow-400 bg-yellow-900/50' : 'border-gray-600 bg-gray-800/50';
+                achievementsHTML += `<div class="p-3 border-2 ${progress} rounded-md"><p class="font-bold text-lg ${ach.unlocked ? 'text-yellow-300' : ''}">${ach.name}</p><p class="text-sm text-gray-300">${ach.description}</p></div>`;
+            }
+            modalContainer.innerHTML = `<div class="modal-backdrop"><div class="modal-content text-white"><h3 class="text-2xl font-bold mb-4 text-center">Achievements</h3><div class="space-y-3">${achievementsHTML}</div><div class="flex justify-end mt-4"><button id="close-modal-btn" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-md">Close</button></div></div></div>`;
+            document.getElementById('close-modal-btn').onclick = () => modalContainer.innerHTML = '';
+        }
+        
+        function showWeatherMachineModal() {
+            let weatherOptionsHTML = '';
+            WEATHER_EVENTS.forEach(event => {
+                if (event.type !== 'mutation' || event.adminOnly) return;
+                let cost = MUTATIONS[event.mutation].multiplier * 500000;
+                if (event.name === "Jayce Rain") {
+                    cost = 10000000000000; // 10 Trillion
+                }
+                weatherOptionsHTML += `<button class="w-full p-3 ${event.color} text-white rounded-lg shadow-lg hover:opacity-80 transition-opacity flex justify-between items-center" onclick="triggerWeatherFromMachine('${event.name}', ${cost})"><span>${event.name} (${MUTATIONS[event.mutation].multiplier}x)</span><span>$${formatNumber(cost)}</span></button>`;
+            });
+
+
+            modalContainer.innerHTML = `
+                <div class="modal-backdrop">
+                    <div class="modal-content text-white">
+                        <h3 class="text-2xl font-bold mb-4 text-center">Weather Machine</h3>
+                        <p class="text-center mb-4">Select a weather event to attempt to trigger. (60% Success Chance)</p>
+                        <div class="space-y-2 max-h-60 overflow-y-auto pr-2">${weatherOptionsHTML}</div>
+                        <div class="flex justify-end mt-4">
+                            <button id="close-modal-btn" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-md">Cancel</button>
+                        </div>
+                    </div>
+                </div>`;
+            document.getElementById('close-modal-btn').onclick = () => modalContainer.innerHTML = '';
+        }
+
+
+        function triggerWeatherFromMachine(eventName, cost) {
+            if (money < cost) {
+                showNotification("Not enough money to activate!", "error");
+                return;
+            }
+            money -= cost;
+            SPECIAL_UPGRADES.weatherMachine.cooldownUntil = Date.now() + 10 * 60 * 1000; // 10 minute cooldown
+
+
+            if (Math.random() < 0.6) { // 60% success
+                const event = WEATHER_EVENTS.find(e => e.name === eventName);
+                startWeatherEvent(event);
+                showNotification("Weather Machine activated successfully!", "success");
+            } else {
+                showNotification("Weather Machine activation failed! The energy fizzled out.", "error");
+            }
+            modalContainer.innerHTML = '';
+            updateDisplay();
+        }
+
+
+        function checkAchievements() {
+            for (const key in ACHIEVEMENTS) {
+                const ach = ACHIEVEMENTS[key];
+                if (!ach.unlocked && ach.check()) {
+                    ach.unlocked = true;
+                    triggerFireworks();
+                    showNotification(`Achievement Unlocked: ${ach.name}!`, 'achievement');
+                }
+            }
+        }
+
+
+        function checkRebirthRequirements() {
+            const ownedFluffs = new Set(baseFluffs.map(f => f.name));
+            return REBIRTH_REQUIREMENTS.every(req => ownedFluffs.has(req));
+        }
+
+
+        function updateRebirthRequirementsDisplay() {
+            rebirthRequirementsContainer.innerHTML = '';
+            const ownedFluffs = new Set(baseFluffs.map(f => f.name));
+            REBIRTH_REQUIREMENTS.forEach(fluffName => {
+                const hasFluff = ownedFluffs.has(fluffName);
+                const reqDiv = document.createElement('div');
+                reqDiv.className = 'req-fluff';
+                if (hasFluff) {
+                    reqDiv.classList.add('has-fluff');
+                }
+                reqDiv.innerHTML = `
+                    <div class="fluff-body common" style="width:30px; height:30px; font-size:18px; filter: ${hasFluff ? 'none' : 'grayscale(100%)'};">🐼</div>
+                    <p class="text-xs text-center mt-1 text-white">${fluffName}</p>
+                `;
+                rebirthRequirementsContainer.appendChild(reqDiv);
+            });
+        }
+
+
+        function performRebirth() {
+            if (!checkRebirthRequirements()) {
+                showNotification("You are missing some required fluffs for rebirth!", "error");
+                return;
+            }
+
+
+            const favoritedFluff = favoritedFluffId ? baseFluffs.find(f => f.id === favoritedFluffId) : null;
+            
+            let bambooToGet = 0;
+            if (activeWeekendEvent === 'doubleBamboo') {
+                bambooToGet = (Math.floor(rebirths / 2) + 1) * 2;
+            } else {
+                bambooToGet = Math.floor(rebirths / 2) + 1;
+            }
+            goldenBamboo += bambooToGet;
+            rebirths++;
+
+
+            rebirthMultiplier = 1 + (rebirths * 0.2); // Base multiplier
+            rebirthMultiplier += PRESTIGE_UPGRADES.enduringMultiplier.level * 0.05;
+
+
+            money = 100;
+            money += PRESTIGE_UPGRADES.bambooFortune.level * 100 * Math.pow(2, PRESTIGE_UPGRADES.bambooFortune.level);
+
+
+            rebirthCost *= 10;
+            
+            // Consume required fluffs unless favorited
+            const requiredFluffsCopy = [...REBIRTH_REQUIREMENTS];
+            baseFluffs = baseFluffs.filter(fluff => {
+                if (fluff.id === favoritedFluffId) return true;
+                const reqIndex = requiredFluffsCopy.indexOf(fluff.name);
+                if (reqIndex > -1) {
+                    requiredFluffsCopy.splice(reqIndex, 1); // Consume one of each
+                    return false;
+                }
+                return true;
+            });
+
+
+
+
+            fluffCount = 0;
+            fluffCapacity = 10;
+            sellMultiplier = 0.5;
+            conveyorSpeed = 1;
+            mutationChanceBonus = 0;
+            favoritedFluffId = null;
+            if (sellMode) toggleSellMode(true);
+            if (applyFavoriteMode) toggleFavoriteMode(true);
+            
+            const tempBase = [];
+            if (favoritedFluff) { tempBase.push(favoritedFluff); }
+            baseFluffs = tempBase;
+            fluffCount = baseFluffs.length;
+            
+            UPGRADES = getDefaultUpgrades();
+            SPECIAL_UPGRADES = getDefaultSpecialUpgrades();
+            currentChances = JSON.parse(JSON.stringify(FLUFF_TYPES));
+            baseEl.innerHTML = '';
+            renderAllFluffsInBase();
+            renderUpgrades();
+            calculateSetBonuses();
+            calculateMPS();
+            triggerFireworks();
+            showNotification(`Rebirth Successful! You earned ${bambooToGet} Golden Bamboo!`, 'rebirth');
+        }
+
+
+        function buyUpgrade(key, type) {
+            let upgrade;
+            let currency = 'money';
+            if (type === 'special') {
+                upgrade = SPECIAL_UPGRADES[key];
+            } else if (type === 'prestige') {
+                upgrade = PRESTIGE_UPGRADES[key];
+                currency = 'goldenBamboo';
+            } else {
+                upgrade = UPGRADES[key];
+            }
+            
+            const currentCurrency = currency === 'money' ? money : goldenBamboo;
+
+
+            if (currentCurrency >= upgrade.cost) {
+                if(currency === 'money') money -= upgrade.cost;
+                else goldenBamboo -= upgrade.cost;
+
+
+                if (type !== 'special') {
+                    upgrade.level++;
+                    upgrade.cost = Math.floor(upgrade.cost * upgrade.costMultiplier);
+                }
+                upgrade.action();
+                playSound('upgrade');
+                updateDisplay();
+            } else {
+                showNotification(`Not enough ${currency === 'money' ? 'money' : 'Golden Bamboo'}!`);
+            }
+        }
+
+
+        function updateUpgradeDisplay() {
+            Object.keys(UPGRADES).forEach(key => {
+                const upgrade = UPGRADES[key];
+                const btn = document.getElementById(`upgrade-${key}`);
+                if (btn) {
+                    btn.querySelector('.upgrade-cost').textContent = `$${formatNumber(upgrade.cost)}`;
+                    btn.querySelector('.upgrade-desc').textContent = upgrade.description;
+                    const isDisabled = money < upgrade.cost;
+                    btn.disabled = isDisabled;
+                    btn.classList.toggle('btn-disabled', isDisabled);
+                }
+            });
+            Object.keys(SPECIAL_UPGRADES).forEach(key => {
+                const upgrade = SPECIAL_UPGRADES[key];
+                const btn = document.getElementById(`upgrade-${key}`);
+                if (btn) {
+                    let isDisabled = money < upgrade.cost || (key === 'weatherMachine' && upgrade.cooldownUntil > Date.now());
+                    if (key === 'favoriteTool' && upgrade.purchased) isDisabled = true;
+                    
+                    btn.disabled = isDisabled;
+                    btn.classList.toggle('btn-disabled', isDisabled);
+                    
+                    const span = btn.querySelector('span');
+                    if (key === 'favoriteTool') {
+                        if (upgrade.purchased && !upgrade.applied) span.textContent = 'Apply Tool';
+                        else if (upgrade.applied) span.textContent = 'Applied!';
+                    }
+                    if (key === 'weatherMachine' && upgrade.cooldownUntil > Date.now()) {
+                        const remaining = Math.ceil((upgrade.cooldownUntil - Date.now()) / 1000);
+                        span.textContent = `Cooldown (${formatTime(remaining)})`;
+                    }
+                }
+            });
+            Object.keys(PRESTIGE_UPGRADES).forEach(key => {
+                const upgrade = PRESTIGE_UPGRADES[key];
+                const btn = document.getElementById(`prestige-upgrade-${key}`);
+                if(btn) {
+                    btn.querySelector('.upgrade-cost').textContent = `${upgrade.cost.toLocaleString()} 🎍`;
+                    btn.querySelector('.upgrade-desc').textContent = upgrade.description;
+                    const isDisabled = goldenBamboo < upgrade.cost;
+                    btn.disabled = isDisabled;
+                    btn.classList.toggle('btn-disabled', isDisabled);
+                }
+            });
+        }
+        
+        function renderUpgrades() {
+            upgradesContainer.innerHTML = '';
+            specialUpgradesContainer.innerHTML = '';
+            prestigeUpgradesContainer.innerHTML = '';
+            
+            Object.keys(UPGRADES).forEach(key => {
+                const upgrade = UPGRADES[key];
+                const btn = document.createElement('button');
+                btn.id = `upgrade-${key}`;
+                btn.classList.add('w-full', 'p-3', 'bg-blue-600', 'text-white', 'rounded-lg', 'shadow-lg', 'hover:bg-blue-700', 'transition-colors', 'text-left');
+                btn.onclick = () => buyUpgrade(key, 'normal');
+                btn.innerHTML = `<div class="flex justify-between items-center"><span class="font-bold text-lg">${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</span><span class="upgrade-cost font-semibold bg-blue-800 px-3 py-1 rounded-md">$${formatNumber(upgrade.cost)}</span></div><p class="upgrade-desc text-sm mt-1 text-blue-200">${upgrade.description}</p>`;
+                upgradesContainer.appendChild(btn);
+            });
+            Object.keys(SPECIAL_UPGRADES).forEach(key => {
+                 const upgrade = SPECIAL_UPGRADES[key];
+                 const btn = document.createElement('button');
+                 btn.id = `upgrade-${key}`;
+                 btn.classList.add('w-full', 'p-3', 'bg-yellow-500', 'text-gray-900', 'rounded-lg', 'shadow-lg', 'hover:bg-yellow-600', 'transition-colors', 'text-left');
+                 btn.onclick = () => buyUpgrade(key, 'special');
+                 btn.innerHTML = `<div class="flex justify-between items-center"><span class="font-bold text-lg">${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</span><span class="font-semibold bg-yellow-700 text-white px-3 py-1 rounded-md">$${formatNumber(upgrade.cost)}</span></div><p class="text-sm mt-1 text-yellow-200">${upgrade.description}</p>`;
+                 specialUpgradesContainer.appendChild(btn);
+            });
+             Object.keys(PRESTIGE_UPGRADES).forEach(key => {
+                const upgrade = PRESTIGE_UPGRADES[key];
+                const btn = document.createElement('button');
+                btn.id = `prestige-upgrade-${key}`;
+                btn.classList.add('w-full', 'p-3', 'bg-yellow-800', 'text-white', 'rounded-lg', 'shadow-lg', 'hover:bg-yellow-900', 'transition-colors', 'text-left');
+                btn.onclick = () => buyUpgrade(key, 'prestige');
+                btn.innerHTML = `<div class="flex justify-between items-center"><span class="font-bold text-lg">${key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}</span><span class="upgrade-cost font-semibold bg-yellow-600 px-3 py-1 rounded-md">${upgrade.cost.toLocaleString()} 🎍</span></div><p class="upgrade-desc text-sm mt-1 text-yellow-200">${upgrade.description}</p>`;
+                prestigeUpgradesContainer.appendChild(btn);
+            });
+
+
+            updateUpgradeDisplay();
+        }
+        
+        function handleBaseFluffClick(fluffId) {
+            if (sellMode) {
+                if (fluffId === favoritedFluffId) { showNotification("You cannot sell your favorited fluff!", "error"); return; }
+                sellFluff(fluffId);
+            } else if (applyFavoriteMode) {
+                setFavoriteFluff(fluffId);
+            }
+        }
+
+
+        function sellFluff(fluffId) {
+            const fluffIndex = baseFluffs.findIndex(f => f.id === fluffId);
+            if (fluffIndex === -1) return;
+            const fluffToSell = baseFluffs[fluffIndex];
+            const sellPrice = Math.floor(fluffToSell.cost * sellMultiplier);
+            money += sellPrice;
+            fluffCount--;
+            baseFluffs.splice(fluffIndex, 1);
+            document.querySelector(`.base-fluff-wrapper[data-id="${fluffId}"]`).remove();
+            playSound('sell');
+            showNotification(`Sold ${fluffToSell.name} for $${formatNumber(sellPrice)}`, 'success');
+            calculateMPS();
+        }
+        
+        function setFavoriteFluff(fluffId) {
+            if (favoritedFluffId) {
+                const oldFavoriteEl = document.querySelector(`.base-fluff[data-id="${favoritedFluffId}"]`);
+                if(oldFavoriteEl) oldFavoriteEl.classList.remove('is-favorite');
+            }
+            favoritedFluffId = fluffId;
+            const newFavoriteEl = document.querySelector(`.base-fluff[data-id="${fluffId}"]`);
+            if(newFavoriteEl) newFavoriteEl.classList.add('is-favorite');
+            SPECIAL_UPGRADES.favoriteTool.applied = true;
+            showNotification("Fluff favorited! It is now safe from rebirth.", "success");
+            toggleFavoriteMode(true);
+        }
+
+
+        function addFluffToBase(fluff, rarityData, mutation = null) {
+            if (!discoveredFluffs.has(fluff.name)) {
+                discoveredFluffs.add(fluff.name);
+                calculateSetBonuses();
+                showNotification(`New fluff discovered: ${fluff.name}!`, 'discovery');
+            }
+            gameStats.totalFluffsCollected++;
+            fluffCount++;
+            const fluffId = Date.now() + Math.random();
+            let finalMutation = mutation;
+            if (!finalMutation) {
+                for (const eventId in activeWeathers) {
+                    const weather = activeWeathers[eventId];
+                    if (weather.type === 'mutation' && Math.random() < (weather.chance + mutationChanceBonus)) {
+                        finalMutation = weather.mutation;
+                        break; // Apply the first one that succeeds
+                    }
+                }
+            }
+            const newFluff = { ...fluff, id: fluffId, rarityName: rarityData.rarityName, color: rarityData.color, mutation: finalMutation };
+            
+            if (fluff.name === 'Baby Everything Site Monkey') {
+                newFluff.evolveTime = Date.now() + 10 * 60 * 1000; // 10 minutes
+            }
+
+
+            baseFluffs.push(newFluff);
+            renderSingleFluffInBase(newFluff);
+
+
+            if (fluff.name === 'John Marston') {
+                playSound('johnMarston');
+            } else {
+                playSound('buy');
+            }
+            
+            calculateMPS();
+        }
+
+
+        function renderSingleFluffInBase(fluff) {
+            const wrapper = document.createElement('div');
+            wrapper.classList.add('base-fluff-wrapper');
+            wrapper.dataset.id = fluff.id;
+            const baseFluffContainer = document.createElement('div');
+            baseFluffContainer.classList.add('fluff-body', 'base-fluff', fluff.color);
+            if (fluff.id === favoritedFluffId) { baseFluffContainer.classList.add('is-favorite'); }
+            baseFluffContainer.dataset.id = fluff.id;
+            baseFluffContainer.textContent = '🐼';
+            wrapper.appendChild(baseFluffContainer);
+            if (fluff.mutation) {
+                const mutationEl = document.createElement('div');
+                mutationEl.classList.add('mutation-icon');
+                mutationEl.textContent = MUTATIONS[fluff.mutation].icon;
+                wrapper.appendChild(mutationEl);
+            }
+            baseFluffContainer.addEventListener('mousemove', (e) => showTooltip(e, fluff.id));
+            baseFluffContainer.addEventListener('mouseleave', hideTooltip);
+            baseFluffContainer.addEventListener('click', () => handleBaseFluffClick(fluff.id));
+            baseEl.appendChild(wrapper);
+        }
+
+
+        function renderAllFluffsInBase() {
+            baseEl.innerHTML = '';
+            baseFluffs.forEach(renderSingleFluffInBase);
+        }
+
+
+        function getEffectiveChances() {
+            if (luckBoost <= 1) {
+                return currentChances;
+            }
+
+
+            const boostedChances = JSON.parse(JSON.stringify(currentChances));
+            let totalIncrease = 0;
+            
+            const tiersToBoost = ['secret', 'brainrot', 'countries', 'god', 'og', 'heavenly'];
+
+
+            tiersToBoost.forEach(key => {
+                if (boostedChances[key]) {
+                    const originalChance = boostedChances[key].chance;
+                    const newChance = originalChance * luckBoost;
+                    const increase = newChance - originalChance;
+                    totalIncrease += increase;
+                    boostedChances[key].chance = newChance;
+                }
+            });
+
+
+            boostedChances.common.chance -= totalIncrease;
+            if(boostedChances.common.chance < 0.01) { // Failsafe
+                 boostedChances.common.chance = 0.01;
+            }
+
+
+            return boostedChances;
+        }
+
+
+        function createFluff() {
+            const effectiveChances = getEffectiveChances();
+            const rand = Math.random();
+            let cumulativeChance = 0;
+            let selectedRarityData;
+            let lastRarityKey = 'common';
+
+
+            for (const key in effectiveChances) {
+                if (key === 'hybrid' || key === 'admin' || key === 'fusion') continue;
+                lastRarityKey = key;
+                cumulativeChance += effectiveChances[key].chance;
+                if (rand <= cumulativeChance) { 
+                    selectedRarityData = effectiveChances[key]; 
+                    break; 
+                }
+            }
+
+
+            if (!selectedRarityData) {
+                selectedRarityData = effectiveChances[lastRarityKey];
+            }
+
+
+            const fluffIndex = Math.floor(Math.random() * selectedRarityData.fluffs.length);
+            const selectedFluff = selectedRarityData.fluffs[fluffIndex];
+            spawnSpecificFluffOnBelt(selectedFluff, selectedRarityData);
+        }
+
+
+        function spawnSpecificFluffOnBelt(selectedFluff, selectedRarityData, mutation = null) {
+            const fluffContainer = document.createElement('div');
+            fluffContainer.classList.add('fluff-container');
+            fluffContainer.style.left = '-60px';
+            
+            let mutationInfo = '';
+            if (mutation && MUTATIONS[mutation]) {
+                 mutationInfo = `<div class="mutation-icon" style="position:relative; bottom: 0; right: 0; font-size: 16px;">${MUTATIONS[mutation].icon}</div>`;
+            }
+
+
+            fluffContainer.innerHTML = `<div class="fluff-info">${selectedFluff.name}<br><span class="text-yellow-300 font-bold">$${formatNumber(selectedFluff.cost)}</span></div><div class="fluff-body ${selectedRarityData.color}">🐼${mutationInfo}</div>`;
+            fluffContainer.addEventListener('click', () => {
+                if (fluffCount >= fluffCapacity) { 
+                    showNotification("Your base is full!"); 
+                    return; 
+                }
+                if (money >= selectedFluff.cost || godMode) { 
+                    if(!godMode) money -= selectedFluff.cost; 
+                    addFluffToBase(selectedFluff, selectedRarityData, mutation); 
+                    fluffContainer.remove(); 
+                } else { 
+                    showNotification("Not enough money!"); 
+                }
+            }, { once: true });
+            conveyorBeltEl.appendChild(fluffContainer);
+            animateFluff(fluffContainer);
+        }
+
+
+        function animateFluff(fluffEl) {
+            const duration = (Math.random() * 5000 + 8000) / conveyorSpeed;
+            const startTime = Date.now();
+            const beltWidth = conveyorBeltEl.offsetWidth;
+            
+            let animationFrameId;
+            function frame() {
+                if (isPaused) {
+                    animationFrameId = requestAnimationFrame(frame);
+                    return;
+                }
+                const elapsedTime = Date.now() - startTime;
+                const progress = elapsedTime / duration;
+                const currentPos = -60 + (beltWidth + 120) * progress;
+                if (progress >= 1) { 
+                    fluffEl.remove(); 
+                } else { 
+                    fluffEl.style.left = currentPos + 'px'; 
+                    animationFrameId = requestAnimationFrame(frame);
+                }
+            }
+            animationFrameId = requestAnimationFrame(frame);
+            fluffEl.animationFrameId = animationFrameId;
+        }
+
+
+        function showTooltip(e, fluffId) {
+            if (sellMode || applyFavoriteMode) { hideTooltip(); return; }
+            const fluff = baseFluffs.find(f => f.id === fluffId);
+            if (!fluff) return;
+            let mutationInfo = '';
+            if (fluff.mutation) {
+                const mutation = MUTATIONS[fluff.mutation];
+                mutationInfo = `<div class="text-sm font-semibold ${mutation.color} text-white mt-1 p-1 rounded-md">${mutation.icon} ${mutation.name} (${mutation.multiplier}x)</div>`;
+            }
+            const income = fluff.moneyPerSec * (fluff.mutation ? MUTATIONS[fluff.mutation].multiplier : 1);
+            tooltipEl.innerHTML = `<div class="font-bold text-lg">${fluff.name}</div><div class="text-sm ${fluff.color}" style="color: white; font-weight: 600;">${fluff.rarityName}</div>${mutationInfo}<div class="text-sm text-gray-300 mt-1">Income: $${formatNumber(income)}/sec</div><div class="text-xs text-yellow-400 mt-1">Sell Price: $${formatNumber(Math.floor(fluff.cost * sellMultiplier))}</div>`;
+            tooltipEl.style.display = 'block';
+            tooltipEl.style.left = `${e.pageX + 15}px`;
+            tooltipEl.style.top = `${e.pageY + 15}px`;
+        }
+
+
+        function hideTooltip() { tooltipEl.style.display = 'none'; }
+        
+        function toggleSellMode(forceExit = false) {
+            if (applyFavoriteMode) toggleFavoriteMode(true);
+            if (forceExit) sellMode = true;
+            sellMode = !sellMode;
+            if (sellMode) {
+                sellButton.textContent = 'Cancel Sell';
+                sellButton.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+                sellButton.classList.add('bg-red-500', 'hover:bg-red-600');
+                baseEl.classList.add('sell-mode');
+                hideTooltip();
+            } else {
+                sellButton.textContent = 'Sell Fluff';
+                sellButton.classList.remove('bg-red-500', 'hover:bg-red-600');
+                sellButton.classList.add('bg-blue-500', 'hover:bg-blue-600');
+                baseEl.classList.remove('sell-mode');
+            }
+        }
+
+
+        function toggleFavoriteMode(forceExit = false) {
+            if (sellMode) toggleSellMode(true);
+            if (forceExit) applyFavoriteMode = true;
+            applyFavoriteMode = !applyFavoriteMode;
+            const favButton = document.getElementById('upgrade-favoriteTool');
+            if (applyFavoriteMode) {
+                baseEl.classList.add('favorite-mode');
+                if (favButton) favButton.querySelector('span').textContent = 'Cancel Apply';
+            } else {
+                baseEl.classList.remove('favorite-mode');
+                if (favButton) favButton.querySelector('span').textContent = 'Apply Tool';
+            }
+        }
+
+
+        let phonkLoop, rapLoop;
+        function playBrazilianPhonk() {
+            if (Tone.context.state !== 'running') {
+                Tone.context.resume();
+            }
+            if (!phonkLoop) {
+                const synth = new Tone.MembraneSynth().toDestination();
+                const hihat = new Tone.MetalSynth({
+                    frequency: 200,
+                    envelope: { attack: 0.001, decay: 0.1, release: 0.01 },
+                    harmonicity: 5.1,
+                    modulationIndex: 32,
+                    resonance: 4000,
+                    octaves: 1.5
+                }).toDestination();
+                hihat.volume.value = -20;
+
+
+                phonkLoop = new Tone.Sequence((time, note) => {
+                    if (note.startsWith('C')) {
+                        synth.triggerAttackRelease(note, "8n", time);
+                    } else {
+                        hihat.triggerAttackRelease("C4", "16n", time);
+                    }
+                }, ["C2", "h", "C2", ["h", "h"], "C2", "h", "C2", "h"], "4n");
+                phonkLoop.loop = true;
+                Tone.Transport.start();
+            }
+            phonkLoop.start(0);
+        }
+
+
+        function stopBrazilianPhonk() {
+            if (phonkLoop) {
+                phonkLoop.stop(0);
+            }
+        }
+
+
+        function playRapBeat() {
+            if (Tone.context.state !== 'running') {
+                Tone.context.resume();
+            }
+            if (!rapLoop) {
+                const kick = new Tone.MembraneSynth({ octaves: 4, pitchDecay: 0.1 }).toDestination();
+                const snare = new Tone.NoiseSynth({ noise: { type: 'white' }, envelope: { attack: 0.001, decay: 0.2, sustain: 0 } }).toDestination();
+                const hihat = new Tone.MetalSynth({ frequency: 250, envelope: { attack: 0.001, decay: 0.05, release: 0.01 }, harmonicity: 5.1, modulationIndex: 10, resonance: 4000, octaves: 1.5 }).toDestination();
+                hihat.volume.value = -15;
+
+
+                rapLoop = new Tone.Sequence((time, note) => {
+                    if (note === 'C1') kick.triggerAttackRelease(note, '8n', time);
+                    if (note === 'S') snare.triggerAttackRelease('4n', time);
+                    if (note === 'H') hihat.triggerAttackRelease('16n', time);
+                }, [
+                    ['C1', 'H'], 'H', ['S', 'H'], 'H', 
+                    'C1', 'H', ['S', 'H'], 'H',
+                    ['C1', 'H'], 'H', ['S', 'H'], 'H', 
+                    'C1', 'H', 'S', 'H'
+                ], '8n');
+                rapLoop.loop = true;
+                Tone.Transport.start();
+            }
+            rapLoop.start(0);
+        }
+
+
+        function stopRapBeat() {
+            if (rapLoop) {
+                rapLoop.stop(0);
+            }
+        }
+
+
+
+
+        function startWeatherEvent(forcedEvent = null) {
+            let event = forcedEvent;
+            if (!event) {
+                const publicEvents = WEATHER_EVENTS.filter(e => !e.adminOnly);
+                const eligibleEvents = publicEvents.filter(e => e.rarity ? Math.random() < e.rarity : true);
+                if (eligibleEvents.length > 0) {
+                    event = eligibleEvents[Math.floor(Math.random() * eligibleEvents.length)];
+                }
+            }
+
+
+            if (!event) return;
+
+
+            const eventId = `weather_${Date.now()}_${Math.random()}`;
+            activeWeathers[eventId] = event;
+
+
+            if (event.name === 'Brazilian Phonk') playBrazilianPhonk();
+            if (event.name === 'Steal A Fluff Rap') playRapBeat();
+            
+
+
+            weatherBanner.textContent = event.message;
+            weatherBanner.className = `visible ${event.color}`;
+
+
+            setTimeout(() => {
+                if(event.name === 'Brazilian Phonk') stopBrazilianPhonk();
+                if (event.name === 'Steal A Fluff Rap') stopRapBeat();
+
+
+                delete activeWeathers[eventId];
+                const remainingEvents = Object.values(activeWeathers);
+                if (remainingEvents.length > 0) {
+                    const lastEvent = remainingEvents[remainingEvents.length - 1];
+                    weatherBanner.textContent = lastEvent.message;
+                    weatherBanner.className = `visible ${lastEvent.color}`;
+                } else {
+                    weatherBanner.classList.remove('visible');
+                }
+            }, event.duration);
+        }
+
+
+        function weatherLoop() {
+            const nextEventTime = Math.random() * 60000 + 30000; // 30-90 seconds
+            setTimeout(() => {
+                if (!isPaused && document.visibilityState === 'visible' && !isEventActive) {
+                    startWeatherEvent();
+                }
+                weatherLoop();
+            }, nextEventTime);
+        }
+
+
+        function formatTime(seconds) {
+            const h = Math.floor(seconds / 3600);
+            const m = Math.floor((seconds % 3600) / 60);
+            const s = Math.floor(seconds % 60);
+            return [
+                h > 0 ? `${h}h` : '',
+                m > 0 ? `${m}m` : '',
+                s > 0 ? `${s}s` : ''
+            ].filter(Boolean).join(' ') || '0s';
+        }
+        
+        let synth, johnMarstonSound;
+        function playSound(type) {
+             if (!synth) {
+                const johnMarstonBase64 = `data:audio/mp3;base64,SUQzBAAAAAAAI1RTU0UAAAAPAAADTGF2ZjYxLjEuMTAwAAAAAAAAAAAAAAD//tAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAExhdmM2MS4zLgAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgCEhMAAAG0A2tAQis/lAAGx/8A31y4bu2v//8lAAAAFBADAAAFESQfgPOl/+n/75/7//9//+MAAAGyl4AAB6wIAAAnwAAAAEAAABVAwAAADk6VKwJg5BCHIAAAAAABVTEFNRTMuMTAwVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV-`;
+                 synth = new Tone.Synth().toDestination();
+                 johnMarstonSound = new Tone.Player(johnMarstonBase64).toDestination();
+             }
+             if (Tone.context.state !== 'running') {
+                 Tone.context.resume();
+             }
+             try {
+                 if (type === 'buy') synth.triggerAttackRelease("C4", "8n");
+                 else if (type === 'sell') synth.triggerAttackRelease("A3", "8n");
+                 else if (type === 'upgrade') synth.triggerAttackRelease("E4", "8n");
+                 else if (type === 'notification') synth.triggerAttackRelease("G4", "8n");
+                 else if (type === 'johnMarston') johnMarstonSound.start();
+             } catch(e) {
+                 console.warn("Could not play sound", e);
+             }
+        }
+
+
+        function gameLoop() {
+            if (isPaused) return;
+            const multiplier = rebirthMultiplier * setBonusMultiplier;
+            const moneyEarned = moneyPerSecond * multiplier;
+            money += moneyEarned;
+            gameStats.totalMoneyEarned += moneyEarned;
+            gameStats.timePlayed++;
+            updateDisplay();
+            checkAchievements();
+        }
+
+
+        function spawnLoop() {
+            if (!isPaused && document.visibilityState === 'visible') { createFluff(); }
+            const spawnRate = (Math.random() * 2000 + 800) / (conveyorSpeed / 2);
+            setTimeout(spawnLoop, spawnRate);
+        }
+        
+        function calculateSetBonuses() {
+            let newMultiplier = 1;
+            for (const key in FLUFF_SETS) {
+                const set = FLUFF_SETS[key];
+                const hasAll = set.fluffs.every(fluffName => discoveredFluffs.has(fluffName));
+                if (hasAll) {
+                    newMultiplier *= set.bonus;
+                }
+            }
+            setBonusMultiplier = newMultiplier;
+        }
+
+
+        function checkWeekendEvent() {
+            const day = new Date().getDay(); // 0 = Sunday, 5 = Friday, 6 = Saturday
+            if (day === 5 || day === 6 || day === 0) {
+                activeWeekendEvent = 'doubleBamboo';
+                weatherBanner.textContent = 'WEEKEND EVENT: Double Golden Bamboo on all rebirths!';
+                weatherBanner.className = 'visible bg-gradient-to-r from-yellow-400 to-yellow-600';
+            }
+        }
+        
+        function triggerFireworks() {
+            for (let i = 0; i < 20; i++) {
+                const fw = document.createElement('div');
+                fw.className = 'firework';
+                fw.style.left = `${Math.random() * 100}vw`;
+                fw.style.top = `${Math.random() * 100}vh`;
+                fw.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                fireworksContainer.appendChild(fw);
+                setTimeout(() => fw.remove(), 700);
+            }
+        }
+        
+        function showPasswordModal() {
+            if (modalContainer.innerHTML !== '') return;
+
+
+            modalContainer.innerHTML = `
+                <div class="modal-backdrop">
+                    <div class="modal-content text-white">
+                        <h3 class="text-2xl font-bold mb-4 text-center">Admin Access</h3>
+                        <p class="mb-2 text-center">Enter the password to access admin commands.</p>
+                        <input type="password" id="admin-password-input" class="w-full p-2 bg-gray-800 border border-gray-600 rounded-md text-sm text-white" placeholder="Password...">
+                        <div class="flex justify-end gap-4 mt-4">
+                            <button id="confirm-password-btn" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-md">Login</button>
+                            <button id="close-modal-btn" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-md">Close</button>
+                        </div>
+                    </div>
+                </div>`;
+
+
+            document.getElementById('close-modal-btn').onclick = () => modalContainer.innerHTML = '';
+            
+            const passwordInput = document.getElementById('admin-password-input');
+            
+            document.getElementById('confirm-password-btn').onclick = () => {
+                if (passwordInput.value === 'Kingfluff12345') {
+                    modalContainer.innerHTML = '';
+                    showAdminPanel();
+                } else {
+                    showNotification("Incorrect password.", "error");
+                    passwordInput.value = '';
+                }
+            };
+
+
+            passwordInput.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    document.getElementById('confirm-password-btn').click();
+                }
+            });
+        }
+
+
+        function showAdminPanel() {
+            modalContainer.innerHTML = `
+                <div class="modal-backdrop">
+                    <div class="modal-content text-white">
+                        <h3 class="text-2xl font-bold mb-4 text-center">Admin Panel</h3>
+                        <p class="mb-2 text-sm text-gray-400">Commands: /spawn, /give money, /give fluff, /set capacity, /set upgrade, /weather, /test</p>
+                        <p class="mb-2 text-sm text-red-400">Anarchy: /godmode, /nuke, /set luck, /allfluffs</p>
+                        <input type="text" id="admin-command-input" class="w-full p-2 bg-gray-800 border border-gray-600 rounded-md text-sm text-white" placeholder="/spawn john_marston">
+                        <div class="flex justify-end gap-4 mt-4">
+                            <button id="execute-command-btn" class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded-md">Execute</button>
+                            <button id="close-modal-btn" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-md">Close</button>
+                        </div>
+                    </div>
+                </div>`;
+            
+            document.getElementById('close-modal-btn').onclick = () => modalContainer.innerHTML = '';
+
+
+            const commandInput = document.getElementById('admin-command-input');
+
+
+            document.getElementById('execute-command-btn').onclick = () => {
+                const command = commandInput.value.trim();
+                if (command) {
+                    handleAdminCommand(command);
+                    commandInput.value = '';
+                }
+            };
+            
+            commandInput.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    document.getElementById('execute-command-btn').click();
+                }
+            });
+        }
+
+
+        function handleAdminCommand(commandString) {
+            if (!commandString.startsWith('/')) {
+                showNotification("Invalid command format. Must start with '/'.", "error");
+                return;
+            }
+
+
+            const parts = commandString.slice(1).split(' ');
+            const command = parts[0].toLowerCase();
+            const args = parts.slice(1);
+
+
+            switch (command) {
+                case 'spawn': {
+                    if (args.length === 0) {
+                        showNotification("Usage: /spawn [fluff_name] {mutation_name}", "error");
+                        return;
+                    }
+                    const mutationName = MUTATIONS[args[args.length - 1]] ? args.pop() : null;
+                    const fluffNameQuery = args.join(' ').replace(/_/g, ' ').toLowerCase();
+                    
+                    for (const rarityKey in FLUFF_TYPES) {
+                        const rarityData = FLUFF_TYPES[rarityKey];
+                        const foundFluff = rarityData.fluffs.find(f => f.name.toLowerCase() === fluffNameQuery);
+                        if (foundFluff) {
+                            spawnSpecificFluffOnBelt(foundFluff, rarityData, mutationName);
+                            showNotification(`Spawning 1x ${mutationName ? MUTATIONS[mutationName].name : ''} ${foundFluff.name} on the belt.`, "success");
+                            return;
+                        }
+                    }
+                    showNotification(`Fluff '${fluffNameQuery}' not found.`, "error");
+                    break;
+                }
+
+
+                case 'give': {
+                    if (args.length < 2) {
+                        showNotification("Usage: /give [money|fluff] [amount|fluff_name] {mutation_name}", "error");
+                        return;
+                    }
+
+
+                    const giveType = args[0].toLowerCase();
+                    const giveArgs = args.slice(1);
+
+
+                    if (giveType === 'money') {
+                        const moneyAmount = parseInt(giveArgs[0]);
+                        if (isNaN(moneyAmount)) {
+                            showNotification("Invalid amount specified.", "error"); return;
+                        }
+                        money += moneyAmount;
+                        showNotification(`Gave $${formatNumber(moneyAmount)}`, "success");
+                        updateDisplay();
+                    } else if (giveType === 'fluff') {
+                        if (fluffCount >= fluffCapacity) {
+                            showNotification("Your base is full!", "error"); return;
+                        }
+                        const mutationName = MUTATIONS[giveArgs[giveArgs.length - 1]] ? giveArgs.pop() : null;
+                        const fluffToGiveName = giveArgs.join(' ').replace(/_/g, ' ').toLowerCase();
+                        
+                        for (const rarityKey in FLUFF_TYPES) {
+                            const rarityData = FLUFF_TYPES[rarityKey];
+                            const foundFluff = rarityData.fluffs.find(f => f.name.toLowerCase() === fluffToGiveName);
+                            if (foundFluff) {
+                                addFluffToBase(foundFluff, rarityData, mutationName);
+                                showNotification(`Gave 1x ${mutationName ? MUTATIONS[mutationName].name : ''} ${foundFluff.name}`, "success");
+                                return;
+                            }
+                        }
+                        showNotification(`Fluff '${fluffToGiveName}' not found.`, "error");
+                    } else {
+                        showNotification("Usage: /give [money|fluff] [amount|fluff_name]", "error");
+                    }
+                    break;
+                }
+                    
+                case 'set': {
+                     if (args.length < 2) {
+                         showNotification("Usage: /set [capacity|upgrade|luck] ...", "error"); return;
+                     }
+                     const setType = args[0].toLowerCase();
+                     if (setType === 'capacity') {
+                         const capacityAmount = parseInt(args[1]);
+                        if (isNaN(capacityAmount)) {
+                            showNotification("Invalid amount specified.", "error"); return;
+                        }
+                        fluffCapacity = capacityAmount;
+                        showNotification(`Base capacity set to ${capacityAmount}`, "success");
+                        updateDisplay();
+                     } else if (setType === 'upgrade') {
+                         if (args.length < 4 || args[2].toLowerCase() !== 'lvl') {
+                             showNotification("Usage: /set upgrade [upgrade_name] lvl [level]", "error"); return;
+                         }
+                         const upgradeName = args[1];
+                         const level = parseInt(args[3]);
+                         if (isNaN(level) || !UPGRADES[upgradeName]) {
+                             showNotification("Invalid upgrade name or level.", "error"); return;
+                         }
+                         
+                         const upgrade = UPGRADES[upgradeName];
+                         while(upgrade.level < level) {
+                             upgrade.action();
+                             upgrade.level++;
+                         }
+                         showNotification(`${upgradeName} set to level ${level}.`, "success");
+                         renderUpgrades();
+                         updateDisplay();
+                     } else if (setType === 'luck') {
+                         const luckMultiplier = parseFloat(args[1]);
+                         if (isNaN(luckMultiplier) || luckMultiplier < 1) {
+                             showNotification("Invalid multiplier. Must be 1 or greater.", "error"); return;
+                         }
+                         luckBoost = luckMultiplier;
+                         showNotification(`Luck multiplier set to ${luckMultiplier}x.`, "success");
+                     }
+                     break;
+                }
+                case 'weather': {
+                    if (args.length < 1) {
+                        showNotification("Usage: /weather [event_name] {duration}s", "error"); return;
+                    }
+                    const eventName = args[0].replace(/_/g, ' ');
+                    const durationArg = args[1] ? parseInt(args[1].replace('s', '')) : null;
+                    
+                    const event = WEATHER_EVENTS.find(e => e.name.toLowerCase() === eventName.toLowerCase());
+                    if (event) {
+                        let finalEvent = {...event};
+                        if (durationArg && !isNaN(durationArg)) {
+                            finalEvent.duration = durationArg * 1000;
+                        }
+                        startWeatherEvent(finalEvent);
+                        showNotification(`Started weather event: ${finalEvent.name} for ${finalEvent.duration/1000}s.`, "success");
+                    } else {
+                        showNotification(`Weather event '${eventName}' not found.`, "error");
+                    }
+                    break;
+                }
+                case 'godmode':
+                    const mode = args[0].toLowerCase();
+                    if(mode === 'on') {
+                        godMode = true;
+                        showNotification("God mode enabled. All fluffs are free!", "success");
+                    } else if (mode === 'off') {
+                        godMode = false;
+                        showNotification("God mode disabled.", "success");
+                    } else {
+                        showNotification("Usage: /godmode [on|off]", "error");
+                    }
+                    break;
+                case 'nuke':
+                    baseFluffs = [];
+                    fluffCount = 0;
+                    renderAllFluffsInBase();
+                    calculateMPS();
+                    showNotification("All fluffs in your base have been nuked.", "success");
+                    break;
+                case 'allfluffs':
+                    for (const rarityKey in FLUFF_TYPES) {
+                        FLUFF_TYPES[rarityKey].fluffs.forEach(fluff => discoveredFluffs.add(fluff.name));
+                    }
+                    calculateSetBonuses();
+                    showNotification("All fluffs discovered!", "success");
+                    break;
+                case 'test': {
+                    const testType = args.join(' ').toLowerCase();
+                    if (testType === 'admin abuse') {
+                        isEventActive = true;
+                        eventBanner.textContent = "SPECIAL EVENT ACTIVE!";
+                        eventBanner.style.display = 'block';
+                        startFunFridayEventSequence();
+                    } else if (testType === 'friend group') {
+                        isEventActive = true;
+                        eventBanner.textContent = "Friend Group Admin Abuse!";
+                        eventBanner.style.display = 'block';
+                        startFriendGroupEventSequence();
+                    } else if (testType === 'gavin admin abuse') {
+                        isEventActive = true;
+                        eventBanner.textContent = "Gavin Admin Abuse!";
+                        eventBanner.style.display = 'block';
+                        startGavinJayceCoHostSequence();
+                    } else {
+                        showNotification("Unknown test command. Use 'admin abuse', 'friend group', or 'gavin admin abuse'", "error");
+                    }
+                    break;
+                }
+
+
+                default:
+                    showNotification(`Unknown command: ${command}`, "error");
+                    break;
+            }
+        }
+
+
+        function showBlackMarketModal() {
+            const cost = 1000000 * (rebirths + 1);
+            modalContainer.innerHTML = `<div class="modal-backdrop"><div class="modal-content text-white"><h3 class="text-2xl font-bold mb-4 text-center">Black Market</h3><p class="mb-4 text-center">For a price, I can get you a special, mutated fluff. Interested?</p><button id="buy-mutated-fluff" class="w-full p-3 bg-red-600 hover:bg-red-700 rounded-md">Buy Random Mutated Fluff ($${formatNumber(cost)})</button><div class="flex justify-end mt-4"><button id="close-modal-btn" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-md">Leave</button></div></div></div>`;
+            document.getElementById('close-modal-btn').onclick = () => modalContainer.innerHTML = '';
+            document.getElementById('buy-mutated-fluff').onclick = () => {
+                if (money >= cost) {
+                    if (fluffCount >= fluffCapacity) {
+                        showNotification("Your base is full!", "error");
+                        return;
+                    }
+                    money -= cost;
+                    const allFluffs = Object.values(FLUFF_TYPES).flatMap(r => r.fluffs.map(f => ({...f, rarityName: r.rarityName, color: r.color})));
+                    const randomFluff = allFluffs[Math.floor(Math.random() * allFluffs.length)];
+                    const randomMutationKey = Object.keys(MUTATIONS)[Math.floor(Math.random() * Object.keys(MUTATIONS).length)];
+                    
+                    addFluffToBase(randomFluff, {rarityName: randomFluff.rarityName, color: randomFluff.color}, randomMutationKey);
+                    showNotification(`You bought a ${MUTATIONS[randomMutationKey].name} ${randomFluff.name}!`, 'success');
+                    modalContainer.innerHTML = '';
+                } else {
+                    showNotification("You can't afford that!", "error");
+                }
+            };
+        }
+
+
+        function blackMarketLoop() {
+            const nextAppearance = Math.random() * (15 * 60000) + (5 * 60000); // 5-20 mins
+            setTimeout(() => {
+                const bmButton = document.createElement('button');
+                bmButton.id = 'black-market-button';
+                bmButton.className = 'px-4 py-2 bg-black hover:bg-gray-800 text-white font-semibold rounded-lg shadow-md transition-colors border-2 border-red-500';
+                bmButton.textContent = 'Black Market';
+                bmButton.onclick = showBlackMarketModal;
+                settingsBar.appendChild(bmButton);
+
+
+                setTimeout(() => {
+                    bmButton.remove();
+                    blackMarketLoop();
+                }, 120000); // Stays for 2 minutes
+            }, nextAppearance);
+        }
+
+
+        function showFusionModal() {
+            let contentHTML = '<div class="space-y-4 max-h-80 overflow-y-auto pr-2">';
+            const ownedCounts = baseFluffs.reduce((acc, fluff) => {
+                if (!fluff.mutation) { // Fusions only use non-mutated fluffs
+                    acc[fluff.name] = (acc[fluff.name] || 0) + 1;
+                }
+                return acc;
+            }, {});
+
+
+            // Display standard fusion recipes
+            for(const recipeKey in FUSION_RECIPES) {
+                const recipe = FUSION_RECIPES[recipeKey];
+                let canFuse = true;
+                let ingredientsHTML = '';
+
+
+                for (const ingredientName in recipe.ingredients) {
+                    const requiredCount = recipe.ingredients[ingredientName];
+                    const ownedCount = ownedCounts[ingredientName] || 0;
+                    if (ownedCount < requiredCount) {
+                        canFuse = false;
+                    }
+                    ingredientsHTML += `<p class="text-sm">${ingredientName}: ${ownedCount} / ${requiredCount}</p>`;
+                }
+                
+                contentHTML += `
+                    <div class="p-3 bg-gray-800 rounded-lg border-2 ${canFuse ? 'border-pink-500' : 'border-gray-600'}">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-bold text-lg text-pink-300">${recipe.result}</p>
+                                <div class="text-gray-400">${ingredientsHTML}</div>
+                            </div>
+                            <button class="px-4 py-2 text-sm font-semibold rounded-md ${canFuse ? 'bg-pink-600 hover:bg-pink-700' : 'bg-gray-600 cursor-not-allowed'}" ${!canFuse ? 'disabled' : ''} onclick="fuseFluffs('${recipeKey}')">
+                                Fuse
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+
+            // Display 3-of-a-kind combination recipes
+            contentHTML += '<h4 class="text-lg font-bold text-indigo-300 pt-2 border-t border-gray-600">Hybrid Combinations (3 of a kind)</h4>';
+            const combinedFluffs = {};
+
+
+            baseFluffs.forEach(fluff => {
+                if(fluff.mutation || combinedFluffs[fluff.name] || fluff.rarityName === 'Hybrid' || fluff.rarityName === 'Fusion') return;
+                
+                const count = ownedCounts[fluff.name] || 0;
+                if(count >= 3) {
+                    combinedFluffs[fluff.name] = true; // Prevent duplicates
+                    const canCombine = true; // We already know count is >= 3
+                    const hybridResult = FLUFF_TYPES.hybrid.fluffs.find(f => f.name.startsWith(fluff.rarityName));
+
+
+                    if (hybridResult) {
+                        contentHTML += `
+                        <div class="p-3 bg-gray-800 rounded-lg border-2 ${canCombine ? 'border-indigo-500' : 'border-gray-600'}">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="font-bold text-lg text-indigo-300">Combine for ${hybridResult.name}</p>
+                                    <div class="text-gray-400"><p class="text-sm">${fluff.name}: ${count} / 3</p></div>
+                                </div>
+                                <button class="px-4 py-2 text-sm font-semibold rounded-md ${canCombine ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-gray-600 cursor-not-allowed'}" onclick="fuseFluffs('COMBINE_${fluff.name}')">
+                                    Combine
+                                </button>
+                            </div>
+                        </div>
+                        `;
+                    }
+                }
+            });
+
+
+
+
+            contentHTML += '</div>';
+
+
+            modalContainer.innerHTML = `
+                <div class="modal-backdrop">
+                    <div class="modal-content text-white">
+                        <h3 class="text-2xl font-bold mb-4 text-center">Fusion & Combination</h3>
+                        <p class="text-center text-sm mb-4 text-gray-300">Fuse specific combinations or combine 3 of the same fluff to create powerful new ones!</p>
+                        ${contentHTML}
+                        <div class="flex justify-end mt-4">
+                            <button id="close-modal-btn" class="px-4 py-2 bg-gray-600 hover:bg-gray-700 rounded-md">Close</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('close-modal-btn').onclick = () => modalContainer.innerHTML = '';
+        }
+        
+        function fuseFluffs(recipeKey) {
+            // Handle 3-of-a-kind combinations
+            if (recipeKey.startsWith('COMBINE_')) {
+                const fluffNameToCombine = recipeKey.replace('COMBINE_', '');
+                
+                let originalFluffRarityName = '';
+                for(const key in FLUFF_TYPES) {
+                    if(FLUFF_TYPES[key].fluffs.some(f => f.name === fluffNameToCombine)) {
+                        originalFluffRarityName = FLUFF_TYPES[key].rarityName;
+                        break;
+                    }
+                }
+                
+                if (!originalFluffRarityName) {
+                    showNotification("Could not find original fluff to combine.", "error");
+                    return;
+                }
+
+
+                const indicesToRemove = [];
+                baseFluffs.forEach((fluff, index) => {
+                    if (indicesToRemove.length < 3 && fluff.name === fluffNameToCombine && !fluff.mutation) {
+                        indicesToRemove.push(index);
+                    }
+                });
+
+
+                if (indicesToRemove.length < 3) {
+                    showNotification("You no longer have enough fluffs to combine.", "error");
+                    showFusionModal();
+                    return;
+                }
+                
+                if (fluffCount >= fluffCapacity) {
+                    showNotification("Your base is full! Make space before combining.", "error");
+                    return;
+                }
+
+
+                for (let i = indicesToRemove.length - 1; i >= 0; i--) {
+                    baseFluffs.splice(indicesToRemove[i], 1);
+                }
+                fluffCount -= 3;
+                
+                const hybridRarityData = FLUFF_TYPES.hybrid;
+                const hybridFluff = hybridRarityData.fluffs.find(f => f.name === `${originalFluffRarityName} Hybrid Fluff`);
+
+
+                if (hybridFluff) {
+                    addFluffToBase(hybridFluff, hybridRarityData);
+                    showNotification(`Successfully combined into a ${hybridFluff.name}!`, 'success');
+                } else {
+                     showNotification(`No hybrid combination found for ${originalFluffRarityName}.`, 'error');
+                }
+
+
+                renderAllFluffsInBase();
+                calculateMPS();
+                showFusionModal();
+                return;
+            }
+
+
+
+
+            // Handle standard fusion recipes
+            const recipe = FUSION_RECIPES[recipeKey];
+            if (!recipe) return;
+
+
+            // Double check ingredients
+            const ownedCounts = baseFluffs.reduce((acc, fluff) => {
+                if (!fluff.mutation) {
+                    acc[fluff.name] = (acc[fluff.name] || 0) + 1;
+                }
+                return acc;
+            }, {});
+            
+            let canFuse = true;
+            for (const ingredientName in recipe.ingredients) {
+                if ((ownedCounts[ingredientName] || 0) < recipe.ingredients[ingredientName]) {
+                    canFuse = false;
+                    break;
+                }
+            }
+
+
+            if (!canFuse) {
+                showNotification("You no longer have the required fluffs!", "error");
+                showFusionModal(); // Refresh modal
+                return;
+            }
+
+
+            const spaceNeeded = Object.values(recipe.ingredients).reduce((sum, count) => sum + count, 0) - 1;
+            if (fluffCount - spaceNeeded > fluffCapacity) {
+                 showNotification("Your base is full! Make space before fusing.", "error");
+                 return;
+            }
+
+
+            // Consume ingredients
+            for (const ingredientName in recipe.ingredients) {
+                let requiredCount = recipe.ingredients[ingredientName];
+                for (let i = baseFluffs.length - 1; i >= 0 && requiredCount > 0; i--) {
+                    const fluff = baseFluffs[i];
+                    if (fluff.name === ingredientName && !fluff.mutation) {
+                        baseFluffs.splice(i, 1);
+                        fluffCount--;
+                        requiredCount--;
+                    }
+                }
+            }
+            
+            // Add fused fluff
+            const fusionRarityData = FLUFF_TYPES.fusion;
+            const resultFluff = fusionRarityData.fluffs.find(f => f.name === recipe.result);
+            if (resultFluff) {
+                addFluffToBase(resultFluff, fusionRarityData);
+                showNotification(`Fusion Successful! Created ${resultFluff.name}!`, 'success');
+            }
+
+
+            renderAllFluffsInBase();
+            calculateMPS();
+            showFusionModal(); // Refresh the modal
+        }
+
+
+        function checkDailyLogin() {
+            const today = new Date().toISOString().split('T')[0];
+            if (lastLoginDate === today) {
+                return; // Already logged in today
+            }
+
+
+            const yesterday = new Date(Date.now() - 86400000).toISOString().split('T')[0];
+            if (lastLoginDate === yesterday) {
+                loginStreak++;
+            } else {
+                loginStreak = 1; // Streak reset
+            }
+
+
+            lastLoginDate = today;
+            const reward = 10000 * loginStreak;
+            money += reward;
+            
+            showDailyLoginModal(loginStreak, reward);
+        }
+
+
+        function showDailyLoginModal(streak, reward) {
+            modalContainer.innerHTML = `
+                <div class="modal-backdrop">
+                    <div class="modal-content text-white text-center">
+                        <h3 class="text-2xl font-bold mb-2">Daily Login Bonus!</h3>
+                        <p class="text-lg mb-4">Welcome back!</p>
+                        <p class="mb-2">Your login streak: <span class="font-bold text-yellow-300">${streak} day(s)</span></p>
+                        <p class="mb-4">You've been awarded: <span class="font-bold text-green-400">$${formatNumber(reward)}</span></p>
+                        <button id="close-modal-btn" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-md">Awesome!</button>
+                    </div>
+                </div>`;
+            document.getElementById('close-modal-btn').onclick = () => {
+                modalContainer.innerHTML = '';
+                updateDisplay();
+            };
+        }
+        
+        function startFunFridayEventSequence() {
+            if(eventSequenceRunning) return;
+            eventSequenceRunning = true;
+            
+            setTimeout(() => showNotification("Jayce: YOOO are you ready to rumble for the admin abuse", "success"), 1000);
+            
+            setTimeout(() => {
+                luckBoost = 6;
+                showNotification("Jayce: There you go I also got the dev John S here and Me 🤑", "success");
+            }, 20000);
+
+
+            setTimeout(() => showNotification("Admin: Should I spawn an enderman?????", "discovery"), 25000);
+
+
+            setTimeout(() => {
+                const enderman = FLUFF_TYPES.secret.fluffs.find(f => f.name === 'Enderman');
+                if (enderman) spawnSpecificFluffOnBelt(enderman, FLUFF_TYPES.secret, 'shocked');
+                showNotification("Jayce: TOO LATE 🤑", "success");
+            }, 27000);
+
+
+            setTimeout(() => {
+                const jayceRain = WEATHER_EVENTS.find(e => e.name === 'Jayce Rain');
+                if (jayceRain) startWeatherEvent(jayceRain);
+                
+                const goodWeathers = WEATHER_EVENTS.filter(e => e.mutation && MUTATIONS[e.mutation].multiplier >= 20);
+                for(let i=0; i<3; i++) {
+                    setTimeout(() => {
+                        startWeatherEvent(goodWeathers[Math.floor(Math.random() * goodWeathers.length)]);
+                    }, (i + 1) * 60000);
+                }
+
+
+                showNotification("Jayce: YOU THOUGHT I WAS DONE NAH JOHN THOUGHT I WAS TOO", "success");
+            }, 40000);
+
+
+            setTimeout(() => showNotification("Jayce: Should I spawn one of the new country type????", "discovery"), 60000);
+
+
+            setTimeout(() => {
+                const usaFluff = FLUFF_TYPES.countries.fluffs.find(f => f.name === 'USA');
+                if (usaFluff) spawnSpecificFluffOnBelt(usaFluff, FLUFF_TYPES.countries, 'lightningmcqueenzap');
+                showNotification("Jayce: WHAT IS A KILOMETER 🤑", "success");
+            }, 70000);
+            
+            setTimeout(() => showNotification("Admin: Should I give new players some money??", "discovery"), 90000);
+
+
+            setTimeout(() => {
+                money += 10000000;
+                showNotification("10,000,000 has been added to your balance!", "success");
+            }, 100000);
+            
+            setTimeout(() => showNotification("John S: GUYS I GOT JAYCE TO LEAVE THE ROOM SHOULD I SPAWN THE BEST SECRET? DAN TOLD ME TOO SAME THING WITH🤑", "discovery"), 130000);
+
+
+            setTimeout(() => {
+                const enderman = FLUFF_TYPES.secret.fluffs.find(f => f.name === 'Enderman');
+                if (enderman) {
+                    for(let i=0; i<5; i++) {
+                        if (fluffCount < fluffCapacity) spawnSpecificFluffOnBelt(enderman, FLUFF_TYPES.secret, 'loager');
+                    }
+                }
+                showNotification("Jayce: HEY JOHN GET OFF MY PC THATS IT ADMIN ABUSE OVER", "error");
+            }, 140000);
+        }
+
+
+        function startFriendGroupEventSequence() {
+            if(eventSequenceRunning) return;
+            eventSequenceRunning = true;
+
+
+            setTimeout(() => showNotification("Jayce: Is the friend group ready??? because I am", "success"), 3000);
+            setTimeout(() => showNotification("Jayce: Hey Dake what should I do?", "success"), 6000);
+            setTimeout(() => showNotification("Dake: spawn 10 Jerrymrchuckles", "discovery"), 11000);
+            
+            setTimeout(() => {
+                const jerry = FLUFF_TYPES.secret.fluffs.find(f => f.name === 'JerryMrChuckles');
+                if (jerry) {
+                    for (let i = 0; i < 10; i++) {
+                        if (fluffCount < fluffCapacity) addFluffToBase(jerry, FLUFF_TYPES.secret);
+                    }
+                }
+            }, 14000);
+            
+            setTimeout(() => showNotification("Jayce: MONEY!!!!! oh yeah guys do I do a 40x weather???", "success"), 16000);
+
+
+            setTimeout(() => {
+                const wormholeSigma = WEATHER_EVENTS.find(e => e.name === 'Wormhole Sigma');
+                if (wormholeSigma) {
+                    let event = {...wormholeSigma, duration: 300000}; // 5 minutes
+                     startWeatherEvent(event);
+                }
+            }, 19000);
+
+
+            setTimeout(() => showNotification("Jayce: Hey kegler do I spawn well kegler", "success"), 24000);
+            
+            setTimeout(() => {
+                const kegler = FLUFF_TYPES.admin.fluffs.find(f => f.name === 'Kegler');
+                if (kegler && fluffCount < fluffCapacity) addFluffToBase(kegler, FLUFF_TYPES.admin);
+            }, 26000);
+
+
+            setTimeout(() => showNotification("Jayce: YEAH THATS WHAT I AM SAYING", "success"), 27000);
+            setTimeout(() => showNotification("Gavin: You know what Jayce I am done with you I am spawning the new Baby Everything Site Monkey", "discovery"), 31000);
+
+
+            setTimeout(() => {
+                const babyMonkey = FLUFF_TYPES.admin.fluffs.find(f => f.name === 'Baby Everything Site Monkey');
+                if (babyMonkey && fluffCount < fluffCapacity) addFluffToBase(babyMonkey, FLUFF_TYPES.admin);
+            }, 36000);
+
+
+            setTimeout(() => showNotification("Jayce: btw after 10 mins of having the baby everything site monkey it has a 1% chance to turn into the second best in the game", "success"), 38000);
+            setTimeout(() => showNotification("Dake: yooo you should spawn like loager from gra...", "discovery"), 41000);
+            setTimeout(() => showNotification("Gavin: NOO IT IS MY GUY YOU LOAGER", "discovery"), 41000);
+            setTimeout(() => showNotification("Dake: NOO GAVIN LOAGER IS MINE 😭", "discovery"), 43000);
+            setTimeout(() => showNotification("Gavin: 😭😭", "discovery"), 46000);
+
+
+            setTimeout(() => {
+                showNotification("Jayce: OK HERE IS A LOAGER WITH LOAGER MUTATION", "success");
+                const loagerFluff = FLUFF_TYPES.admin.fluffs.find(f => f.name === 'Loager');
+                if(loagerFluff && fluffCount < fluffCapacity) addFluffToBase(loagerFluff, FLUFF_TYPES.admin, 'loager');
+            }, 50000);
+
+
+            setTimeout(() => showNotification("Gavin: thx Jayce", "discovery"), 53000);
+            setTimeout(() => showNotification("Jayce: I imagine the loager in steal a fluff is just air or something stupid like that because Loager MEANS NOTHING you know", "success"), 56000);
+            setTimeout(() => showNotification("Gavin: yeah I know what you mean. Wait before the abuse is over what does this button called spawn a random god mean???", "discovery"), 61000);
+            
+            setTimeout(() => {
+                showNotification("Jayce: NO DONT TOUCH THAT BUTTON", "error");
+                const arthur = FLUFF_TYPES.god.fluffs.find(f => f.name === 'Arthur Morgan');
+                if (arthur) {
+                    for (let i = 0; i < 4; i++) {
+                        if (fluffCount < fluffCapacity) addFluffToBase(arthur, FLUFF_TYPES.god);
+                    }
+                }
+            }, 65000);
+            
+            setTimeout(() => showNotification("Gavin: Well that is it loagers goodbye loager", "discovery"), 65500);
+            
+            setTimeout(() => {
+                showNotification("Jayce: Yep wait hold up I got Keg calling lets see what he has to say gimme like 30s and while you wait here is 4 fluffs and 200m", "success");
+                const fluffFluff = FLUFF_TYPES.god.fluffs.find(f => f.name === 'Fluff');
+                if (fluffFluff) {
+                    for(let i=0; i<4; i++) {
+                        if (fluffCount < fluffCapacity) addFluffToBase(fluffFluff, FLUFF_TYPES.god);
+                    }
+                }
+                money += 200000000;
+                updateDisplay();
+            }, 68000);
+
+
+            setTimeout(() => {
+                showNotification("Jayce: Yo so what keg wants is me to spawn is Dutch with the new 1911 mutation so here yall go 👍", "success");
+                const dutch = FLUFF_TYPES.god.fluffs.find(f => f.name === 'Dutch Van Der Linde');
+                if (dutch) spawnSpecificFluffOnBelt(dutch, FLUFF_TYPES.god, '1911');
+            }, 100000);
+
+
+            setTimeout(() => showNotification("Jcurt: da da discord game", "discovery"), 110000);
+            
+            setTimeout(() => {
+                showNotification("Jayce: Umm who is that lol jk jcurt anyways do yall want me to spawn in USA for the 2nd time???? I already know the answer", "success");
+                const usa = FLUFF_TYPES.countries.fluffs.find(f => f.name === 'USA');
+                if(usa) spawnSpecificFluffOnBelt(usa, FLUFF_TYPES.countries, 'what_is_a_kilometer');
+            }, 115000);
+            
+            setTimeout(() => showNotification("Jayce: well that should be it goodbye", "success"), 135000);
+        }
+
+
+        function startGavinJayceCoHostSequence() {
+            if(eventSequenceRunning) return;
+            eventSequenceRunning = true;
+
+
+            setTimeout(() => showNotification("Jayce: Hey everyone I hope is tuning in for the admin abuse and today I have a co host you know who it is??? owen hehe GAVIN", "success"), 3000);
+            setTimeout(() => showNotification("Gavin: Stop loaging and play", "discovery"), 7000);
+            setTimeout(() => {
+                const fluff = FLUFF_TYPES.god.fluffs.find(f => f.name === 'Fluff');
+                if (fluff) spawnSpecificFluffOnBelt(fluff, FLUFF_TYPES.god, 'loager');
+                showNotification("Jayce: Yes what he said so lets get this started by first of all spawning a Fluff with loager on it", "success");
+            }, 10000);
+            setTimeout(() => {
+                 const loagerFluff = FLUFF_TYPES.admin.fluffs.find(f => f.name === 'Loager');
+                 if(loagerFluff) spawnSpecificFluffOnBelt(loagerFluff, FLUFF_TYPES.admin);
+                showNotification("Gavin: here is a loager loager", "discovery");
+            }, 13000);
+
+
+            setTimeout(() => {
+                luckBoost = 12;
+                showNotification("Gavin: I am barising rn OH CRAP DID I JUST START 12x LUCK OH SHOOT", "discovery");
+            }, 18000);
+
+
+            setTimeout(() => {
+                 const johnMarston = FLUFF_TYPES.god.fluffs.find(f => f.name === 'John Marston');
+                 if(johnMarston) {
+                     spawnSpecificFluffOnBelt(johnMarston, FLUFF_TYPES.god, 'chocolate');
+                     spawnSpecificFluffOnBelt(johnMarston, FLUFF_TYPES.god, 'chocolate');
+                 }
+                showNotification("Jayce: Gavin it is ok but lets just talk about stuff but for the short attention span people here is 2 john marstons with a 20x mutation", "success");
+            }, 22000);
+            
+            setTimeout(() => {
+                 const esm = FLUFF_TYPES.og.fluffs.find(f => f.name === 'Everything Site Monkey');
+                 if(esm) spawnSpecificFluffOnBelt(esm, FLUFF_TYPES.og);
+                showNotification("Gavin: ok here is an everything site monkey from the everything site", "discovery");
+            }, 26000);
+            
+            setTimeout(() => {
+                 const phonkEvent = WEATHER_EVENTS.find(e => e.name === "Brazilian Phonk");
+                 if(phonkEvent) startWeatherEvent(phonkEvent);
+                showNotification("Jayce: Hey should I do new admin only weather???", "success");
+            }, 31000);
+
+
+            setTimeout(() => {
+                 const loagerFluff = FLUFF_TYPES.admin.fluffs.find(f => f.name === 'Loager');
+                 if (loagerFluff) {
+                     for(let i = 0; i < 5; i++) {
+                         spawnSpecificFluffOnBelt(loagerFluff, FLUFF_TYPES.admin);
+                     }
+                 }
+                showNotification("Gavin: LOAGER LOAGER LOAGER LOAGER LOAGER", "discovery");
+            }, 41000);
+
+
+            setTimeout(() => {
+                 const dexter = FLUFF_TYPES.god.fluffs.find(f => f.name === 'Dexter Morgan');
+                 if(dexter) spawnSpecificFluffOnBelt(dexter, FLUFF_TYPES.god, 'butcher');
+                showNotification("Jayce: Hey do you guys like Dexter?", "success");
+            }, 46000);
+
+
+            setTimeout(() => showNotification("Gavin: imagine like adding loager to your game without permission and changing the meaning of it", "discovery"), 51000);
+            setTimeout(() => showNotification("Jayce: with the new fusion update if you get 4 strawberry elephants you get cool thing", "success"), 54000);
+            
+            setTimeout(() => {
+                luckBoost = 16;
+                showNotification("Jayce: That is all here is 16x luck goodbye", "success");
+            }, 59000);
+
+
+            // New part of the script
+            setTimeout(() => showNotification("Gavin: Jayce is gone so lets get to work", "discovery"), 63000);
+            setTimeout(() => {
+                const fluff = FLUFF_TYPES.god.fluffs.find(f => f.name === 'Fluff');
+                if (fluff) spawnSpecificFluffOnBelt(fluff, FLUFF_TYPES.god);
+                showNotification("Gavin: we may had to up the prices of things to try to fix the economy so sorry about that 😢", "discovery");
+                luckBoost = 20;
+            }, 66000);
+            setTimeout(() => {
+                showNotification("Gavin: there you loagers go speaking of loagers 😈", "discovery");
+                const loager = FLUFF_TYPES.admin.fluffs.find(f => f.name === 'Loager');
+                if (loager) {
+                    for(let i=0; i < 2; i++) spawnSpecificFluffOnBelt(loager, FLUFF_TYPES.admin);
+                }
+            }, 71000);
+
+
+            setTimeout(() => {
+                showNotification("Gavin: Do you want me to run a different new admin weather?", "discovery");
+            }, 81000);
+
+
+            setTimeout(() => {
+                stopBrazilianPhonk();
+                const rapEvent = WEATHER_EVENTS.find(e => e.name === "Steal A Fluff Rap");
+                if(rapEvent) startWeatherEvent(rapEvent);
+            }, 82000);
+
+
+            setTimeout(() => showNotification("Gavin: YO is this like fire", "discovery"), 87000);
+            setTimeout(() => {
+                showNotification("Gavin: Hey you know a country I like??? PAX AMERICANO", "discovery");
+                const pax = FLUFF_TYPES.countries.fluffs.find(f => f.name === 'Pax Americano');
+                if(pax) spawnSpecificFluffOnBelt(pax, FLUFF_TYPES.countries);
+            }, 92000);
+
+
+            setTimeout(() => showNotification("Gavin: Hey me and Jayce have discussed that we should support our local teams may have been my idea but whatever ¯\\_(ツ)_/¯", "discovery"), 96000);
+            
+            setTimeout(() => {
+                const lions = FLUFF_TYPES.admin.fluffs.find(f => f.name === 'Lions Player Fluff');
+                if(lions) spawnSpecificFluffOnBelt(lions, FLUFF_TYPES.admin);
+            }, 97000);
+
+
+            setTimeout(() => showNotification("Gavin: GO LIONS 👍😁", "discovery"), 101000);
+            
+            setTimeout(() => {
+                showNotification("Gavin: Yo should I like spawn in like Tiger Player Fluff???? I will 😁", "discovery");
+                const tigers = FLUFF_TYPES.admin.fluffs.find(f => f.name === 'Tiger Player Fluff');
+                if(tigers) spawnSpecificFluffOnBelt(tigers, FLUFF_TYPES.admin);
+            }, 106000);
+            
+            setTimeout(() => showNotification("Gavin: I LOVE SAINT CLAIR and you know what else I love 😈 34x luck", "discovery"), 116000);
+
+
+            setTimeout(() => {
+                luckBoost = 34;
+                const saints = FLUFF_TYPES.admin.fluffs.find(f => f.name === 'Saints Player Fluff');
+                if(saints) spawnSpecificFluffOnBelt(saints, FLUFF_TYPES.admin);
+            }, 119000);
+
+
+            setTimeout(() => {
+                 showNotification("Gavin: the admin abuse is almost over so I will spawn Baby Everything Site Monkey", "discovery");
+                 const babyMonkey = FLUFF_TYPES.admin.fluffs.find(f => f.name === 'Baby Everything Site Monkey');
+                 if (babyMonkey) spawnSpecificFluffOnBelt(babyMonkey, FLUFF_TYPES.admin);
+            }, 129000);
+
+
+            setTimeout(() => showNotification("Jayce: I am back lets end this off by yelling in the lunch room LOAGER!!! ok if I hear enough people yell it I will do like 60x luck so SEE YA", "success"), 149000);
+
+
+            setTimeout(() => showNotification("Gavin: BYE!!!", "discovery"), 152000);
+
+
+        }
+
+
+        function checkScheduledEvents() {
+            const now = new Date();
+            const hour = now.getHours();
+            const minute = now.getMinutes();
+            const month = now.getMonth();
+            const dayOfMonth = now.getDate();
+            const year = now.getFullYear();
+
+
+            // Event 1: Friend Group Admin Abuse on 9-7-2025 at 6:10-6:20 PM
+            const isFriendGroupEvent = year === 2025 &&
+                                       month === 8 && // September
+                                       dayOfMonth === 7 &&
+                                       hour === 18 && // 6 PM
+                                       minute >= 10 && minute <= 20;
+
+
+            // Event 2: Rescheduled Admin Abuse on 9-8-2025 at 10:30-10:40 AM
+            const isJayceEvent = year === 2025 &&
+                                 month === 8 && // September
+                                 dayOfMonth === 8 &&
+                                 hour === 10 &&
+                                 minute >= 30 && minute <= 40;
+            
+            // Event 3: Gavin Admin Abuse on 9-10-2025 at 10:40-10:50 AM
+            const isGavinEvent = year === 2025 &&
+                                 month === 8 && // September
+                                 dayOfMonth === 10 &&
+                                 hour === 10 &&
+                                 minute >= 40 && minute <= 50;
+
+
+
+
+            if (isFriendGroupEvent || isJayceEvent || isGavinEvent) {
+                if (!isEventActive) {
+                    isEventActive = true;
+                    let eventName = "SPECIAL EVENT ACTIVE!";
+                    if (isFriendGroupEvent) eventName = "Friend Group Admin Abuse!";
+                    if (isGavinEvent) eventName = "Gavin Admin Abuse!";
+                    
+                    eventBanner.textContent = eventName;
+                    eventBanner.style.display = 'block';
+                    showNotification("A special event is now active!", "rebirth");
+
+
+                    if (isFriendGroupEvent) {
+                        startFriendGroupEventSequence();
+                    } else if (isJayceEvent) {
+                        startFunFridayEventSequence();
+                    } else if (isGavinEvent) {
+                        startGavinJayceCoHostSequence();
+                    }
+                }
+            } else {
+                if (isEventActive) {
+                    isEventActive = false;
+                    eventBanner.style.display = 'none';
+                    luckBoost = 1;
+                    godMode = false;
+                    eventSequenceRunning = false;
+                }
+            }
+        }
+
+
+        function evolutionLoop() {
+            if (isPaused) return;
+            const now = Date.now();
+            let needsRender = false;
+            for (let i = baseFluffs.length - 1; i >= 0; i--) {
+                const fluff = baseFluffs[i];
+                if (fluff.name === 'Baby Everything Site Monkey' && fluff.evolveTime && now >= fluff.evolveTime) {
+                    if (Math.random() < 0.01) { // 1% chance
+                        const evolvedFluffData = FLUFF_TYPES.og.fluffs.find(f => f.name === 'Everything Site Monkey');
+                        if (evolvedFluffData) {
+                            baseFluffs.splice(i, 1); // Remove baby
+                            fluffCount--;
+                            addFluffToBase(evolvedFluffData, FLUFF_TYPES.og, 'baby');
+                            showNotification("A Baby Everything Site Monkey has evolved!", "discovery");
+                            needsRender = true;
+                        }
+                    }
+                    delete fluff.evolveTime; // Only one chance to evolve
+                }
+            }
+            if (needsRender) {
+                renderAllFluffsInBase();
+            }
+        }
+
+
+        function togglePause() {
+            isPaused = !isPaused;
+            pauseButton.textContent = isPaused ? 'Resume' : 'Pause';
+            pauseButton.classList.toggle('bg-green-600', isPaused);
+            pauseButton.classList.toggle('hover:bg-green-700', isPaused);
+            pauseButton.classList.toggle('bg-blue-600', !isPaused);
+            pauseButton.classList.toggle('hover:bg-blue-700', !isPaused);
+        }
+        
+        function initializeGame() {
+            renderUpgrades();
+            checkDailyLogin();
+            setInterval(gameLoop, 1000);
+            setInterval(evolutionLoop, 5000);
+            spawnLoop();
+            weatherLoop();
+            blackMarketLoop();
+            checkWeekendEvent();
+            checkScheduledEvents();
+            setInterval(checkScheduledEvents, 60000);
+            sellButton.addEventListener('click', () => toggleSellMode());
+            fusionButton.addEventListener('click', showFusionModal);
+            rebirthButton.addEventListener('click', performRebirth);
+            saveButton.addEventListener('click', showSaveModal);
+            loadButton.addEventListener('click', showLoadModal);
+            fluffpediaButton.addEventListener('click', showFluffpediaModal);
+            statsButton.addEventListener('click', showStatsModal);
+            achievementsButton.addEventListener('click', showAchievementsModal);
+            pauseButton.addEventListener('click', togglePause);
+            window.addEventListener('keydown', (e) => {
+                if (e.key === '=') {
+                    e.preventDefault();
+                    showPasswordModal();
+                }
+            });
+        }
+
+
+        window.onload = initializeGame;
+    </script>
+</body>
+</html>
