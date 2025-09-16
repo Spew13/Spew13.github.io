@@ -3,6 +3,69 @@
 <head>
   <meta charset="UTF-8" />
   <title>Spew13</title>
+    <style>
+/* Popup styling */
+#antiCopyPopup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: #ff4d4d;
+  color: white;
+  font-size: 2em;
+  font-family: Arial, sans-serif;
+  padding: 30px 50px;
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(255,0,0,0.7);
+  z-index: 9999;
+  text-align: center;
+  pointer-events: none;
+  animation: popupAnim 1.5s forwards; /* Updated duration */
+}
+
+/* Popup animation */
+@keyframes popupAnim {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+  50% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+  70% { transform: translate(-50%, -50%) scale(0.9); }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+}
+</style>
+
+<script>
+// Function to show popup
+function showAntiCopyPopup() {
+    if (document.getElementById('antiCopyPopup')) return; // prevent multiple popups
+
+    const popup = document.createElement('div');
+    popup.id = 'antiCopyPopup';
+    popup.innerText = "No, Don't Copy Our Code❌";
+    document.body.appendChild(popup);
+
+    // Remove popup after animation
+    setTimeout(() => {
+        if (popup) popup.remove();
+    }, 1500); // match animation duration
+}
+
+// Disable right-click
+document.addEventListener('contextmenu', e => {
+    e.preventDefault();
+    showAntiCopyPopup();
+});
+
+// Disable common shortcuts (Ctrl+Shift+I, Ctrl+U, F12)
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'F12' || 
+        (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) ||
+        (e.ctrlKey && e.key.toUpperCase() === 'U')) {
+        e.preventDefault();
+        showAntiCopyPopup();
+    }
+});
+</script>
+
+
 <style>
   .neon-btn {
     background-color: #000; /* dark background for contrast */
@@ -165,7 +228,7 @@
   <button class="gallery-button" onclick="openGallery()">Gallery</button>
   <button class="help-button" onclick="openHelp()">Help</button>
   <button class="contact-button" onclick="openContact()">Contact</button>
-  <button class="contact-button" onclick="openFluffBox()">Steal a Fluff</button>
+  <button class="contact-button" onclick="openFluffBox()">Unblocked Website Loader</button>
 </div>
         <body>
         <script>
@@ -269,7 +332,7 @@
 
     // Create help text
     const helpText = document.createElement("p");
-    helpText.textContent = "Welcome to Spew13, the ultimate place for quick, fun, and addicting browser games! If you’re stuck, confused, or just want to know how things work, you’re in the right spot. All the games are loaded directly in the site using iframes, which means you don’t need to download anything — just click the Load button under the game you want, and it’ll open right inside the page. Some games may take a few moments to appear, depending on your internet speed, so don’t worry if you see a blank box for a bit.If a game doesn’t load, first try refreshing the page. Still not working? Check your WiFi or try using a different browser (we recommend Chrome). Some games may also need fullscreen for the best experience — look for the Fullscreen button to make the game fill your screen.Navigation is easy! Use the neon buttons at the top to jump to sections like the Gallery, About, or Contact. The site is always being updated with new games and features, so check back often to see what’s new. If you have a favorite game you’d like to see added, or if you find a bug, head over to the Contact section and let us know — your feedback helps make Spew13 even better.And most importantly: have fun! Spew13 is all about quick entertainment, glowing neon vibes, and giving you a place to relax and game without the boring stuff in the way.";
+    helpText.textContent = "Welcome to Spew13, the ultimate place for quick, fun, and addicting browser games! If you’re stuck, confused, or just want to know how things work, you’re in the right spot. All the games are loaded directly in the site using iframes, which means you don’t need to download anything — just click the Load button under the game you want, and it’ll open right inside the page. Some games may take a few moments to appear, depending on your internet speed, so don’t worry if you see a blank box for a bit.If a game doesn’t load, first try refreshing the page. Still not working? Check your WiFi or try using a different browser (we recommend Chrome). Some games may also need fullscreen for the best experience — look for the Fullscreen button to make the game fill your screen.Navigation is easy! Use the neon buttons at the top to jump to sections like the Gallery, About, or Contact. The site is always being updated with new games and features, so check back often to see what’s new. If you have a favorite game you’d like to see added, or if you find a bug, head over to the Contact section and let us know — your feedback helps make Spew13 even better.And most importantly: have fun! Spew13 is all about quick entertainment, glowing neon vibes, and giving you a place to relax and game without the boring stuff in the way. ENJOY THE NEW GAMES, HAVE FUN!!!";
     helpText.style.color = "white";
     helpText.style.textAlign = "center";
     helpText.style.marginBottom = "30px";
@@ -416,6 +479,7 @@
       <p>Whether you are here to explore, play, or provide feedback, Spew13 is committed to delivering a smooth, enjoyable, and memorable gaming experience.</p>
       <p>Thank you for being part of the Spew13 community!</p>
       <p>Special Thanks to Jayce Rich for Steal A Fluff!</p>
+      <p>ENJOY THE NEW GAMES MORE COMING!!!!!</p>
     `;
     document.body.appendChild(aboutBox);
   }
@@ -436,7 +500,7 @@
 
     // Heading
     const heading = document.createElement("h2");
-    heading.textContent = "Put Link In Here From Steal A Fluff";
+    heading.textContent = "Put Your Link In Here!";
     heading.style.marginBottom = "20px";
     heading.style.color = "white";
     heading.style.textShadow = "0 0 10px limegreen, 0 0 20px limegreen";
@@ -696,7 +760,63 @@
   </button>
   <div class="iframe-container"></div>
 </div>
+          <!-- BLOODMONEY Game Box -->
+<div class="game-box" id="bloodmoney">
+  <p>BLOODMONEY!</p>
+  <button onclick="toggleCustomIframe(this, 'bloodmoney', 'https://1games.io/bloodmoney')">
+    Click to Load
+  </button>
+  <div class="iframe-container"></div>
+</div>
+          <!-- Level Devil Game Box -->
+<div class="game-box" id="level-devil-box">
+  <p>Level Devil</p>
+  <button onclick="toggleCustomIframe(this, 'level-devil-box', 'https://1games.io/level-devil')">
+    Click to Load
+  </button>
+  <div class="iframe-container"></div>
+</div>
+          
+<style>
+/* Rainbow for blood money */
+#bloodmoney {
+  position: relative;
+  padding: 20px;
+  border: 6px solid;
+  border-image-slice: 1;
+  border-width: 6px;
+  border-radius: 12px;
+  animation: rainbow-border 5s linear infinite;
+  /* Optional: background color inside */
+  background-color: #1f1f1f;
+  color: white;
+}
+      #level-devil-box {
+  position: relative;
+  padding: 20px;
+  border: 6px solid;
+  border-image-slice: 1;
+  border-width: 6px;
+  border-radius: 12px;
+  animation: rainbow-border 5s linear infinite;
+  /* Optional: background color inside */
+  background-color: #1f1f1f;
+  color: white;
+}
 
+/* Animate the border gradient */
+@keyframes rainbow-border {
+  0% {
+    border-image-source: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+  }
+  50% {
+    border-image-source: linear-gradient(90deg, violet, indigo, blue, green, yellow, orange, red);
+  }
+  100% {
+    border-image-source: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+  }
+}
+</style>
 
     <div class="game-box">
       <p>Backflip Dive 3D</p>
