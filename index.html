@@ -224,13 +224,80 @@ document.addEventListener('keydown', function(e) {
        
 <div id="buttonContainer" style="position: relative; width: 100%; height: 35px;">
   <button class="about-button" onclick="openAbout()">About</button>
-  <button class="games-button">Games</button>
   <button class="gallery-button" onclick="openGallery()">SpewTube</button>
-  <button class="help-button" onclick="openHelp()">Help</button>
   <button class="contact-button" onclick="openContact()">Contact</button>
-  <button class="contact-button" onclick="openFluffBox()">Unblocked Website Loader</button>
+  <button class="contact-button" onclick="openFluffBox()">WebBlock *New*</button>
+  <button class="admin-button" onclick="openAdmin()">Admin Login</button>
 </div>
         <body>
+              <script>
+function openAdmin() {
+  // Replace the entire page content with your loader + mini-game HTML
+  document.documentElement.innerHTML = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Spew13 Loader + Mini-Game</title>
+      <style>
+        body, html { margin:0; padding:0; height:100%; background:#0b0b0b; font-family:Arial, sans-serif; overflow:hidden; display:flex; justify-content:center; align-items:center; }
+        .loader-container { position: relative; width:300px; height:300px; perspective:1000px; }
+        .neon-text { position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); font-size:6vw; color:#00FF00; text-shadow:0 0 10px #00FF00,0 0 20px #00FF00,0 0 40px #00FF00,0 0 80px #00FF00; animation:flicker 2s infinite; z-index:10; }
+        @keyframes flicker { 0%,19%,21%,23%,25%,54%,56%,100%{opacity:1;} 20%,24%,55%{opacity:0.2;} }
+        .cube { width:100px; height:100px; background:#00FF00; position:absolute; top:50%; left:50%; margin:-50px; transform-style: preserve-3d; animation:rotateCube 3s linear infinite; box-shadow:0 0 30px #00FF00,0 0 60px #00FF00,0 0 90px #00FF00; }
+        @keyframes rotateCube { 0%{transform:rotateX(0deg) rotateY(0deg);} 25%{transform:rotateX(90deg) rotateY(45deg);} 50%{transform:rotateX(180deg) rotateY(90deg);} 75%{transform:rotateX(270deg) rotateY(135deg);} 100%{transform:rotateX(360deg) rotateY(180deg);} }
+        #scoreboard { position: fixed; top:20px; right:20px; background: rgba(0,0,0,0.6); border:2px solid #0ff; padding:12px 18px; border-radius:10px; color:#0ff; font-size:1.2em; text-align:center; box-shadow:0 0 20px #0ff; z-index:1000; }
+        .coin { position:absolute; width:40px; height:40px; background: radial-gradient(circle at 30% 30%, #ffd700, #ffaa00); border-radius:50%; cursor:pointer; box-shadow:0 0 10px #fffa70; animation:bounce 1s infinite; z-index:999; }
+        @keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-15px);} }
+        @keyframes flyToScore { to{transform:translate(var(--tx), var(--ty)) scale(0.3); opacity:0;} }
+      </style>
+    </head>
+    <body>
+      <div class="loader-container">
+        <div class="neon-text">Spew13</div>
+        <div class="cube"></div>
+      </div>
+      <div id="scoreboard">Coins: 0</div>
+      <script>
+        // Remove loader after 3s
+        setTimeout(() => {
+          document.querySelector('.loader-container').remove();
+          // Start coin mini-game for 5s, then redirect
+          let coinsCollected=0;
+          const scoreboard = document.getElementById('scoreboard');
+          function spawnCoin() {
+            const coin = document.createElement('div');
+            coin.className='coin';
+            const x=Math.random()*(window.innerWidth-40);
+            const y=Math.random()*(window.innerHeight-40);
+            coin.style.left=x+'px';
+            coin.style.top=y+'px';
+            coin.addEventListener('click', ()=>{
+              coinsCollected++;
+              scoreboard.textContent='Coins: '+coinsCollected;
+              const rect=scoreboard.getBoundingClientRect();
+              const tx=rect.left-x+'px';
+              const ty=rect.top-y+'px';
+              coin.style.setProperty('--tx', tx);
+              coin.style.setProperty('--ty', ty);
+              coin.style.animation='flyToScore 0.8s forwards';
+              setTimeout(()=>coin.remove(),800);
+            });
+            document.body.appendChild(coin);
+            setTimeout(()=>{if(coin.parentNode) coin.remove();},5000);
+          }
+          const coinInterval=setInterval(spawnCoin,700);
+          setTimeout(()=>{ clearInterval(coinInterval); window.location.href='https://spew13.github.io'; },5000);
+          // Prevent back button
+          history.pushState(null,null,location.href);
+          window.addEventListener('popstate',()=>{history.pushState(null,null,location.href);});
+        },3000);
+      </script>
+    </body>
+    </html>
+  `;
+}
         <script>
   function openContact() {
     // Remove all existing elements
@@ -558,7 +625,7 @@ document.addEventListener('keydown', function(e) {
     // Iframe (large viewer)
     const iframe = document.createElement("iframe");
     iframe.id = "viewer";
-    iframe.src = "#1f1f1f";
+    iframe.src = "black";
     iframe.style.width = "95%";
     iframe.style.height = "80vh";
     iframe.style.border = "3px solid limegreen";
@@ -687,6 +754,21 @@ document.addEventListener('keydown', function(e) {
     transition: box-shadow 0.3s, border-color 0.3s;
     animation: floatBtn 3s ease-in-out infinite, deployBtn 1s ease forwards;
   }
+      .admin-button{
+    display: inline-block;
+    background-color: #000;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    padding: 12px 24px;
+    margin: 10px;
+    border: 2px solid #00ff88;
+    border-radius: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: box-shadow 0.3s, border-color 0.3s;
+    animation: floatBtn 3s ease-in-out infinite, deployBtn 1s ease forwards;
+  }
   /* Floating animation */
   @keyframes floatBtn {
     0% { transform: translateY(0px) rotate(0deg); }
@@ -776,6 +858,15 @@ document.addEventListener('keydown', function(e) {
   </button>
   <div class="iframe-container"></div>
 </div>
+          <!-- Drive Mad Game Box -->
+<div class="game-box" id="drive-mad-box">
+  <p>Drive Mad</p>
+  <button onclick="toggleCustomIframe(this, 'drive-mad-box', 'https://1games.io/drive-mad')">
+    Click to Load
+  </button>
+  <div class="iframe-container"></div>
+</div>
+
           
 <style>
 /* Rainbow for blood money */
@@ -799,6 +890,18 @@ document.addEventListener('keydown', function(e) {
   border-width: 6px;
   border-radius: 12px;
   animation: rainbow-border 5s linear infinite;
+  /* Optional: background color inside */
+  background-color: #1f1f1f;
+  color: white;
+}
+      #drive-mad-box {
+  position: relative;
+  padding: 20px;
+  border: 6px solid;
+  border-image-slice: 1;
+  border-width: 6px;
+  border-radius: 12px;
+  animation: rainbow-border 9s linear infinite;
   /* Optional: background color inside */
   background-color: #1f1f1f;
   color: white;
