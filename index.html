@@ -39,7 +39,7 @@ function showAntiCopyPopup() {
 
     const popup = document.createElement('div');
     popup.id = 'antiCopyPopup';
-    popup.innerText = "No, Don't Copy Our Code❌";
+    popup.innerText = "You shouldn't do that...";
     document.body.appendChild(popup);
 
     // Remove popup after animation
@@ -64,7 +64,48 @@ document.addEventListener('keydown', function(e) {
     }
 });
 </script>
+      
+  <body style="margin:0; background:gray; overflow-x:hidden;">
+    <canvas id="matrixCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;display:block;"></canvas>
 
+    <script>
+      const canvas = document.getElementById("matrixCanvas");
+      const ctx = canvas.getContext("2d");
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener("resize", resize);
+
+      const letters = "01";
+      const fontSize = 18;
+      let columns = Math.floor(canvas.width / fontSize);
+      let drops = new Array(columns).fill(0);
+
+      function draw() {
+        // semi-transparent black to create fading trails
+        ctx.fillStyle = "rgba(0,0,0,0.08)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = "#32CD32"; // lime green
+        ctx.font = fontSize + "px monospace";
+
+        for (let i = 0; i < drops.length; i++) {
+          const text = letters.charAt(Math.floor(Math.random() * letters.length));
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+          drops[i] += 1;
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+        }
+      }
+
+      setInterval(draw, 80);
+    </script>
+  </body>
 
 <style>
   .neon-btn {
@@ -217,16 +258,6 @@ document.addEventListener('keydown', function(e) {
   </style>
 </head>
 <body>
-  
-  <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'none';">
-  <script>
-    if (window.top !== window.self) {
-      window.top.location = window.self.location;
-    }
-  </script>
-
-
       <!-- Main Spew13 Content -->
   <div id="spew13Main">
     <header>Spew 13 - Green Iguana Studios</header>
@@ -868,6 +899,10 @@ function openAdmin() {
   </button>
   <div class="iframe-container"></div>
 </div>
+        <!-- Happy Halloween! -->
+
+
+
           <!-- Drive Mad Game Box -->
 <div class="game-box" id="drive-mad-box">
   <p>Drive Mad</p>
@@ -1123,44 +1158,7 @@ function openAdmin() {
   <div class="iframe-container"></div>
 </div>
 </div>
-</div>
-     <!-- All Gallery code Starts-->
-      <!-- Gallery Walk Button -->
-<div id="galleryButtonWrapper" style="text-align: center; margin-top: 30px;">
-  <button onclick="loadGalleryWalk()" style="
-    padding: 14px 28px;
-    background: linear-gradient(90deg, limegreen, #00ff88);
-    border: none;
-    border-radius: 16px;
-    font-size: 1.4em;
-    font-weight: bold;
-    cursor: pointer;
-    color: black;
-    box-shadow: 0 0 20px limegreen;
-    transition: transform 0.2s ease;
-  " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-    Enter Spew13 Gallery Walk
-  </button>
-</div>
-
-<!-- Restore Button (hidden at first) -->
-<div id="restoreButtonWrapper" style="text-align: center; margin-top: 20px; display: none;">
-  <button onclick="restoreGames()" style="
-    padding: 14px 28px;
-    background: linear-gradient(90deg, #00ff88, limegreen);
-    border: none;
-    border-radius: 16px;
-    font-size: 1.2em;
-    font-weight: bold;
-    cursor: pointer;
-    color: black;
-    box-shadow: 0 0 20px #00ff88;
-    transition: transform 0.2s ease;
-  " onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
-    Restore Games
-  </button>
-</div>
-      <body>
+<body>
 
      <script>
   function openContact() {
