@@ -269,59 +269,69 @@ document.addEventListener('keydown', function(e) {
   <button class="contact-button" onclick="openContact()">Contact</button>
   <button class="contact-button" onclick="openFluffBox()">WebBlock *New*</button>
   <button class="admin-button" onclick="openAdmin()">Admin Login</button>
-  <button id="startBtn" style="font-size:2rem;padding:1rem 2rem;cursor:pointer;background:#222;color:white;border:2px solid white;border-radius:10px;">. . .</button>
+  <!-- Button to trigger cutscene -->
+<button id="gambleBtn" style="font-size:2rem;padding:1rem 2rem;cursor:pointer;background:#222;color:white;border:2px solid white;border-radius:10px;">. . .</button>
 
-<div id="cutscene" style="position:fixed;top:0;left:0;width:100%;height:100%;color:white;display:none;justify-content:center;align-items:center;text-align:center;font-size:2rem;cursor:pointer;flex-direction:column;background:black;">
-  <div class="text-block" style="opacity:0;transition:opacity 1s;max-width:80%;margin:10px 0;">You enter a dark and mysterious room...</div>
-  <div class="text-block" style="opacity:0;transition:opacity 1s;max-width:80%;margin:10px 0;">People are gathered around tables, cards and dice clattering in shadowy corners.</div>
-  <div class="text-block" style="opacity:0;transition:opacity 1s;max-width:80%;margin:10px 0;">Whispers of chance and fortune fill the air...</div>
-  <div class="text-block" style="opacity:0;transition:opacity 1s;max-width:80%;margin:10px 0;">Will you join them?</div>
+<!-- Cutscene overlay -->
+<div id="cutscene" style="
+    position:fixed;top:0;left:0;width:100%;height:100%;
+    background:#000;color:white;font-family:sans-serif;
+    display:none;align-items:center;justify-content:center;
+    overflow:hidden;z-index:9999;
+">
+  <div id="cutsceneText" style="
+      position:absolute;bottom:-100%;width:100%;text-align:center;font-size:2rem;
+  ">
+    You enter a dark and mysterious room...<br>
+    People are gathered around tables, gambling and laughing...<br>
+    The smell of cards and coins fills the air...
+  </div>
 </div>
 
-<div id="fade" style="position:fixed;top:0;left:0;width:100%;height:100%;background:black;opacity:0;pointer-events:none;transition:opacity 1.5s;"></div>
+<!-- Gambling section (hidden initially) -->
+<div id="gamblingSection" style="display:none; text-align:center; padding:2rem;">
+  <h1 style="color:white;">Welcome to the Gambling Room</h1>
+
+  <div style="background:#222; margin:2rem auto; padding:2rem; width:80%; border-radius:15px; border:2px solid white;">
+    <h2>Blackjack</h2>
+    <p>Game placeholder. Implement your blackjack game here.</p>
+    <button style="padding:1rem 2rem; margin:1rem; font-size:1.2rem; cursor:pointer; background:#333;color:white;border:2px solid white;border-radius:10px;">Play Blackjack</button>
+  </div>
+
+  <div style="background:#222; margin:2rem auto; padding:2rem; width:80%; border-radius:15px; border:2px solid white;">
+    <h2>Poker</h2>
+    <p>Game placeholder. Implement your poker game here.</p>
+    <button style="padding:1rem 2rem; margin:1rem; font-size:1.2rem; cursor:pointer; background:#333;color:white;border:2px solid white;border-radius:10px;">Play Poker</button>
+  </div>
+</div>
 
 <script>
-  const startBtn = document.getElementById('startBtn');
-  const cutscene = document.getElementById('cutscene');
-  const fade = document.getElementById('fade');
-  const textBlocks = document.querySelectorAll('.text-block');
+document.getElementById('gambleBtn').addEventListener('click', () => {
+    const cutscene = document.getElementById('cutscene');
+    const text = document.getElementById('cutsceneText');
+    const gambling = document.getElementById('gamblingSection');
 
-  let currentIndex = 0;
-  let interval;
-
-  startBtn.addEventListener('click', () => {
-    startBtn.style.display = 'none';
     cutscene.style.display = 'flex';
-    currentIndex = 0;
-    interval = setInterval(showNextBlock, 3000);
-    showNextBlock();
-  });
 
-  function showNextBlock() {
-    if (currentIndex > 0) textBlocks[currentIndex - 1].style.opacity = '0';
-    if (currentIndex < textBlocks.length) {
-      textBlocks[currentIndex].style.opacity = '1';
-      currentIndex++;
-    } else {
-      endCutscene();
-      clearInterval(interval);
-    }
-  }
-
-  cutscene.addEventListener('click', endCutscene);
-
-  function endCutscene() {
-    clearInterval(interval);
-    textBlocks.forEach(block => block.style.opacity = '0');
-    fade.style.opacity = '1';
-    setTimeout(() => {
-      cutscene.style.display = 'none';
-      fade.style.display = 'none';
-      startBtn.style.display = 'block';
-      fade.style.opacity = '0';
-      // Add callback for your gambling update here
-    }, 1500);
-  }
+    // Animate text scrolling up
+    let position = -100;
+    const scrollSpeed = 1; // px per frame
+    const scrollInterval = setInterval(() => {
+        position += scrollSpeed;
+        text.style.bottom = position + '%';
+        if (position > 120) { // text scrolled past screen
+            clearInterval(scrollInterval);
+            // fade out cutscene
+            cutscene.style.transition = 'opacity 1s';
+            cutscene.style.opacity = 0;
+            setTimeout(() => {
+                cutscene.style.display = 'none';
+                cutscene.style.opacity = 1;
+                gambling.style.display = 'block';
+            }, 1000);
+        }
+    }, 30);
+});
 </script>
 
 </div>
