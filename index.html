@@ -287,14 +287,25 @@ const container = document.getElementById('cutsceneContainer');
 
 btn.addEventListener('click', () => {
   btn.style.display = 'none';
-  container.style.display = 'block';
-  let index = 0;
 
+  // Remove everything in body except header and footer
+  const bodyChildren = Array.from(document.body.children);
+  bodyChildren.forEach(el => {
+    if(el.tagName.toLowerCase() !== 'header' && el.tagName.toLowerCase() !== 'footer' && el !== container) {
+      el.remove();
+    }
+  });
+
+  // Show cutscene
+  document.body.appendChild(container);
+  container.style.display = 'block';
+
+  let index = 0;
   function showNextText() {
     if(index < cutsceneTexts.length) {
       container.textContent = cutsceneTexts[index];
       index++;
-      setTimeout(showNextText, 2500); // 2.5 seconds per text
+      setTimeout(showNextText, 2500); // 2.5 seconds per line
     } else {
       // End of cutscene: load iframe
       container.innerHTML = `<iframe src="https://arstudios750.github.io/spew13gamble/" style="width:100%; height:100vh; border:none;"></iframe>`;
@@ -305,7 +316,6 @@ btn.addEventListener('click', () => {
 });
 </script>
 
-</div>
     <div id="margin1" ></div>
     <script src="https://cdn.commoninja.com/sdk/latest/commonninja.js" defer></script>
 <div class="commonninja_component pid-674dc992-9dc1-4a33-a1fd-c14b5a9e57c3"></div>
