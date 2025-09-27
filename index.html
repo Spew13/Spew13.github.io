@@ -269,17 +269,31 @@ document.addEventListener('keydown', function(e) {
   <button class="contact-button" onclick="openContact()">Contact</button>
   <button class="contact-button" onclick="openFluffBox()">WebBlock *New*</button>
   <button class="admin-button" onclick="openAdmin()">Admin Login</button>
-  <button id="enterRoomBtn">. . .</button>
+  <button id="enterRoomBtn">Enter the Room</button>
 
-<div id="cutsceneContainer" style="display:none; text-align:center; color:black; font-size:24px; padding:20px;"></div>
+<div id="cutsceneContainer" style="display:none; 
+                                    position:fixed; 
+                                    top:0; 
+                                    left:0; 
+                                    width:100%; 
+                                    height:100%; 
+                                    background:black; 
+                                    color:#00FF00; 
+                                    display:flex; 
+                                    justify-content:center; 
+                                    align-items:center; 
+                                    font-size:28px; 
+                                    text-align:center; 
+                                    padding:20px;
+                                    opacity:1;
+                                    transition: opacity 1s;"></div>
 
 <script>
 const cutsceneTexts = [
-  "You stand in the hallway, shadows stretching long across the walls...",
-  "A chill runs down your spine as you hear whispers from the dark...",
-  "The door ahead creaks slowly, inviting yet ominous...",
-  "You step closer, heart pounding...",
-  "You enter a dark and mysterious room..."
+  "You enter a dark and mysterious room...",
+  "The shadows seem to move around you...",
+  "A strange feeling crawls up your spine...",
+  "Something waits in the corner, unseen..."
 ];
 
 const btn = document.getElementById('enterRoomBtn');
@@ -288,7 +302,7 @@ const container = document.getElementById('cutsceneContainer');
 btn.addEventListener('click', () => {
   btn.style.display = 'none';
 
-  // Remove everything in body except header and footer
+  // Remove everything except header and footer
   const bodyChildren = Array.from(document.body.children);
   bodyChildren.forEach(el => {
     if(el.tagName.toLowerCase() !== 'header' && el.tagName.toLowerCase() !== 'footer' && el !== container) {
@@ -296,25 +310,29 @@ btn.addEventListener('click', () => {
     }
   });
 
-  // Show cutscene
-  document.body.appendChild(container);
-  container.style.display = 'block';
+  container.style.display = 'flex';
 
   let index = 0;
   function showNextText() {
     if(index < cutsceneTexts.length) {
       container.textContent = cutsceneTexts[index];
       index++;
-      setTimeout(showNextText, 2500); // 2.5 seconds per line
+      setTimeout(showNextText, 2500);
     } else {
-      // End of cutscene: load iframe
-      container.innerHTML = `<iframe src="https://arstudios750.github.io/spew13gamble/" style="width:100%; height:100vh; border:none;"></iframe>`;
+      // Fade out the cutscene
+      container.style.opacity = '0';
+      setTimeout(() => {
+        // Load gambling iframe
+        container.innerHTML = `<iframe src="https://arstudios750.github.io/spew13gamble/" style="width:100%; height:100%; border:none;"></iframe>`;
+        container.style.opacity = '1';
+      }, 1000); // match the CSS transition duration
     }
   }
 
   showNextText();
 });
 </script>
+
 
     <div id="margin1" ></div>
     <script src="https://cdn.commoninja.com/sdk/latest/commonninja.js" defer></script>
