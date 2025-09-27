@@ -269,7 +269,7 @@ document.addEventListener('keydown', function(e) {
   <button class="contact-button" onclick="openContact()">Contact</button>
   <button class="contact-button" onclick="openFluffBox()">WebBlock *New*</button>
   <button class="admin-button" onclick="openAdmin()">Admin Login</button>
-  <!-- Button to trigger cutscene -->
+<!-- Button to trigger cutscene -->
 <button id="gambleBtn" style="font-size:2rem;padding:1rem 2rem;cursor:pointer;background:#222;color:white;border:2px solid white;border-radius:10px;">. . .</button>
 
 <!-- Cutscene overlay -->
@@ -277,74 +277,64 @@ document.addEventListener('keydown', function(e) {
     position:fixed;top:0;left:0;width:100%;height:100%;
     background:#000;color:white;font-family:sans-serif;
     display:none;align-items:center;justify-content:center;
-    overflow:hidden;z-index:9999;
+    overflow:hidden;z-index:9999;text-align:center;padding:2rem;
 ">
-  <div id="cutsceneText" style="
-      position:absolute;bottom:-100%;width:100%;text-align:center;font-size:2rem;
-  ">
-    You enter a dark and mysterious room...<br>
-    People are gathered around tables, gambling and laughing...<br>
-    The smell of cards and coins fills the air...
-  </div>
+  <div id="cutsceneText" style="font-size:2rem; line-height:2.5rem; opacity:0;"></div>
 </div>
 
 <!-- Gambling section (hidden initially) -->
-<div id="gamblingSection" style="display:none; text-align:center; padding:2rem;">
-  <h1 style="color:white;">Welcome to the Gambling Room</h1>
-
-  <div style="background:#222; margin:2rem auto; padding:2rem; width:80%; border-radius:15px; border:2px solid white;">
-    <h2>Blackjack</h2>
-    <p>Game placeholder. Implement your blackjack game here.</p>
-    <button style="padding:1rem 2rem; margin:1rem; font-size:1.2rem; cursor:pointer; background:#333;color:white;border:2px solid white;border-radius:10px;">Play Blackjack</button>
-  </div>
-
-  <div style="background:#222; margin:2rem auto; padding:2rem; width:80%; border-radius:15px; border:2px solid white;">
-    <h2>Poker</h2>
-    <p>Game placeholder. Implement your poker game here.</p>
-    <button style="padding:1rem 2rem; margin:1rem; font-size:1.2rem; cursor:pointer; background:#333;color:white;border:2px solid white;border-radius:10px;">Play Poker</button>
-  </div>
+<div id="gamblingSection" style="display:none; text-align:center; padding:2rem; color:white;">
+  <h1>Welcome to the Gambling Room</h1>
+  <p>Place your bets and try your luck!</p>
 </div>
 
 <script>
+const cutsceneLines = [
+  "You enter a dark and mysterious room...",
+  "People are gathered around tables, gambling and laughing...",
+  "The smell of cards and coins fills the air...",
+  "You feel a mix of excitement and danger as you step inside..."
+];
+
 document.getElementById('gambleBtn').addEventListener('click', () => {
-    const cutscene = document.getElementById('cutscene');
-    const text = document.getElementById('cutsceneText');
-    const gambling = document.getElementById('gamblingSection');
+  const cutscene = document.getElementById('cutscene');
+  const textDiv = document.getElementById('cutsceneText');
+  const gambling = document.getElementById('gamblingSection');
 
-    cutscene.style.display = 'flex';
+  cutscene.style.display = 'flex';
+  textDiv.innerHTML = '';
+  let i = 0;
 
-    // Animate text scrolling up
-    let position = -100;
-    const scrollSpeed = 1; // px per frame
-    const scrollInterval = setInterval(() => {
-        position += scrollSpeed;
-        text.style.bottom = position + '%';
-        if (position > 120) { // text scrolled past screen
-            clearInterval(scrollInterval);
-            // fade out cutscene
-            cutscene.style.transition = 'opacity 1s';
-            cutscene.style.opacity = 0;
-            setTimeout(() => {
-                cutscene.style.display = 'none';
-                cutscene.style.opacity = 1;
-                gambling.style.display = 'block';
-            }, 1000);
-        }
-    }, 30);
+  function showLine() {
+    if(i >= cutsceneLines.length) {
+      // fade out cutscene
+      cutscene.style.transition = 'opacity 1s';
+      cutscene.style.opacity = 0;
+      setTimeout(() => {
+        cutscene.style.display = 'none';
+        cutscene.style.opacity = 1;
+        gambling.style.display = 'block';
+      }, 1000);
+      return;
+    }
+
+    const line = document.createElement('div');
+    line.textContent = cutsceneLines[i];
+    line.style.opacity = 0;
+    line.style.marginBottom = '1.5rem';
+    textDiv.appendChild(line);
+
+    // fade in line
+    setTimeout(() => { line.style.transition = 'opacity 1s'; line.style.opacity = 1; }, 50);
+
+    i++;
+    setTimeout(showLine, 2000); // wait 2s before next line
+  }
+
+  showLine();
 });
 </script>
 
-</div>
-    <div id="margin1" ></div>
-    <script src="https://cdn.commoninja.com/sdk/latest/commonninja.js" defer></script>
-<div class="commonninja_component pid-674dc992-9dc1-4a33-a1fd-c14b5a9e57c3"></div>
-        <body> 
-          <style>
-            #margin1 {
-              margin: 40px;
-         }
-          </style>
-              <script>
                 
 function openAdmin() {
   // Replace the entire page content with your loader + mini-game HTML
