@@ -269,7 +269,16 @@ document.addEventListener('keydown', function(e) {
   <button class="contact-button" onclick="openContact()">Contact</button>
   <button class="contact-button" onclick="openFluffBox()">WebBlock *New*</button>
   <button class="admin-button" onclick="openAdmin()">Admin Login</button>
+<button onclick="panic()">PANIC!!!</button>
+
+<script>
+function panic() {
+  // Replace the current page with another site
+  window.location.replace("chrome://newtab");
+}
+</script>
   <button id="enterRoomBtn">. . .</button>
+   
 
 <div id="cutsceneContainer" style=" display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; text-align:center; color:limegreen; font-size:35px; background-color:black; padding-top:50px; z-index:1000;"> </div>
 
