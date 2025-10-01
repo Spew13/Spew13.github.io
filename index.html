@@ -397,7 +397,7 @@ function openAdmin() {
             setTimeout(()=>{if(coin.parentNode) coin.remove();},5000);
           }
           const coinInterval=setInterval(spawnCoin,700);
-          setTimeout(()=>{ clearInterval(coinInterval); window.location.href='https://spew13.github.io'; },5000);
+          setTimeout(()=>{ clearInterval(coinInterval); window.location.href='https://spew13.github.io',5000);
           // Prevent back button
           history.pushState(null,null,location.href);
           window.addEventListener('popstate',()=>{history.pushState(null,null,location.href);});
