@@ -141,70 +141,70 @@
   </div>
 
   <script>
-    function showPopup(message, redirectUrl) {
-      const overlay = document.getElementById("overlay");
-      const popup = document.getElementById("popup");
+  function showPopup(message) {
+    const overlay = document.getElementById("overlay");
+    const popup = document.getElementById("popup");
 
-      popup.textContent = message;
-      overlay.classList.add("show");
+    popup.textContent = message;
+    overlay.classList.add("show");
 
-      // animate popup in
-      setTimeout(() => popup.classList.add("show"), 50);
+    setTimeout(() => popup.classList.add("show"), 50);
 
-      // after delay, fade out and redirect
+    setTimeout(() => {
+      popup.classList.remove("show");
+      popup.classList.add("hide");
+      overlay.style.opacity = "0";
+
       setTimeout(() => {
-        popup.classList.remove("show");
-        popup.classList.add("hide");
-        overlay.style.opacity = "0";
+        overlay.classList.remove("show");
+        popup.classList.remove("hide");
+      }, 900);
+    }, 2500);
+  }
 
-        setTimeout(() => {
-          overlay.classList.remove("show");
-          popup.classList.remove("hide");
-          if (redirectUrl) window.location.href = redirectUrl;
-        }, 900); // wait for fade out
-      }, 2500);
+  // Player signup
+  function signUpPlayer() {
+    const user = document.getElementById("playerUser").value;
+    const pass = document.getElementById("playerPass").value;
+
+    if (user && pass) {
+      localStorage.setItem("playerUser", user);
+      localStorage.setItem("playerPass", pass);
+      showPopup("Player Signed Up!");
+    } else {
+      alert("Fill in all fields!");
     }
+  }
 
-    // Player signup
-    function signUpPlayer() {
-      const user = document.getElementById("playerUser").value;
-      const pass = document.getElementById("playerPass").value;
+  // Player login
+  function loginPlayer() {
+    const user = document.getElementById("playerUser").value;
+    const pass = document.getElementById("playerPass").value;
 
-      if (user && pass) {
-        localStorage.setItem("playerUser", user);
-        localStorage.setItem("playerPass", pass);
-        showPopup("Player Signed Up!");
-      } else {
-        alert("Fill in all fields!");
-      }
+    if (
+      user === localStorage.getItem("playerUser") &&
+      pass === localStorage.getItem("playerPass")
+    ) {
+      showPopup("Welcome Player!");
+    } else {
+      alert("Invalid player login!");
     }
+  }
 
-    // Player login
-    function loginPlayer() {
-      const user = document.getElementById("playerUser").value;
-      const pass = document.getElementById("playerPass").value;
+  // Admin login
+  function loginAdmin() {
+    const user = document.getElementById("adminUser").value;
+    const pass = document.getElementById("adminPass").value;
 
-      if (
-        user === localStorage.getItem("playerUser") &&
-        pass === localStorage.getItem("playerPass")
-      ) {
-        showPopup("Welcome Player!", "https://spew13.github.io/");
-      } else {
-        alert("Invalid player login!");
-      }
+    // Replace these with your actual admin credentials
+    if (user === "carmstrong31" && pass === "255102447") {
+      showPopup("Welcome Admin!");
+    } else {
+      alert("Invalid admin login!");
     }
+  }
+</script>
 
-    // Admin login
-    function loginAdmin() {
-      const user = document.getElementById("adminUser").value;
-      const pass = document.getElementById("adminPass").value;
-
-      if (user === "carmstrong31" && pass === "255102447") {
-        showPopup("Welcome Admin!", "https://github.com/");
-      } else {
-        alert("Invalid admin login!");
-      }
-    }
-  </script>
 </body>
 </html>
+
