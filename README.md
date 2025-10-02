@@ -24,6 +24,9 @@ The errors became part of the myth. A broken link wasn’t just a problem; it wa
 
 # Chapter 5: Beyond the Code
 
+<img width="1366" height="768" alt="Screenshot 2025-10-02 1 54 02 PM" src="https://github.com/user-attachments/assets/3379a5ee-af19-4496-9073-af08ca5a5735" />
+
+
 Now, Spew13 isn’t just a website. It’s a reminder of what can grow when rules are ignored and mistakes are allowed to breathe. It’s proof that something doesn’t have to be perfect to be meaningful. The site may never look sleek or follow all the trends, but that’s not its purpose. Spew13 exists because sometimes the most lasting creations come from accidents, persistence, and the courage to let things be messy. It’s more than code — it’s a story, still unfolding, written by everyone who steps inside.
 
 ### Spew13 forever!!!
