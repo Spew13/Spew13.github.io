@@ -117,15 +117,6 @@
 </head>
 <body>
   <div class="container" id="main">
-    <!-- Player Box -->
-    <div class="box">
-      <h2>Player</h2>
-      <input type="text" id="playerUser" placeholder="Username">
-      <input type="password" id="playerPass" placeholder="Password">
-      <button onclick="signUpPlayer()">Sign Up</button>
-      <button onclick="loginPlayer()">Login</button>
-    </div>
-
     <!-- Admin Box -->
     <div class="box">
       <h2>Admin</h2>
@@ -140,71 +131,49 @@
     <div class="popup" id="popup">Welcome</div>
   </div>
 
-  <script>
-  function showPopup(message) {
-    const overlay = document.getElementById("overlay");
-    const popup = document.getElementById("popup");
+ <script>
+function showPopup(message) {
+  const overlay = document.getElementById("overlay");
+  const popup = document.getElementById("popup");
 
-    popup.textContent = message;
-    overlay.classList.add("show");
+  popup.textContent = message;
+  overlay.classList.add("show");
 
-    setTimeout(() => popup.classList.add("show"), 50);
+  // animate popup in
+  setTimeout(() => popup.classList.add("show"), 50);
+
+  // animate popup out after 2.5s
+  setTimeout(() => {
+    popup.classList.remove("show");
+    popup.classList.add("hide");
+    overlay.style.opacity = "0";
 
     setTimeout(() => {
-      popup.classList.remove("show");
-      popup.classList.add("hide");
-      overlay.style.opacity = "0";
+      overlay.classList.remove("show");
+      popup.classList.remove("hide");
+    }, 900);
+  }, 2500);
+}
 
-      setTimeout(() => {
-        overlay.classList.remove("show");
-        popup.classList.remove("hide");
-      }, 900);
+// Admin login function
+function loginAdmin() {
+  const user = document.getElementById("adminUser").value;
+  const pass = document.getElementById("adminPass").value;
+
+  if (user === "carmstrong31" && pass === "255102447") {
+    // Show popup
+    showPopup("Welcome Admin!");
+
+    // Redirect after 2.5 seconds
+    setTimeout(() => {
+      window.location.href = "https://github.com/Spew13/Spew13.github.io";
     }, 2500);
+  } else {
+    alert("Invalid admin login!");
   }
-
-  // Player signup
-  function signUpPlayer() {
-    const user = document.getElementById("playerUser").value;
-    const pass = document.getElementById("playerPass").value;
-
-    if (user && pass) {
-      localStorage.setItem("playerUser", user);
-      localStorage.setItem("playerPass", pass);
-      showPopup("Player Signed Up!");
-    } else {
-      alert("Fill in all fields!");
-    }
-  }
-
-  // Player login
-  function loginPlayer() {
-    const user = document.getElementById("playerUser").value;
-    const pass = document.getElementById("playerPass").value;
-
-    if (
-      user === localStorage.getItem("playerUser") &&
-      pass === localStorage.getItem("playerPass")
-    ) {
-      showPopup("Welcome Player!");
-    } else {
-      alert("Invalid player login!");
-    }
-  }
-
-  // Admin login
-  function loginAdmin() {
-    const user = document.getElementById("adminUser").value;
-    const pass = document.getElementById("adminPass").value;
-
-    // Replace these with your actual admin credentials
-    if (user === "carmstrong31" && pass === "255102447") {
-      showPopup("Welcome Admin!");
-    } else {
-      alert("Invalid admin login!");
-    }
-  }
+}
 </script>
+
 
 </body>
 </html>
-
