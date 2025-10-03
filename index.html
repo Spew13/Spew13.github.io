@@ -999,6 +999,13 @@ function openAdmin() {
   </button>
   <div class="iframe-container"></div>
 </div>
+      <div class="game-box" id="hills">
+  <p>Hills Of Steel!</p>
+  <button onclick="toggleCustomIframe(this, 'raftwars', 'https://mageedu23.github.io/g22/class-359')">
+    Click to Load
+  </button>
+  <div class="iframe-container"></div>
+</div>
 
           <!-- Drive Mad Game Box -->
 <div class="game-box" id="drive-mad-box">
@@ -1013,6 +1020,18 @@ function openAdmin() {
 <style>
 /* Rainbow for blood money */
 #bloodmoney {
+  position: relative;
+  padding: 20px;
+  border: 6px solid;
+  border-image-slice: 1;
+  border-width: 6px;
+  border-radius: 12px;
+  animation: rainbow-border 8s linear infinite;
+  /* Optional: background color inside */
+  background-color: #1f1f1f;
+  color: white;
+}
+  #hills {
   position: relative;
   padding: 20px;
   border: 6px solid;
