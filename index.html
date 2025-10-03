@@ -990,9 +990,15 @@ function openAdmin() {
   </button>
   <div class="iframe-container"></div>
 </div>
-        <!-- Happy Halloween! -->
 
-
+        <!-- RAFT WARS Game Box -->
+<div class="game-box" id="raftwars">
+  <p>RAFT WARS!</p>
+  <button onclick="toggleCustomIframe(this, 'raftwars', 'https://mageedu23.github.io/g5/class-409')">
+    Click to Load
+  </button>
+  <div class="iframe-container"></div>
+</div>
 
           <!-- Drive Mad Game Box -->
 <div class="game-box" id="drive-mad-box">
@@ -1041,6 +1047,19 @@ function openAdmin() {
   /* Optional: background color inside */
   background-color: #1f1f1f;
   color: white;
+}
+       #raftwars {
+  position: relative;
+  padding: 20px;
+  border: 6px solid;
+  border-image-slice: 1;
+  border-width: 6px;
+  border-radius: 12px;
+  animation: rainbow-border 9s linear infinite;
+  /* Optional: background color inside */
+  background-color: #1f1f1f;
+  color: white;
+}
 }
 
 /* Animate the border gradient */
