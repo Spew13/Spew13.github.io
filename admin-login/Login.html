@@ -4,17 +4,18 @@
   <meta charset="UTF-8">
   <title>Login</title>
   <style>
-    body {
-      margin: 0;
-      font-family: 'Courier New', monospace;
-      background: #000;
-      color: #0f0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      overflow: hidden;
-    }
+     /* Full-page center */
+  body {
+    background-color: #111; /* dark background */
+    font-family: 'Orbitron', sans-serif;
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center; /* horizontal center */
+    align-items: center;     /* vertical center */
+    flex-direction: column;
+  }
 
     .container {
       display: flex;
@@ -113,6 +114,57 @@
       opacity: 0;
       transform: translateY(-40px) scale(0.95);
     }
+       .content {
+    max-width: 800px; /* adjust to your content width */
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  /* Admin button container */
+  .button-container {
+    display: flex;
+    justify-content: center; /* center horizontally */
+    margin-top: 40px; /* space below other content */
+  }
+
+  .admin-button {
+    display: inline-block;
+    text-decoration: none;
+    background: linear-gradient(45deg, #32ff00, #eaff00);
+    color: #fff;
+    padding: 12px 30px;
+    font-size: 1.2rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border-radius: 10px;
+    box-shadow: 0 0 8px #32ff00, 0 0 16px #eaff00, 0 0 24px #32ff00, 0 0 32px #eaff00;
+    transition: all 0.3s ease-in-out;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .admin-button::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: rotate(45deg);
+    transition: all 0.5s;
+  }
+
+  .admin-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 16px #32ff00, 0 0 32px #eaff00, 0 0 48px #32ff00, 0 0 64px #eaff00;
+  }
+
+  .admin-button:hover::before {
+    top: 100%;
+    left: 100%;
+  }
   </style>
 </head>
 <body>
@@ -125,6 +177,13 @@
       <button onclick="loginAdmin()">Login</button>
     </div>
   </div>
+
+      <!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<body>
+
+<!-- Centered Become Admin Button with small gap -->
+<a href="https://forms.gle/5rXJa5euxx6SZpEn6" class="admin-button" style="margin-top: 17px;">Become Admin</a>
 
   <!-- Overlay + Popup -->
   <div class="overlay" id="overlay">
