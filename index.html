@@ -106,6 +106,46 @@ document.addEventListener('keydown', function(e) {
 
       setInterval(draw, 80);
     </script>
+   <div id="announcementPopup" style="
+  display:none; 
+  position:fixed; 
+  top:50%; 
+  left:50%; 
+  transform:translate(-50%, -50%);
+  color:limegreen; 
+  font-size:35px; 
+  text-align:center; 
+  text-shadow:0 0 5px limegreen,0 0 10px limegreen,0 0 20px limegreen;
+  z-index:1000;
+  padding:20px;
+  background-color:rgba(0,0,0,0.8);
+  border:2px solid limegreen;
+  border-radius:10px;
+"></div>
+
+<script>
+const binId = "68e12ed2ae596e708f05e933";
+const popup = document.getElementById('announcementPopup');
+
+async function loadAnnouncements(){
+  try{
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`);
+    const data = await res.json();
+    const messages = data.record;
+
+    if(messages.length > 0){
+      popup.innerHTML = messages.map(m => `<p>${m.text}</p>`).join('');
+      popup.style.display = 'block';
+      setTimeout(()=>{popup.style.display='none';},8000);
+    }
+  } catch(err){ console.error(err);}
+}
+
+// Refresh every 15 seconds to get new announcements
+loadAnnouncements();
+setInterval(loadAnnouncements,15000);
+</script>
+
   </body>
 
 <style>
