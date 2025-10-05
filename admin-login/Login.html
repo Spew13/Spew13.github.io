@@ -183,7 +183,7 @@
 <body>
 
 <!-- Centered Become Admin Button with small gap -->
-<a href="https://forms.gle/5rXJa5euxx6SZpEn6" class="admin-button" style="margin-top: 17px;">Become Admin</a>
+<a href="https://forms.gle/5rXJa5euxx6SZpEn6" class="admin-button" style="margin-top: 20px;">Become Admin</a>
 
   <!-- Overlay + Popup -->
   <div class="overlay" id="overlay">
@@ -214,16 +214,12 @@ function showPopup(message) {
   }, 2500);
 }
 
-// Admin login function
 function loginAdmin() {
-  const user = document.getElementById("adminUser").value;
+  const user = document.getElementById("adminUser").value.trim();
   const pass = document.getElementById("adminPass").value;
 
-  if (user === "carmstrong31" && pass === "255102447") {
-    // Show popup
+  if (admins[user] && admins[user] === pass) {
     showPopup("Welcome Admin!");
-
-    // Redirect after 2.5 seconds
     setTimeout(() => {
       window.location.href = "https://spew13.github.io/spew13-admin-panel/";
     }, 2500);
@@ -231,7 +227,16 @@ function loginAdmin() {
     alert("Invalid admin login!");
   }
 }
+
+// Example credentials map (username/email -> password)
+const admins = {
+  "carmstrong31": "N8r$yL2q#vT9pX7s",
+  "osullivan31": "N8r$yL2q#vT9pX7s",
+  "ceverett31": "N8r$yL2q#vT9pX7s",
+  "eswerdan31": "N8r$yL2q#vT9pX7s"
+};
 </script>
+
 
 
 </body>
