@@ -130,7 +130,8 @@ document.addEventListener('keydown', function(e) {
 (() => {
   const binId = "68e12ed2ae596e708f05e933";
   const popup = document.getElementById("announcementPopup");
-  let lastHash = "";
+  const STORAGE_KEY = "spew13_lastAnnouncement";
+  let lastShown = localStorage.getItem(STORAGE_KEY) || "";
 
   async function checkAnnouncements() {
     try {
@@ -138,30 +139,44 @@ document.addEventListener('keydown', function(e) {
       const json = await res.json();
       const messages = json.record || [];
       if (!messages.length) return;
+
       const newest = messages[messages.length - 1];
-      const h = JSON.stringify(newest);
-      if (h === lastHash) return; // already shown
-      lastHash = h;
-      popup.innerHTML = `<div>${escapeHtml(newest.text)}</div>`;
-      popup.style.display = "block";
-      // fade in
-      requestAnimationFrame(() => popup.style.opacity = "1");
-      // hide after 8s (fade out)
-      setTimeout(() => {
-        popup.style.opacity = "0";
-        setTimeout(() => popup.style.display = "none", 500);
-      }, 8000);
+      const newestHash = JSON.stringify(newest);
+
+      // 🧠 If already seen, don't show again
+      if (newestHash === lastShown) return;
+
+      // Otherwise, show it once
+      showPopup(newest.text);
+
+      // Save that we’ve shown this one
+      localStorage.setItem(STORAGE_KEY, newestHash);
     } catch (err) {
       console.error("Announcement fetch error:", err);
     }
   }
 
-  // simple escape
-  function escapeHtml(s){ return (""+s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
+  function showPopup(message) {
+    popup.innerHTML = `<div>${escapeHtml(message)}</div>`;
+    popup.style.display = "block";
+    requestAnimationFrame(() => popup.style.opacity = "1");
 
-  // initial + poll
+    // Hide after 8 seconds
+    setTimeout(() => {
+      popup.style.opacity = "0";
+      setTimeout(() => (popup.style.display = "none"), 500);
+    }, 8000);
+  }
+
+  function escapeHtml(s) {
+    return ("" + s)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;");
+  }
+
+  // ✅ Check announcements once on page load
   checkAnnouncements();
-  setInterval(checkAnnouncements, 15000); // every 15s
 })();
 </script>
 
