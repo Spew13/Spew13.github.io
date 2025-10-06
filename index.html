@@ -1046,6 +1046,18 @@ function openAdmin() {
   background-color: #1f1f1f;
   color: white;
 }
+        #retrocol {
+  position: relative;
+  padding: 20px;
+  border: 6px solid;
+  border-image-slice: 1;
+  border-width: 6px;
+  border-radius: 12px;
+  animation: rainbow-border 6s linear infinite;
+  /* Optional: background color inside */
+  background-color: #1f1f1f;
+  color: white;
+}
 /* Animate the border gradient */
 @keyframes rainbow-border {
   0% {
@@ -1094,6 +1106,13 @@ function openAdmin() {
 <div class="game-box" id="level-devil-box">
   <p>Level Devil</p>
   <button onclick="toggleCustomIframe(this, 'level-devil-box', 'https://1games.io/level-devil')">
+    Click to Load
+  </button>
+  <div class="iframe-container"></div>
+</div>
+     <div class="game-box" id="retrocol">
+  <p>*NEW* Retro Bowl Collage</p>
+  <button onclick="toggleCustomIframe(this, 'retrocol', 'https://retrobowl.college">
     Click to Load
   </button>
   <div class="iframe-container"></div>
@@ -1247,7 +1266,8 @@ function openAdmin() {
       <p>Retro Bowl</p>
       <button onclick="toggleGame('retro-bowl', this)">Click to Load</button>
       <div class="iframe-container" id="retro-bowl"></div>
-    </div>
+    
+    
 
     <div class="game-box">
       <p>Flappy Bird</p>
