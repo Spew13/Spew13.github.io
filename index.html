@@ -1034,6 +1034,18 @@ function openAdmin() {
   background-color: #1f1f1f;
   color: white;
 }
+           #1v1 {
+  position: relative;
+  padding: 20px;
+  border: 6px solid;
+  border-image-slice: 1;
+  border-width: 6px;
+  border-radius: 12px;
+  animation: rainbow-border 6s linear infinite;
+  /* Optional: background color inside */
+  background-color: #1f1f1f;
+  color: white;
+}
 /* Animate the border gradient */
 @keyframes rainbow-border {
   0% {
@@ -1067,6 +1079,13 @@ function openAdmin() {
 <div class="game-box" id="bloodmoney">
   <p>BLOODMONEY!</p>
   <button onclick="toggleCustomIframe(this, 'bloodmoney', 'https://1games.io/bloodmoney')">
+    Click to Load
+  </button>
+  <div class="iframe-container"></div>
+</div>
+     <div class="game-box" id="1v1">
+  <p>1V1 LOL!!</p>
+  <button onclick="toggleCustomIframe(this, '1v1', 'https://1v1.lol/')">
     Click to Load
   </button>
   <div class="iframe-container"></div>
