@@ -384,7 +384,7 @@ btn.addEventListener('click', () => {
     if(index < cutsceneTexts.length) {
       container.textContent = cutsceneTexts[index];
       index++;
-      setTimeout(showNextText, 800); // 2.5 seconds per line
+      setTimeout(showNextText, 1000); // 2.5 seconds per line
     } else {
       // End of cutscene: load iframe
       container.innerHTML = `<iframe 
