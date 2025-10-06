@@ -106,44 +106,63 @@ document.addEventListener('keydown', function(e) {
 
       setInterval(draw, 80);
     </script>
-   <div id="announcementPopup" style="
-  display:none; 
-  position:fixed; 
-  top:50%; 
-  left:50%; 
-  transform:translate(-50%, -50%);
-  color:limegreen; 
-  font-size:35px; 
-  text-align:center; 
-  text-shadow:0 0 5px limegreen,0 0 10px limegreen,0 0 20px limegreen;
-  z-index:1000;
-  padding:20px;
-  background-color:rgba(0,0,0,0.8);
-  border:2px solid limegreen;
+   <!-- Paste near the end of <body> on Spew13 pages -->
+<div id="announcementPopup" style="
+  display:none;
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  color:limegreen;
+  font-size:34px;
+  text-align:center;
+  padding:24px;
+  background:rgba(0,0,0,0.85);
+  border:2px solid rgba(144,238,144,0.9);
   border-radius:10px;
+  text-shadow:0 0 6px limegreen, 0 0 14px limegreen;
+  z-index:99999;
+  opacity:0;
+  transition:opacity .5s ease;
 "></div>
 
 <script>
-const binId = "68e12ed2ae596e708f05e933";
-const popup = document.getElementById('announcementPopup');
+(() => {
+  const binId = "68e12ed2ae596e708f05e933";
+  const popup = document.getElementById("announcementPopup");
+  let lastHash = "";
 
-async function loadAnnouncements(){
-  try{
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`);
-    const data = await res.json();
-    const messages = data.record;
-
-    if(messages.length > 0){
-      popup.innerHTML = messages.map(m => `<p>${m.text}</p>`).join('');
-      popup.style.display = 'block';
-      setTimeout(()=>{popup.style.display='none';},8000);
+  async function checkAnnouncements() {
+    try {
+      const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`);
+      const json = await res.json();
+      const messages = json.record || [];
+      if (!messages.length) return;
+      const newest = messages[messages.length - 1];
+      const h = JSON.stringify(newest);
+      if (h === lastHash) return; // already shown
+      lastHash = h;
+      popup.innerHTML = `<div>${escapeHtml(newest.text)}</div>`;
+      popup.style.display = "block";
+      // fade in
+      requestAnimationFrame(() => popup.style.opacity = "1");
+      // hide after 8s (fade out)
+      setTimeout(() => {
+        popup.style.opacity = "0";
+        setTimeout(() => popup.style.display = "none", 500);
+      }, 8000);
+    } catch (err) {
+      console.error("Announcement fetch error:", err);
     }
-  } catch(err){ console.error(err);}
-}
+  }
 
-// Refresh every 15 seconds to get new announcements
-loadAnnouncements();
-setInterval(loadAnnouncements,15000);
+  // simple escape
+  function escapeHtml(s){ return (""+s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
+
+  // initial + poll
+  checkAnnouncements();
+  setInterval(checkAnnouncements, 15000); // every 15s
+})();
 </script>
 
   </body>
