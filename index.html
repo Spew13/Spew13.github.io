@@ -356,11 +356,8 @@ function panic() {
       
 <script>
 const cutsceneTexts = [
-  "You stand in the hallway, shadows stretching long across the walls...",
-  "There's a creepy door",
-  "There's an unknown scream from a man...",
+  "There's a creepy room ahead...",
   "A chill runs down your spine...",
-  "You step closer, heart pounding...",
   "You enter the dark and mysterious room..."
 ];
 
@@ -387,7 +384,7 @@ btn.addEventListener('click', () => {
     if(index < cutsceneTexts.length) {
       container.textContent = cutsceneTexts[index];
       index++;
-      setTimeout(showNextText, 2500); // 2.5 seconds per line
+      setTimeout(showNextText, 800); // 2.5 seconds per line
     } else {
       // End of cutscene: load iframe
       container.innerHTML = `<iframe 
