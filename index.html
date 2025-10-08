@@ -344,7 +344,7 @@ document.addEventListener('keydown', function(e) {
   <button class="contact-button" onclick="openContact()">Contact</button>
   <button class="contact-button" onclick="openFluffBox()">WebBlock *New*</button>
 <button class="admin-button" onclick="openAdmin()">Admin Login</button>
-
+<button class="dontclick" onclick="<script> alert("i warned you") </script> window.location.replace("https://www.youtube.com/watch?v=xvFZjo5PgG0");">DONT CLICK</button>
 <script>
   function openAdmin() {
     window.location.href = "https://spew13.github.io/admin-login/Login.html";
@@ -1142,6 +1142,13 @@ function openAdmin() {
   </button>
   <div class="iframe-container"></div>
 </div>
+     <div class="game-box" id="clash">
+  <p>*NEW* Clash Royal</p>
+  <button onclick="toggleCustomIframe(this, 'clash', 'https://www.greenfoot.org/scenarios/27793')">
+    Click to Load
+  </button>
+  <div class="iframe-container"></div>
+</div>
 
           
 <style>
@@ -1206,6 +1213,18 @@ function openAdmin() {
   background-color: #1f1f1f;
   color: white;
 }
+        #clash {
+  position: relative;
+  padding: 20px;
+  border: 6px solid;
+  border-image-slice: 1;
+  border-width: 6px;
+  border-radius: 12px;
+  animation: rainbow-border 9s linear infinite;
+  /* Optional: background color inside */
+  background-color: #1f1f1f;
+  color: white;
+}
 }
 
 /* Animate the border gradient */
@@ -1227,6 +1246,7 @@ function openAdmin() {
       <button onclick="toggleGame('backflip-dive-3d', this)">Click to Load</button>
       <div class="iframe-container" id="backflip-dive-3d"></div>
     </div>
+     
 
     <div class="game-box">
       <p>Slope</p>
