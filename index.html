@@ -9,6 +9,17 @@ Spew13, owned and operated by Ar and Green Iguana Studios, takes unauthorized ac
 We strongly advise all users and visitors to respect the integrity and security of our platform. Any recurrence of unauthorized activity will result in decisive legal measures.-->
 <head>
   <script>
+  // Only allow Spew13 to run on your site
+  const allowedHost = "arstudios750.github.io";
+
+  if (window.top !== window.self) {
+    if (window.top.location.hostname !== allowedHost) {
+      window.top.location = window.location; // Break out of iframe
+    }
+  }
+</script>
+
+  <script>
     // Prevent embedding in an iframe
     if (window.top !== window.self) {
       // Break out of the iframe
