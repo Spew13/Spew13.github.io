@@ -9,7 +9,7 @@ Spew13, owned and operated by Ar and Green Iguana Studios, takes unauthorized ac
 We strongly advise all users and visitors to respect the integrity and security of our platform. Any recurrence of unauthorized activity will result in decisive legal measures.-->
 <head>
   <script>
-  // Only allow Spew13 to run on your site
+ 
   const allowedHost = "arstudios750.github.io";
 
   if (window.top !== window.self) {
@@ -26,7 +26,7 @@ We strongly advise all users and visitors to respect the integrity and security 
       window.top.location = window.self.location;
     }
   </script>
-  <!-- Your other head content goes here -->
+  
 </head>
 
 <html lang="en">
@@ -97,7 +97,7 @@ document.addEventListener('contextmenu', e => {
     showAntiCopyPopup();
 });
 
-// Disable common shortcuts (Ctrl+Shift+I, Ctrl+U, F12)
+// Disable common shortcuts 
 document.addEventListener('keydown', function(e) {
     if (e.key === 'F12' || 
         (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) ||
@@ -148,7 +148,7 @@ document.addEventListener('keydown', function(e) {
 
       setInterval(draw, 80);
     </script>
-   <!-- Paste near the end of <body> on Spew13 pages -->
+   
 <div id="announcementPopup" style="
   display:none;
   position:fixed;
@@ -185,7 +185,7 @@ document.addEventListener('keydown', function(e) {
       const newest = messages[messages.length - 1];
       const newestHash = JSON.stringify(newest);
 
-      // 🧠 If already seen, don't show again
+
       if (newestHash === lastShown) return;
 
       // Otherwise, show it once
@@ -217,7 +217,7 @@ document.addEventListener('keydown', function(e) {
       .replaceAll(">", "&gt;");
   }
 
-  // ✅ Check announcements once on page load
+  //  Check announcements once on page load
   checkAnnouncements();
 })();
 </script>
@@ -375,7 +375,7 @@ document.addEventListener('keydown', function(e) {
   </style>
 </head>
 <body>
-      <!-- Main Spew13 Content -->
+      
   <div id="spew13Main">
     <header>Spew 13 - Green Iguana & AR Studios</header>
     <div class="spew-clock" id="clock">00:00:00 AM</div>
@@ -426,7 +426,7 @@ const container = document.getElementById('cutsceneContainer');
 btn.addEventListener('click', () => {
   btn.style.display = 'none';
 
-  // Remove everything in body except header and footer
+  
   const bodyChildren = Array.from(document.body.children);
   bodyChildren.forEach(el => {
     if(el.tagName.toLowerCase() !== 'header' && el.tagName.toLowerCase() !== 'footer' && el !== container) {
@@ -434,7 +434,7 @@ btn.addEventListener('click', () => {
     }
   });
 
-  // Show cutscene
+ 
   document.body.appendChild(container);
   container.style.display = 'block';
 
@@ -670,7 +670,7 @@ function openAdmin() {
 
   // Go Back to original page
   function backToPage() {
-    location.reload(); // simplest way to restore Spew13 page
+    location.reload(); 
   }
 </script>
 <script>
@@ -735,7 +735,7 @@ function openAdmin() {
 
   // Go Back to original page
   function backToPage() {
-    location.reload(); // restore original Spew13 page
+    location.reload(); 
   }
 </script>
 <script>
