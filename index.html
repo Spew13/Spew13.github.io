@@ -1601,7 +1601,102 @@ function restoreGames() {
 </script>
 
       <!-- All Gallery code End-->
-      
+
+  <!-- Spew13 announcement receiver (paste before </body>) -->
+<div id="announcementPopup" style="
+  display:none;
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  background: rgba(0,0,0,0.9);
+  color: limegreen;
+  font-size: 32px;
+  text-align:center;
+  padding: 20px 28px;
+  border-radius: 12px;
+  border: 2px solid rgba(144,238,144,0.9);
+  text-shadow: 0 0 6px limegreen, 0 0 12px limegreen;
+  z-index: 99999;
+  opacity: 0;
+  transition: opacity .25s ease, transform .25s ease;
+"></div>
+
+<script>
+(function(){
+  // CONFIG
+  const BIN_ID = "68e8eb5bd0ea881f409c55e0"; // your public/readable bin
+  const DISPLAY_MS = 6000;  // 5-7s display (6000ms)
+  const POLL_MS = 1000;     // fallback poll every 1s for cross-device near-instant
+
+  const popup = document.getElementById('announcementPopup');
+  let lastHash = null;
+
+  // Try BroadcastChannel (instant between tabs on same origin)
+  const bc = (typeof BroadcastChannel !== 'undefined') ? new BroadcastChannel('spew13_ann') : null;
+  if (bc) {
+    bc.onmessage = (ev) => {
+      try {
+        const newest = ev.data && ev.data.newest;
+        if (!newest) return;
+        const h = JSON.stringify(newest);
+        if (h === lastHash) return;
+        lastHash = h;
+        showPopup(newest.text);
+      } catch(e){ console.error('bc.onmessage', e); }
+    };
+  }
+
+  // show popup (centered)
+  function showPopup(text){
+    popup.textContent = String(text || '');
+    popup.style.display = 'block';
+    // force reflow for transition
+    requestAnimationFrame(() => {
+      popup.style.opacity = '1';
+      popup.style.transform = 'translate(-50%,-50%) scale(1)';
+    });
+    setTimeout(() => {
+      popup.style.opacity = '0';
+      setTimeout(()=> popup.style.display = 'none', 250);
+    }, DISPLAY_MS);
+  }
+
+  // fetch latest from JSONBin and display if new
+  async function fetchLatestAndMaybeShow(){
+    try {
+      const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`);
+      if (!res.ok) return;
+      const data = await res.json();
+      const arr = data.record || [];
+      if (!arr.length) return;
+      const newest = arr[arr.length - 1];
+      const h = JSON.stringify(newest);
+      if (h === lastHash) return;
+      lastHash = h;
+      showPopup(newest.text);
+    } catch(err) {
+      // silently ignore network errors
+      // console.error('fetchLatest', err);
+    }
+  }
+
+  // initial check + polling fallback
+  fetchLatestAndMaybeShow();
+  setInterval(fetchLatestAndMaybeShow, POLL_MS);
+
+  // Expose a safe method to show programmatically (optional)
+  window.Spew13_showAnnouncement = function(text){
+    // this does NOT change the bin; it only shows locally
+    try {
+      const fake = { text: text, time: new Date().toISOString() };
+      lastHash = JSON.stringify(fake);
+      showPopup(fake.text);
+    } catch(e){}
+  };
+})();
+</script>
+
   <script>
     function toggleGame(path, button) {
       const container = document.getElementById(path);
