@@ -9,7 +9,6 @@ Spew13, owned and operated by Ar and Green Iguana Studios, takes unauthorized ac
 We strongly advise all users and visitors to respect the integrity and security of our platform. Any recurrence of unauthorized activity will result in decisive legal measures.-->
 <head>
   <script>
- 
   const allowedHost = "arstudios750.github.io";
 
   if (window.top !== window.self) {
@@ -18,15 +17,13 @@ We strongly advise all users and visitors to respect the integrity and security 
     }
   }
 </script>
-
   <script>
     
     if (window.top !== window.self) {
       
       window.top.location = window.self.location;
     }
-  </script>
-  
+  </script> 
 </head>
 
 <html lang="en">
@@ -412,7 +409,7 @@ function panic() {
    
 
 <div id="cutsceneContainer" style=" display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; text-align:center; color:limegreen; font-size:35px; background-color:black; padding-top:50px; z-index:1000;"> </div>
-
+<!--akward space-->
 
 
 
@@ -556,6 +553,7 @@ function openAdmin() {
     document.body.appendChild(heading);
 
     // Create textarea... NO
+    //this bussin code
     const textarea = document.createElement("textarea");
     textarea.id = "reviewText";
     textarea.placeholder = "Write your review here...";
@@ -596,7 +594,7 @@ function openAdmin() {
     };
     sendBtn.onclick = sendReview;
     document.body.appendChild(sendBtn);
-  }
+  }//hey
 
   function sendReview() {
     const review = document.getElementById("reviewText").value.trim();
@@ -681,6 +679,7 @@ function openAdmin() {
   }
 </script>
 <script>
+  //human code
   function openGallery() {
 
     document.body.innerHTML = "";
@@ -745,6 +744,7 @@ function openAdmin() {
   }
 </script>
 <script>
+  //humancode
   function openAbout() {
     //hi 
     document.body.innerHTML = "";
