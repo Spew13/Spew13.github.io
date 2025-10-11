@@ -9,38 +9,44 @@ Spew13, owned and operated by Ar and Green Iguana Studios, takes unauthorized ac
 We strongly advise all users and visitors to respect the integrity and security of our platform. Any recurrence of unauthorized activity will result in decisive legal measures.-->
 <!--hi-->
 
-<div id="base64-container"></div>
+<!-- Container for Base64 HTML content -->
+<div id="base64-container" style="width:100%; text-align:center; margin-top:10px;"></div>
 
 <script>
 fetch('https://api.jsonbin.io/v3/b/68e9a13b43b1c97be9622afa/latest', {
   headers: { 'X-Master-Key': '$2a$10$UGn2PaD5YfJ1z7c4xo4f4e0WHugS2BMfS4yrYRsDqukqty/V38OBO' }
 })
     
-.then(res => {
-  if (!res.ok) throw new Error('Fetch failed: ' + res.status);
-  return res.json();
-})
+.then(res => res.json())
 .then(data => {
   const base64HTML = (data.record && data.record.html) ? data.record.html : '';
   const decodedHTML = atob(base64HTML.replace(/\s+/g, ''));
 
-  const container = document.createElement('div');
-  container.innerHTML = decodedHTML;
+  const container = document.getElementById('base64-container');
 
-  // Insert Base64 HTML directly after the visitor counter
-  const visitorCounter = document.getElementById('visitor-counter');
-  if (visitorCounter) {
-    visitorCounter.insertAdjacentElement('afterend', container);
-  } else {
-    // fallback: inject into the placeholder container
-    document.getElementById('base64-container').replaceWith(container);
+  // Create a temporary div to parse the HTML
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = decodedHTML;
+
+  // Style the first <p> (assume it's your visitor counter text)
+  const visitorText = tempDiv.querySelector('p');
+  if(visitorText) {
+    visitorText.style.color = 'lime';
+    visitorText.style.fontWeight = 'bold';
+    visitorText.style.fontSize = '1.2em';
   }
 
-  // Execute any scripts inside Base64 HTML
+  // Move all elements into the container
+  while(tempDiv.firstChild) {
+    container.appendChild(tempDiv.firstChild);
+  }
+
+  // Execute all scripts in the decoded HTML
   container.querySelectorAll('script').forEach(oldScript => {
     const newScript = document.createElement('script');
-    if (oldScript.src) {
+    if(oldScript.src) {
       newScript.src = oldScript.src;
+      newScript.async = false; // run in order
     } else {
       newScript.textContent = oldScript.textContent;
     }
@@ -50,8 +56,10 @@ fetch('https://api.jsonbin.io/v3/b/68e9a13b43b1c97be9622afa/latest', {
 .catch(err => {
   console.error(err);
   const container = document.getElementById('base64-container');
-  container.textContent = 'Hello! Spew13 is experiencing technical difficulties. Please be patient as we fix this error.';
+  container.textContent = 'Spew13 is experiencing technical difficulties.';
 });
 </script>
-
-
+<!-- Visitor Counter, works reliably -->
+<div style="width: 100%; text-align: center; margin-top: 10px;">
+  <p style="color: lime; font-weight: bold; font-size: 1.2em;">Spew13 Visitor Counter</p>
+  <script type="text/javascript" src="https://counter.websiteout.com/js/2/0/2500/0"></script>
