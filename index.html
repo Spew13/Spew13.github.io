@@ -1,54 +1,54 @@
+<!--The United States Computer Fraud besides Abuse Act forbids anyone to enter, change or meddle with a website or digital platform unless the owner gives clear permission. Federal law treats such conduct as a crime and allows both civil and criminal punishment.
 
-<!--if you're reading this, you're gay -->
-<!--Official Notice Regarding Unauthorized Access
+Ar or Green Iguana Studios, owner of Spew13, treats every breach as a serious matter. If a person tries to hack, exploit or weaken the site or any digital asset, the company will start legal action at once. Federal plus state statutes allow fines or other money penalties and the company will use those remedies.
 
-Pursuant to the provisions of the United States Computer Fraud and Abuse Act (CFAA), any attempt to access, modify, or interfere with a website or digital platform without explicit authorization from the owner is strictly prohibited and constitutes a criminal offense. Such actions are subject to civil and criminal penalties under federal law.
-
-Spew13, owned and operated by Ar and Green Iguana Studios, takes unauthorized access extremely seriously. Any individual found attempting to hack, exploit, or otherwise compromise our website or digital assets will face immediate legal action. This may include, but is not limited to, prosecution under applicable federal and state laws and the imposition of fines or other monetary penalties.
-
-We strongly advise all users and visitors to respect the integrity and security of our platform. Any recurrence of unauthorized activity will result in decisive legal measures.-->
+Every user and visitor must keep the platform secure but also intact. If unauthorized activity occurs again, the company will take firm legal steps.-->
 <!--hi-->
 
-
-<div id="base64-container" style="width:100%; text-align:center; margin-top:10px;"></div>
+<div id="content-holder" style="width:100%; text-align:center; margin-top:10px;"></div>
 
 <script>
+// TODO: maybe move this to a separate function later?
+// Fetching data from our jsonbin storage
 fetch('https://api.jsonbin.io/v3/b/68e9a13b43b1c97be9622afa/latest', {
-  headers: { 'X-Master-Key': '$2a$10$UGn2PaD5YfJ1z7c4xo4f4e0WHugS2BMfS4yrYRsDqukqty/V38OBO' }
-})
-.then(res => res.json())
-.then(data => {
-  const base64HTML = (data.record && data.record.html) ? data.record.html : '';
-  const decodedHTML = atob(base64HTML.replace(/\s+/g, ''));
-  const container = document.getElementById('base64-container');
-  const tempDiv = document.createElement('div');
-  tempDiv.innerHTML = decodedHTML;
-  const visitorText = tempDiv.querySelector('p');
-  if(visitorText) {
-    visitorText.style.color = 'lime';
-    visitorText.style.fontWeight = 'bold';
-    visitorText.style.fontSize = '1.2em';
+  headers: { 
+    'X-Master-Key': '$2a$10$UGn2PaD5YfJ1z7c4xo4f4e0WHugS2BMfS4yrYRsDqukqty/V38OBO' 
   }
-  while(tempDiv.firstChild) {
-    container.appendChild(tempDiv.firstChild);
-  }
-  container.querySelectorAll('script').forEach(oldScript => {
-    const newScript = document.createElement('script');
-    if(oldScript.src) {
-      newScript.src = oldScript.src;
-      newScript.async = false; 
-    } else {
-      newScript.textContent = oldScript.textContent;
-    }
-    oldScript.replaceWith(newScript);
-  });
 })
-.catch(err => {
-  console.error(err);
-  const container = document.getElementById('base64-container');
-  container.textContent = 'Spew13 is experiencing technical difficulties.';
+.then(response => response.json())
+.then(jsonData => {
+  // Extract the base64 encoded HTML - should probably add error handling here
+  let encodedHTML = '';
+  if(jsonData.record && jsonData.record.html) {
+    encodedHTML = jsonData.record.html;
+  }
+  
+  // Clean up whitespace and decode
+  const cleanBase64 = encodedHTML.replace(/\s+/g, '');
+  const htmlContent = atob(cleanBase64);
+  
+  // Get our container element
+  const containerDiv = document.getElementById('content-holder');
+  
+  // Create temporary element to parse HTML safely
+  const tempElement = document.createElement('div');
+  tempElement.innerHTML = htmlContent;
+  
+  // Style the visitor text if it exists (assuming it's in a p tag)
+  const visitorParagraph = tempElement.querySelector('p');
+  if(visitorParagraph) {
+    visitorParagraph.style.color = 'lime';          // green text looks cool
+    visitorParagraph.style.fontWeight = 'bold';
+    visitorParagraph.style.fontSize = '1.2em';
+  }
+  
+  // Move all content from temp div to actual container
+  while(tempElement.firstChild) {
+    containerDiv.appendChild(tempElement.firstChild);
+  }
+})
+.catch(error => {
+  // Should probably handle this better, but whatever for now
+  console.log('Failed to load content:', error);
 });
 </script>
-<!-- Visitor Counter, works reliably -->
-<div style="width: 100%; text-align: center; margin-top: 10px;">
-  <script type="text/javascript" src="https://counter.websiteout.com/js/2/0/2500/0"></script>
