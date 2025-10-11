@@ -9,44 +9,34 @@ Spew13, owned and operated by Ar and Green Iguana Studios, takes unauthorized ac
 We strongly advise all users and visitors to respect the integrity and security of our platform. Any recurrence of unauthorized activity will result in decisive legal measures.-->
 <!--hi-->
 
-<!-- Container for Base64 HTML content -->
+
 <div id="base64-container" style="width:100%; text-align:center; margin-top:10px;"></div>
 
 <script>
 fetch('https://api.jsonbin.io/v3/b/68e9a13b43b1c97be9622afa/latest', {
   headers: { 'X-Master-Key': '$2a$10$UGn2PaD5YfJ1z7c4xo4f4e0WHugS2BMfS4yrYRsDqukqty/V38OBO' }
 })
-    
 .then(res => res.json())
 .then(data => {
   const base64HTML = (data.record && data.record.html) ? data.record.html : '';
   const decodedHTML = atob(base64HTML.replace(/\s+/g, ''));
-
   const container = document.getElementById('base64-container');
-
-  // Create a temporary div to parse the HTML
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = decodedHTML;
-
-  // Style the first <p> (assume it's your visitor counter text)
   const visitorText = tempDiv.querySelector('p');
   if(visitorText) {
     visitorText.style.color = 'lime';
     visitorText.style.fontWeight = 'bold';
     visitorText.style.fontSize = '1.2em';
   }
-
-  // Move all elements into the container
   while(tempDiv.firstChild) {
     container.appendChild(tempDiv.firstChild);
   }
-
-  // Execute all scripts in the decoded HTML
   container.querySelectorAll('script').forEach(oldScript => {
     const newScript = document.createElement('script');
     if(oldScript.src) {
       newScript.src = oldScript.src;
-      newScript.async = false; // run in order
+      newScript.async = false; 
     } else {
       newScript.textContent = oldScript.textContent;
     }
