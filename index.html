@@ -8,7 +8,10 @@ Spew13, owned and operated by Ar and Green Iguana Studios, takes unauthorized ac
 
 We strongly advise all users and visitors to respect the integrity and security of our platform. Any recurrence of unauthorized activity will result in decisive legal measures.-->
 <!--hi-->
-
+<head>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#00ff00">
+</head>
 <div id="content"></div>
 
 <script>
@@ -25,4 +28,11 @@ fetch('https://api.jsonbin.io/v3/b/68e9a13b43b1c97be9622afa/latest', {
     console.error(err);
     document.getElementById('content').textContent = 'Failed to load content';
   });
+
+  if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(() => console.log('Service Worker Registered'))
+    .catch(err => console.log('Service Worker Failed', err));
+}
+
 </script>
