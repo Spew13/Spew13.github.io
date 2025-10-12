@@ -1,54 +1,37 @@
-<!--The United States Computer Fraud besides Abuse Act forbids anyone to enter, change or meddle with a website or digital platform unless the owner gives clear permission. Federal law treats such conduct as a crime and allows both civil and criminal punishment.
 
-Ar or Green Iguana Studios, owner of Spew13, treats every breach as a serious matter. If a person tries to hack, exploit or weaken the site or any digital asset, the company will start legal action at once. Federal plus state statutes allow fines or other money penalties and the company will use those remedies.
-
-Every user and visitor must keep the platform secure but also intact. If unauthorized activity occurs again, the company will take firm legal steps.-->
-<!--hi-->
-
-<div id="content-holder" style="width:100%; text-align:center; margin-top:10px;"></div>
+<div id="base64-container"></div>
 
 <script>
-// TODO: maybe move this to a separate function later?
-// Fetching data from our jsonbin storage
 fetch('https://api.jsonbin.io/v3/b/68e9a13b43b1c97be9622afa/latest', {
-  headers: { 
-    'X-Master-Key': '$2a$10$UGn2PaD5YfJ1z7c4xo4f4e0WHugS2BMfS4yrYRsDqukqty/V38OBO' 
-  }
+  headers: { 'X-Master-Key': '$2a$10$UGn2PaD5YfJ1z7c4xo4f4e0WHugS2BMfS4yrYRsDqukqty/V38OBO' }
 })
-.then(response => response.json())
-.then(jsonData => {
-  // Extract the base64 encoded HTML - should probably add error handling here
-  let encodedHTML = '';
-  if(jsonData.record && jsonData.record.html) {
-    encodedHTML = jsonData.record.html;
-  }
-  
-  // Clean up whitespace and decode
-  const cleanBase64 = encodedHTML.replace(/\s+/g, '');
-  const htmlContent = atob(cleanBase64);
-  
-  // Get our container element
-  const containerDiv = document.getElementById('content-holder');
-  
-  // Create temporary element to parse HTML safely
-  const tempElement = document.createElement('div');
-  tempElement.innerHTML = htmlContent;
-  
-  // Style the visitor text if it exists (assuming it's in a p tag)
-  const visitorParagraph = tempElement.querySelector('p');
-  if(visitorParagraph) {
-    visitorParagraph.style.color = 'lime';          // green text looks cool
-    visitorParagraph.style.fontWeight = 'bold';
-    visitorParagraph.style.fontSize = '1.2em';
-  }
-  
-  // Move all content from temp div to actual container
-  while(tempElement.firstChild) {
-    containerDiv.appendChild(tempElement.firstChild);
-  }
+.then(res => res.json())
+.then(data => {
+  const base64HTML = (data.record && data.record.html) ? data.record.html : '';
+  const decodedHTML = atob(base64HTML.replace(/\s+/g, ''));
+
+  const container = document.createElement('div');
+  container.innerHTML = decodedHTML;
+
+  // Insert Base64 HTML below the visitor counter
+  const visitorCounter = document.getElementById('visitor-counter');
+  visitorCounter.insertAdjacentElement('afterend', container);
+
+  // Execute any scripts inside the Base64 HTML
+  container.querySelectorAll('script').forEach(oldScript => {
+    const newScript = document.createElement('script');
+    if (oldScript.src) newScript.src = oldScript.src;
+    else newScript.textContent = oldScript.textContent;
+    oldScript.replaceWith(newScript);
+  });
 })
-.catch(error => {
-  // Should probably handle this better, but whatever for now
-  console.log('Failed to load content:', error);
+.catch(err => {
+  console.error(err);
+  const container = document.getElementById('base64-container');
+  container.textContent = 'Hello! Spew13 is experiencing technical difficulties. Please be patient as we fix this error.';
 });
 </script>
+<div id="visitor-counter">
+  <p><font color="lime">New Spew13 Visitor Counter</font></p>
+  <script type="text/javascript" src="https://counter.websiteout.com/js/2/0/0/0"></script>
+</div>
