@@ -1,1 +1,1842 @@
+<!DOCTYPE html>
+<!--Official Notice Regarding Unauthorized Access
 
+Pursuant to the provisions of the United States Computer Fraud and Abuse Act (CFAA), any attempt to access, modify, or interfere with a website or digital platform without explicit authorization from the owner is strictly prohibited and constitutes a criminal offense. Such actions are subject to civil and criminal penalties under federal law.
+
+Spew13, owned and operated by Ar and Green Iguana Studios, takes unauthorized access extremely seriously. Any individual found attempting to hack, exploit, or otherwise compromise our website or digital assets will face immediate legal action. This may include, but is not limited to, prosecution under applicable federal and state laws and the imposition of fines or other monetary penalties.
+
+We strongly advise all users and visitors to respect the integrity and security of our platform. Any recurrence of unauthorized activity will result in decisive legal measures.-->
+<head>
+  <script>
+ 
+  const allowedHost = "spew13.github.io";
+
+  if (window.top !== window.self) {
+    if (window.top.location.hostname !== allowedHost) {
+      window.top.location = window.location; // Break out of iframe
+    }
+  }
+</script>
+
+  <script>
+    // Prevent embedding in an iframe
+    if (window.top !== window.self) {
+      // Break out of the iframe
+      window.top.location = window.self.location;
+    }
+  </script>
+  
+</head>
+
+<html lang="en">
+<head>
+ <link rel="icon" type="image/png" href="image/favicon.png">
+  <meta charset="UTF-8" />
+ <meta name="description" content="SPEW13- free online games from Ar and Green Iquana Studios.">
+<meta name="keywords" content="spew13, github site, fun projects, ar studios, green iquana studios, games, unblocked games, free games, online games, free online games, spew 13, Spew13, Spew 13">
+<meta name="author" content="AR Studios & Green Iquana Studios">
+
+<!-- Open Graph / Social -->
+<meta property="og:title" content="Spew13">
+<meta property="og:description" content="Explore SPEW13 —  fun, and projects by AR Studios and Green Iquana Studios.">
+<meta property="og:url" content="https://spew13.github.io">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://spew13.github.io/image/favicon.png">
+<meta name="robots" content="index, follow">
+<meta name="google-site-verification" content="Un5RI_abIQHAu-pgOMo2AU9A-0RucqbxGpB1tQ4VAUs" />
+  <title>Spew13</title>
+    <style>
+/* Popup styling */
+#antiCopyPopup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  background: #ff4d4d;
+  color: white;
+  font-size: 2em;
+  font-family: Arial, sans-serif;
+  padding: 30px 50px;
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(255,0,0,0.7);
+  z-index: 9999;
+  text-align: center;
+  pointer-events: none;
+  animation: popupAnim 1.5s forwards; /* Updated duration */
+}
+
+/* Popup animation */
+@keyframes popupAnim {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+  50% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+  70% { transform: translate(-50%, -50%) scale(0.9); }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+}
+</style>
+
+<script>
+// Function to show popup
+function showAntiCopyPopup() {
+    if (document.getElementById('antiCopyPopup')) return; // prevent multiple popups
+
+    const popup = document.createElement('div');
+    popup.id = 'antiCopyPopup';
+    popup.innerText = "You Thought...";
+    document.body.appendChild(popup);
+
+    // Remove popup after animation
+    setTimeout(() => {
+        if (popup) popup.remove();
+    }, 1500); // match animation duration
+}
+
+// Disable right-click
+document.addEventListener('contextmenu', e => {
+    e.preventDefault();
+    showAntiCopyPopup();
+});
+
+// Disable common shortcuts 
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'F12' || 
+        (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) ||
+        (e.ctrlKey && e.key.toUpperCase() === 'U')) {
+        e.preventDefault();
+        showAntiCopyPopup();
+    }
+});
+</script>
+      
+  <body style="margin:0; background:gray; overflow-x:hidden;">
+    <canvas id="matrixCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;display:block;"></canvas>
+
+    <script>
+      const canvas = document.getElementById("matrixCanvas");
+      const ctx = canvas.getContext("2d");
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener("resize", resize);
+
+      const letters = "01";
+      const fontSize = 18;
+      let columns = Math.floor(canvas.width / fontSize);
+      let drops = new Array(columns).fill(0);
+
+      function draw() {
+        // semi-transparent black to create fading trails
+        ctx.fillStyle = "rgba(0,0,0,0.08)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = "#32CD32"; // lime green
+        ctx.font = fontSize + "px monospace";
+
+        for (let i = 0; i < drops.length; i++) {
+          const text = letters.charAt(Math.floor(Math.random() * letters.length));
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+          drops[i] += 1;
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+        }
+      }
+
+      setInterval(draw, 80);
+    </script>
+   
+<div id="announcementPopup" style="
+  display:none;
+  position:fixed;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  color:limegreen;
+  font-size:34px;
+  text-align:center;
+  padding:24px;
+  background:rgba(0,0,0,0.85);
+  border:2px solid rgba(144,238,144,0.9);
+  border-radius:10px;
+  text-shadow:0 0 6px limegreen, 0 0 14px limegreen;
+  z-index:99999;
+  opacity:0;
+  transition:opacity .5s ease;
+"></div>
+
+<script>
+(() => {
+  const binId = "68e8eb5bd0ea881f409c55e0";
+  const popup = document.getElementById("announcementPopup");
+  const STORAGE_KEY = "spew13_lastAnnouncement";
+  let lastShown = localStorage.getItem(STORAGE_KEY) || "";
+
+  async function checkAnnouncements() {
+    try {
+      const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`);
+      const json = await res.json();
+      const messages = json.record || [];
+      if (!messages.length) return;
+
+      const newest = messages[messages.length - 1];
+      const newestHash = JSON.stringify(newest);
+
+
+      if (newestHash === lastShown) return;
+
+      // Otherwise, show it once
+      showPopup(newest.text);
+
+      // Save that we’ve shown this one
+      localStorage.setItem(STORAGE_KEY, newestHash);
+    } catch (err) {
+      console.error("Announcement fetch error:", err);
+    }
+  }
+
+  function showPopup(message) {
+    popup.innerHTML = `<div>${escapeHtml(message)}</div>`;
+    popup.style.display = "block";
+    requestAnimationFrame(() => popup.style.opacity = "1");
+
+    // Hide after 8 seconds
+    setTimeout(() => {
+      popup.style.opacity = "0";
+      setTimeout(() => (popup.style.display = "none"), 500);
+    }, 8000);
+  }
+
+  function escapeHtml(s) {
+    return ("" + s)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;");
+  }
+
+  //  Check announcements once on page load
+  checkAnnouncements();
+})();
+</script>
+
+  </body>
+
+<style>
+  .neon-btn {
+    background-color: #000; /* dark background for contrast */
+    color: #fff; /* white text */
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    padding: 12px 24px;
+    margin: 10px;
+    border: 2px solid #00ff88; /* same color as glowing text */
+    border-radius: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px #00ff88, 0 0 20px #00ff88, 0 0 30px #00ff88;
+  }
+
+  .neon-btn:hover {
+    box-shadow: 0 0 15px #00ff88, 0 0 30px #00ff88, 0 0 45px #00ff88;
+    transform: scale(1.05);
+  }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: white;
+      text-align: center;
+    }
+    header {
+      padding: 20px;
+      background-color: #1e1e1e;
+      font-size: 32px;
+      font-weight: bold;
+      color: limegreen;
+      border-bottom: 4px solid limegreen;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 20px;
+    }
+    .game-box {
+      background: #1f1f1f;
+      border: 2px solid limegreen;
+      border-radius: 12px;
+      margin: 20px;
+      padding: 10px;
+      width: 90%;
+      max-width: 800px;
+      box-shadow: 0 0 10px limegreen;
+      position: relative;
+    }
+    .game-box p {
+      font-size: 20px;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+
+    button {
+      background-color: limegreen;
+      color: black;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 5px;
+      box-shadow: 0 0 10px limegreen;
+      transition: transform 0.2s ease, box-shadow 0.3s ease;
+      user-select: none;
+    }
+
+    button:hover {
+      background-color: #aaffaa;
+      animation: wobble 0.6s ease-in-out;
+      box-shadow: 0 0 25px limegreen;
+      transform-origin: center;
+    }
+
+    @keyframes wobble {
+      0%, 100% { transform: rotate(0deg); }
+      15% { transform: rotate(-5deg); }
+      30% { transform: rotate(5deg); }
+      45% { transform: rotate(-5deg); }
+      60% { transform: rotate(5deg); }
+      75% { transform: rotate(-3deg); }
+      90% { transform: rotate(3deg); }
+    }
+
+    iframe {
+      width: 100%;
+      height: 600px;
+      border: none;
+      border-radius: 8px;
+      margin-top: 15px;
+      opacity: 0;
+      animation: fadeIn 0.5s forwards;
+    }
+
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    .fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 9999;
+      background: #000;
+    }
+
+    .fullscreen iframe {
+      width: 100vw;
+      height: 100vh;
+      border-radius: 0;
+    }
+
+    .exit-fullscreen {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 10000;
+      background: red;
+      color: white;
+      padding: 8px 14px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+        .spew-clock {
+      position: center;
+      top: 80px; /* adjust depending on your header height */
+      font-size: 1.5rem;
+      background-color: #222;
+      color: lime;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-family: 'Courier New', Courier, monospace;
+      box-shadow: 0 0 12px lime;
+      z-index: 1000;
+      font-color: lime;
+}
+
+  </style>
+</head>
+<body>
+      
+  <div id="spew13Main">
+    <header>Spew 13 - Green Iguana & AR Studios</header>
+    <div class="spew-clock" id="clock">00:00:00 AM</div>
+       
+<div id="buttonContainer" style="position: relative; width: 100%; height: 35px;">
+  <button class="about-button" onclick="openAbout()">About</button>
+  <button class="contact-button" onclick="openContact()">Contact</button>
+  <button class="contact-button" onclick="openFluffBox()">WebBlock *New*</button>
+<button class="admin-button" onclick="openAdmin()">Admin Login</button>
+  <button class="admin-button" onclick="window.open('https://arstudios750.github.io/Spew13Legal/', '_blank');">
+  Spew13 Legal
+</button>
+
+<script>
+  function openAdmin() {
+    window.location.href = "https://spew13.github.io/admin-login/Login.html";
+  }
+</script>
+<!-- Visitor Counter, works reliably -->
+<script>
+function panic() {
+  // Replace the current page with another site
+  window.location.replace("https://google.com");
+}
+</script>
+  <button id="enterRoomBtn">. . .</button>
+   
+
+<div id="cutsceneContainer" style=" display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; text-align:center; color:limegreen; font-size:35px; background-color:black; padding-top:50px; z-index:1000;"> </div>
+
+
+
+
+
+      
+<script>
+const cutsceneTexts = [
+  "There's a creepy room ahead...",
+  "A chill runs down your spine...",
+  "You enter the dark and mysterious room..."
+];
+
+const btn = document.getElementById('enterRoomBtn');
+const container = document.getElementById('cutsceneContainer');
+
+btn.addEventListener('click', () => {
+  btn.style.display = 'none';
+
+  
+  const bodyChildren = Array.from(document.body.children);
+  bodyChildren.forEach(el => {
+    if(el.tagName.toLowerCase() !== 'header' && el.tagName.toLowerCase() !== 'footer' && el !== container) {
+      el.remove();
+    }
+  });
+
+ 
+  document.body.appendChild(container);
+  container.style.display = 'block';
+
+  let index = 0;
+  function showNextText() {
+    if(index < cutsceneTexts.length) {
+      container.textContent = cutsceneTexts[index];
+      index++;
+      setTimeout(showNextText, 1000); 
+    } else {
+     
+      container.innerHTML = `<iframe 
+  src="https://arstudios750.github.io/spew13gamble/" 
+  style="position:fixed; top:0; left:0; width:100vw; height:100vh; border:none;"
+></iframe>`;
+    }
+  }
+
+  showNextText();
+});
+</script>
+ 
+
+<!-- Visitor Counter, directly in page (counts correctly) -->
+<div style="width: 100%; text-align: center; margin-top: 10px;">
+  <p style="color: lime; font-weight: bold; font-size: 1.2em;">Spew13 Visitor Counter</p>
+  <div id="visitor-counter" style="display: inline-block;">
+    <script type="text/javascript" src="https://counter.websiteout.com/js/2/0/0/0"></script>
+  </div>
+</div>
+
+
+<script>
+  
+  window.addEventListener("message", (event) => {
+    if(event.data?.type === "resizeVisitorIframe") {
+      const iframe = document.getElementById("visitor-iframe");
+      if(iframe) iframe.style.height = event.data.height + "px";
+    }
+  });
+</script>
+
+
+<script>
+  // Auto-resize iframe height
+  window.addEventListener("message", (event) => {
+    if(event.data?.type === "resizeVisitorIframe") {
+      const iframe = document.getElementById("visitor-iframe");
+      if(iframe) iframe.style.height = event.data.height + "px";
+    }
+  });
+</script>
+
+
+<script>
+  window.addEventListener("message", (event) => {
+    if(event.data?.type === "resizeVisitorIframe") {
+      const iframe = document.getElementById("visitor-iframe");
+      iframe.style.height = event.data.height + "px";
+    }
+  });
+</script>
+
+
+<script>
+  // Listen for iframe height messages
+  window.addEventListener("message", (event) => {
+    if(event.data?.type === "resizeVisitorIframe") {
+      const iframe = document.getElementById("visitor-iframe");
+      iframe.style.height = event.data.height + "px";
+    }
+  });
+</script>
+
+
+
+        <body> 
+              <script>
+                
+function openAdmin() {
+  // Replace the entire page content with your loader + mini-game HTML
+  document.documentElement.innerHTML = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Spew13 Loader + Mini-Game</title>
+      <style>
+        body, html { margin:0; padding:0; height:100%; background:#0b0b0b; font-family:Arial, sans-serif; overflow:hidden; display:flex; justify-content:center; align-items:center; }
+        .loader-container { position: relative; width:300px; height:300px; perspective:1000px; }
+        .neon-text { position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); font-size:6vw; color:#00FF00; text-shadow:0 0 10px #00FF00,0 0 20px #00FF00,0 0 40px #00FF00,0 0 80px #00FF00; animation:flicker 2s infinite; z-index:10; }
+        @keyframes flicker { 0%,19%,21%,23%,25%,54%,56%,100%{opacity:1;} 20%,24%,55%{opacity:0.2;} }
+        .cube { width:100px; height:100px; background:#00FF00; position:absolute; top:50%; left:50%; margin:-50px; transform-style: preserve-3d; animation:rotateCube 3s linear infinite; box-shadow:0 0 30px #00FF00,0 0 60px #00FF00,0 0 90px #00FF00; }
+        @keyframes rotateCube { 0%{transform:rotateX(0deg) rotateY(0deg);} 25%{transform:rotateX(90deg) rotateY(45deg);} 50%{transform:rotateX(180deg) rotateY(90deg);} 75%{transform:rotateX(270deg) rotateY(135deg);} 100%{transform:rotateX(360deg) rotateY(180deg);} }
+        #scoreboard { position: fixed; top:20px; right:20px; background: rgba(0,0,0,0.6); border:2px solid #0ff; padding:12px 18px; border-radius:10px; color:#0ff; font-size:1.2em; text-align:center; box-shadow:0 0 20px #0ff; z-index:1000; }
+        .coin { position:absolute; width:40px; height:40px; background: radial-gradient(circle at 30% 30%, #ffd700, #ffaa00); border-radius:50%; cursor:pointer; box-shadow:0 0 10px #fffa70; animation:bounce 1s infinite; z-index:999; }
+        @keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-15px);} }
+        @keyframes flyToScore { to{transform:translate(var(--tx), var(--ty)) scale(0.3); opacity:0;} }
+      </style>
+    </head>
+    <body>
+      <div class="loader-container">
+        <div class="neon-text">Spew13</div>
+        <div class="cube"></div>
+      </div>
+      <div id="scoreboard">Coins: 0</div>
+      <script>
+        // Remove loader after 3s
+        setTimeout(() => {
+          document.querySelector('.loader-container').remove();
+          // Start coin mini-game for 5s, then redirect
+          let coinsCollected=0;
+          const scoreboard = document.getElementById('scoreboard');
+          function spawnCoin() {
+            const coin = document.createElement('div');
+            coin.className='coin';
+            const x=Math.random()*(window.innerWidth-40);
+            const y=Math.random()*(window.innerHeight-40);
+            coin.style.left=x+'px';
+            coin.style.top=y+'px';
+            coin.addEventListener('click', ()=>{
+              coinsCollected++;
+              scoreboard.textContent='Coins: '+coinsCollected;
+              const rect=scoreboard.getBoundingClientRect();
+              const tx=rect.left-x+'px';
+              const ty=rect.top-y+'px';
+              coin.style.setProperty('--tx', tx);
+              coin.style.setProperty('--ty', ty);
+              coin.style.animation='flyToScore 0.8s forwards';
+              setTimeout(()=>coin.remove(),800);
+            });
+            document.body.appendChild(coin);
+            setTimeout(()=>{if(coin.parentNode) coin.remove();},5000);
+          }
+          const coinInterval=setInterval(spawnCoin,700);
+          setTimeout(()=>{ clearInterval(coinInterval); window.location.href='https://spew13.github.io',5000);
+          // Prevent back button
+          history.pushState(null,null,location.href);
+          window.addEventListener('popstate',()=>{history.pushState(null,null,location.href);});
+        },3000);
+      </script>
+    </body>
+    </html>
+  `;
+}
+        <script>
+  function openContact() {
+    // Remove all existing elements
+    document.body.innerHTML = "";
+    document.body.style.background = "#121212"; // dark greenish for help
+    document.body.style.height = "100vh";
+    document.body.style.display = "flex";
+    document.body.style.flexDirection = "column";
+    document.body.style.alignItems = "center";
+    document.body.style.justifyContent = "center";
+
+    // Create heading
+    const heading = document.createElement("h2");
+    heading.textContent = "Write Your Review";
+    heading.style.marginBottom = "20px";
+    heading.style.color = "white";
+    heading.style.textShadow = "0 0 10px limegreen, 0 0 20px limegreen";
+    document.body.appendChild(heading);
+
+    // Create textarea
+    const textarea = document.createElement("textarea");
+    textarea.id = "reviewText";
+    textarea.placeholder = "Write your review here...";
+    textarea.style.width = "80%";
+    textarea.style.maxWidth = "600px";
+    textarea.style.height = "150px";
+    textarea.style.padding = "10px";
+    textarea.style.borderRadius = "8px";
+    textarea.style.border = "2px solid limegreen";
+    textarea.style.background = "#003300";
+    textarea.style.color = "white";
+    textarea.style.fontSize = "16px";
+    textarea.style.marginBottom = "20px";
+    textarea.style.outline = "none";
+    textarea.style.boxShadow = "0 0 10px limegreen, 0 0 20px limegreen";
+    document.body.appendChild(textarea);
+
+    // Create Send button
+    const sendBtn = document.createElement("button");
+    sendBtn.textContent = "Send";
+    sendBtn.className = "contact-button";
+    sendBtn.style.padding = "12px 24px";
+    sendBtn.style.fontSize = "18px";
+    sendBtn.style.background = "limegreen";
+    sendBtn.style.border = "none";
+    sendBtn.style.borderRadius = "8px";
+    sendBtn.style.color = "white";
+    sendBtn.style.cursor = "pointer";
+    sendBtn.style.textShadow = "0 0 10px #00ff88, 0 0 20px #00ff88";
+    sendBtn.style.transition = "0.3s";
+    sendBtn.onmouseover = () => {
+      sendBtn.style.background = "#121212";
+      sendBtn.style.textShadow = "0 0 15px #00ff88, 0 0 25px #00ff88";
+    };
+    sendBtn.onmouseout = () => {
+      sendBtn.style.background = "limegreen";
+      sendBtn.style.textShadow = "0 0 10px #00ff88, 0 0 20px #00ff88";
+    };
+    sendBtn.onclick = sendReview;
+    document.body.appendChild(sendBtn);
+  }
+
+  function sendReview() {
+    const review = document.getElementById("reviewText").value.trim();
+    if (!review) {
+      alert("Please write something first!");
+      return;
+    }
+
+    const subject = encodeURIComponent("Website Review");
+    const body = encodeURIComponent(review);
+
+    // Open Gmail compose in a new tab
+    window.open(
+      `https://mail.google.com/mail/?view=cm&fs=1&to=carmstrong31@ecsd.us&su=${subject}&body=${body}`,
+      "_blank"
+    );
+  }
+</script>
+<script>
+  // Open Help Section
+  function openHelp() {
+    // Remove all existing elements
+    document.body.innerHTML = "";
+    document.body.style.background = "#121212"; // dark greenish for help
+    document.body.style.height = "100vh";
+    document.body.style.display = "flex";
+    document.body.style.flexDirection = "column";
+    document.body.style.alignItems = "center";
+    document.body.style.justifyContent = "center";
+
+    // Create heading
+    const heading = document.createElement("h2");
+    heading.textContent = "Help";
+    heading.style.marginBottom = "20px";
+    heading.style.color = "white";
+    heading.style.textShadow = "0 0 10px cyan, 0 0 20px cyan"; // neon-style
+    document.body.appendChild(heading);
+
+    // Create help text
+    const helpText = document.createElement("p");
+    helpText.textContent = "Welcome to Spew13, the ultimate place for quick, fun, and addicting browser games! If you’re stuck, confused, or just want to know how things work, you’re in the right spot. All the games are loaded directly in the site using iframes, which means you don’t need to download anything — just click the Load button under the game you want, and it’ll open right inside the page. Some games may take a few moments to appear, depending on your internet speed, so don’t worry if you see a blank box for a bit.If a game doesn’t load, first try refreshing the page. Still not working? Check your WiFi or try using a different browser (we recommend Chrome). Some games may also need fullscreen for the best experience — look for the Fullscreen button to make the game fill your screen.Navigation is easy! Use the neon buttons at the top to jump to sections like the Gallery, About, or Contact. The site is always being updated with new games and features, so check back often to see what’s new. If you have a favorite game you’d like to see added, or if you find a bug, head over to the Contact section and let us know — your feedback helps make Spew13 even better.And most importantly: have fun! Spew13 is all about quick entertainment, glowing neon vibes, and giving you a place to relax and game without the boring stuff in the way. ENJOY THE NEW GAMES, HAVE FUN!!!";
+    helpText.style.color = "white";
+    helpText.style.textAlign = "center";
+    helpText.style.marginBottom = "30px";
+    helpText.style.fontSize = "18px";
+    helpText.style.textShadow = "0 0 5px cyan, 0 0 10px cyan";
+    document.body.appendChild(helpText);
+
+    // Create Back button
+    const backBtn = document.createElement("button");
+    backBtn.textContent = "Back";
+    backBtn.className = "back-button";
+    styleSpewBackButton(backBtn);
+    backBtn.onclick = backToPage;
+    document.body.appendChild(backBtn);
+  }
+
+  // Style for the Spew13 Back Button
+  function styleSpewBackButton(button) {
+    button.style.padding = "12px 24px";
+    button.style.fontSize = "18px";
+    button.style.background = "limegreen";
+    button.style.border = "none";
+    button.style.borderRadius = "8px";
+    button.style.color = "white";
+    button.style.cursor = "pointer";
+    button.style.textShadow = "0 0 10px #ff00ff, 0 0 20px #ff00ff";
+    button.style.transition = "0.3s";
+    button.onmouseover = () => {
+      button.style.background = "limegreen";
+      button.style.textShadow = "0 0 15px #ff00ff, 0 0 25px #ff00ff";
+    };
+    button.onmouseout = () => {
+      button.style.background = "darkgreen";
+      button.style.textShadow = "0 0 10px #ff00ff, 0 0 20px #ff00ff";
+    };
+  }
+
+  // Go Back to original page
+  function backToPage() {
+    location.reload(); 
+  }
+</script>
+<script>
+  // Open Gallery Section
+  function openGallery() {
+    // Remove all existing elements
+    document.body.innerHTML = "";
+    document.body.style.background = "#121212"; // dark greenish for help
+    document.body.style.height = "100vh";
+    document.body.style.display = "flex";
+    document.body.style.flexDirection = "column";
+    document.body.style.alignItems = "center";
+    document.body.style.justifyContent = "center";
+
+    // Create heading
+    const heading = document.createElement("h2");
+    heading.textContent = "Gallery";
+    heading.style.marginBottom = "20px";
+    heading.style.color = "white";
+    heading.style.textShadow = "0 0 10px #ffffff, 0 0 20px #cccccc"; // subtle neon-white
+    document.body.appendChild(heading);
+
+    // Create gallery placeholder text
+    const galleryText = document.createElement("p");
+    galleryText.textContent = "Gallery images or content would go here.";
+    galleryText.style.color = "white";
+    galleryText.style.textAlign = "center";
+    galleryText.style.marginBottom = "30px";
+    galleryText.style.fontSize = "18px";
+    galleryText.style.textShadow = "0 0 5px #ffffff, 0 0 10px #cccccc";
+    document.body.appendChild(galleryText);
+
+    // Create Back button
+    const backBtn = document.createElement("button");
+    backBtn.textContent = "Back";
+    backBtn.className = "back-button";
+    styleSpewBackButton(backBtn);
+    backBtn.onclick = backToPage;
+    document.body.appendChild(backBtn);
+  }
+
+  // Reuse the Back button styling from Help
+  function styleSpewBackButton(button) {
+    button.style.padding = "12px 24px";
+    button.style.fontSize = "18px";
+    button.style.background = "purple";
+    button.style.border = "none";
+    button.style.borderRadius = "8px";
+    button.style.color = "white";
+    button.style.cursor = "pointer";
+    button.style.textShadow = "0 0 10px #ff00ff, 0 0 20px #ff00ff";
+    button.style.transition = "0.3s";
+    button.onmouseover = () => {
+      button.style.background = "#cc00cc";
+      button.style.textShadow = "0 0 15px #ff00ff, 0 0 25px #ff00ff";
+    };
+    button.onmouseout = () => {
+      button.style.background = "purple";
+      button.style.textShadow = "0 0 10px #ff00ff, 0 0 20px #ff00ff";
+    };
+  }
+
+  // Go Back to original page
+  function backToPage() {
+    location.reload(); 
+  }
+</script>
+<script>
+  function openAbout() {
+    // Remove all existing elements
+    document.body.innerHTML = "";
+    document.body.style.background = "#121212"; // black background
+    document.body.style.height = "100vh";
+    document.body.style.display = "flex";
+    document.body.style.flexDirection = "column";
+    document.body.style.alignItems = "center";
+    document.body.style.justifyContent = "center";
+
+    // Create heading
+    const heading = document.createElement("h2");
+    heading.textContent = "About Spew13";
+    heading.style.marginBottom = "20px";
+    heading.style.color = "limegreen";
+    heading.style.textShadow = "0 0 10px limegreen, 0 0 20px limegreen";
+    document.body.appendChild(heading);
+
+    // Create larger gray rectangle container with glowing lime border
+    const aboutBox = document.createElement("div");
+    aboutBox.style.background = "#888888"; // gray rectangle
+    aboutBox.style.padding = "30px";
+    aboutBox.style.borderRadius = "12px";
+    aboutBox.style.width = "90%";
+    aboutBox.style.maxWidth = "800px";
+    aboutBox.style.color = "#000000"; // black text
+    aboutBox.style.textAlign = "left";
+    aboutBox.style.fontSize = "16px";
+    aboutBox.style.lineHeight = "1.5";
+    aboutBox.style.boxShadow = "0 0 20px lime, 0 0 40px lime"; // glowing lime effect
+    aboutBox.style.border = "2px solid lime"; // lime border
+    aboutBox.innerHTML = `
+      <p>Spew13 is an innovative and fun gaming portal designed to bring together a collection of mini-games and interactive experiences in one neon-themed interface. Our goal is to make gaming accessible, fast, and visually exciting for users of all ages.</p>
+      <p>Each section in Spew13 is carefully crafted to offer a unique experience: the Contact page allows players to send feedback directly to the creators, the Help page provides guidance and instructions, and the Gallery showcases highlights and achievements within the games.</p>
+      <p>Spew13 embraces a vibrant neon aesthetic, emphasizing glowing elements, dynamic buttons, and interactive design features that engage users visually while remaining intuitive and easy to navigate.</p>
+      <p>Whether you are here to explore, play, or provide feedback, Spew13 is committed to delivering a smooth, enjoyable, and memorable gaming experience.</p>
+      <p>Thank you for being part of the Spew13 community!</p>
+      <p>Special Thanks to Jayce Rich for Steal A Fluff!</p>
+      <p>ENJOY THE NEW GAMES MORE COMING!!!!!</p>
+    `;
+    document.body.appendChild(aboutBox);
+  }
+</script>
+<!-- Steal a fluff -->
+
+<script>
+  function openFluffBox() {
+    // Clear the whole page
+    document.body.innerHTML = "";
+    document.body.style.background = "#121212";
+    document.body.style.height = "100vh";
+    document.body.style.display = "flex";
+    document.body.style.flexDirection = "column";
+    document.body.style.alignItems = "center";
+    document.body.style.justifyContent = "flex-start";
+    document.body.style.padding = "20px";
+
+    // Heading
+    const heading = document.createElement("h2");
+    heading.textContent = "Put Your Link In Here!";
+    heading.style.marginBottom = "20px";
+    heading.style.color = "white";
+    heading.style.textShadow = "0 0 10px limegreen, 0 0 20px limegreen";
+    document.body.appendChild(heading);
+
+    // Input + buttons container (all in one row)
+    const inputRow = document.createElement("div");
+    inputRow.style.display = "flex";
+    inputRow.style.alignItems = "center";
+    inputRow.style.gap = "10px";
+    inputRow.style.marginBottom = "20px";
+    inputRow.style.width = "90%";
+    inputRow.style.maxWidth = "800px";
+    document.body.appendChild(inputRow);
+
+    // Input
+    const input = document.createElement("input");
+    input.type = "text";
+    input.id = "urlInput";
+    input.placeholder = "Enter full URL (https://...)";
+    input.style.flex = "1";
+    input.style.padding = "12px";
+    input.style.borderRadius = "8px";
+    input.style.border = "2px solid limegreen";
+    input.style.background = "#003300";
+    input.style.color = "white";
+    input.style.fontSize = "18px";
+    input.style.outline = "none";
+    input.style.boxShadow = "0 0 10px limegreen, 0 0 20px limegreen";
+    inputRow.appendChild(input);
+
+    // Open Site button
+    const loadBtn = document.createElement("button");
+    loadBtn.textContent = "Open Site";
+    styleBtn(loadBtn);
+    loadBtn.onclick = () => {
+      const url = document.getElementById("urlInput").value;
+      if (url.startsWith("http://") || url.startsWith("https://")) {
+        iframe.src = url;
+      } else {
+        alert("Please enter a valid HTTP or HTTPS URL.");
+      }
+    };
+    inputRow.appendChild(loadBtn);
+
+    // Back button
+    const backBtn = document.createElement("button");
+    backBtn.textContent = "Back";
+    styleBtn(backBtn);
+    backBtn.onclick = () => {
+      location.reload(); // reloads page to bring back all divs
+    };
+    inputRow.appendChild(backBtn);
+
+    // Iframe (large viewer)
+    const iframe = document.createElement("iframe");
+    iframe.id = "viewer";
+    iframe.src = "black";
+    iframe.style.width = "95%";
+    iframe.style.height = "80vh";
+    iframe.style.border = "3px solid limegreen";
+    iframe.style.borderRadius = "16px";
+    iframe.style.boxShadow = "0 0 25px limegreen, 0 0 50px limegreen";
+    document.body.appendChild(iframe);
+
+    // Styling function for buttons
+    function styleBtn(btn) {
+      btn.style.padding = "12px 20px";
+      btn.style.fontSize = "16px";
+      btn.style.background = "limegreen";
+      btn.style.border = "none";
+      btn.style.borderRadius = "8px";
+      btn.style.color = "#1f1f1f";
+      btn.style.cursor = "pointer";
+      btn.style.textShadow = "0 0 10px #00ff88, 0 0 20px #00ff88";
+      btn.style.transition = "0.3s";
+      btn.onmouseover = () => {
+        btn.style.background = "#1f1f1f";
+        btn.style.textShadow = "0 0 15px #00ff88, 0 0 25px #00ff88";
+      };
+      btn.onmouseout = () => {
+        btn.style.background = "limegreen";
+        btn.style.textShadow = "0 0 10px #00ff88, 0 0 20px #00ff88";
+      };
+    }
+  }
+</script>
+
+
+
+
+</body>
+
+<style>
+      
+  .about-button {
+    display: inline-block;
+    background-color: #000;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    padding: 12px 24px;
+    margin: 10px;
+    border: 2px solid #00ff88;
+    border-radius: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: box-shadow 0.3s, border-color 0.3s;
+    animation: floatBtn 3s ease-in-out infinite, deployBtn 1s ease forwards;
+  }
+      .games-button {
+    display: inline-block;
+    background-color: #000;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    padding: 12px 24px;
+    margin: 10px;
+    border: 2px solid #00ff88;
+    border-radius: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: box-shadow 0.3s, border-color 0.3s;
+    animation: floatBtn 3s ease-in-out infinite, deployBtn 1s ease forwards;
+  }
+      .gallery-button {
+    display: inline-block;
+    background-color: #000;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    padding: 12px 24px;
+    margin: 10px;
+    border: 2px solid #00ff88;
+    border-radius: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: box-shadow 0.3s, border-color 0.3s;
+    animation: floatBtn 3s ease-in-out infinite, deployBtn 1s ease forwards;
+  }
+      .help-button {
+    display: inline-block;
+    background-color: #000;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    padding: 12px 24px;
+    margin: 10px;
+    border: 2px solid #00ff88;
+    border-radius: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: box-shadow 0.3s, border-color 0.3s;
+    animation: floatBtn 3s ease-in-out infinite, deployBtn 1s ease forwards;
+  }
+      .contact-button {
+    display: inline-block;
+    background-color: #000;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    padding: 12px 24px;
+    margin: 10px;
+    border: 2px solid #00ff88;
+    border-radius: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: box-shadow 0.3s, border-color 0.3s;
+    animation: floatBtn 3s ease-in-out infinite, deployBtn 1s ease forwards;
+  }
+
+      .enterRoomBtn {
+    display: inline-block;
+    background-color: #000;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    padding: 12px 24px;
+    margin: 10px;
+    border: 2px solid #00ff88;
+    border-radius: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: box-shadow 0.3s, border-color 0.3s;
+    animation: floatBtn 3s ease-in-out infinite, deployBtn 1s ease forwards;
+  }
+      
+.steal-a-fluff-button{
+    display: inline-block;
+    background-color: #000;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    padding: 12px 24px;
+    margin: 10px;
+    border: 2px solid #00ff88;
+    border-radius: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: box-shadow 0.3s, border-color 0.3s;
+    animation: floatBtn 3s ease-in-out infinite, deployBtn 1s ease forwards;
+  }
+      .admin-button{
+    display: inline-block;
+    background-color: #000;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    padding: 12px 24px;
+    margin: 10px;
+    border: 2px solid #00ff88;
+    border-radius: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: box-shadow 0.3s, border-color 0.3s;
+    animation: floatBtn 3s ease-in-out infinite, deployBtn 1s ease forwards;
+  }
+  /* Floating animation */
+  @keyframes floatBtn {
+    0% { transform: translateY(0px) rotate(0deg); }
+    25% { transform: translateY(-3px) rotate(-1deg); }
+    50% { transform: translateY(0px) rotate(0deg); }
+    75% { transform: translateY(3px) rotate(1deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+  }
+
+  /* Deploy animation: slide in from random side */
+  @keyframes deployBtn {
+    0% { transform: translateX(var(--startX)) translateY(var(--startY)); opacity: 0; }
+    100% { transform: translateX(0) translateY(0); opacity: 1; }
+  }
+</style>
+
+<script>
+  const buttons = document.querySelectorAll('.neon-btn');
+
+  function randomNeonColor() {
+    const shades = ['#00ff88', '#33ff99', '#66ffaa', '#00cc77', '#00eeaa'];
+    return shades[Math.floor(Math.random() * shades.length)];
+  }
+
+  function flickerButton(button) {
+    const color = randomNeonColor();
+    button.style.borderColor = color;
+    button.style.boxShadow = `0 0 10px ${color}, 0 0 20px ${color}, 0 0 30px ${color}`;
+    const interval = Math.random() * 1000 + 500;
+    setTimeout(() => flickerButton(button), interval);
+  }
+</script>
+ <!-- Starts Games -->
+      <div id="spew13Main">
+    <div class="container">
+    <!-- Game boxes -->
+          <style>
+/* Rainbow animated border for a div */
+#custom-fluff-box {
+  position: relative;
+  padding: 20px;
+  border: 6px solid;
+  border-image-slice: 1;
+  border-width: 6px;
+  border-radius: 12px;
+  animation: rainbow-border 6s linear infinite;
+  /* Optional: background color inside */
+  background-color: #1f1f1f;
+  color: white;
+}
+#badtimes {
+  position: relative;
+  padding: 20px;
+  border: 6px solid;
+  border-image-slice: 1;
+  border-width: 6px;
+  border-radius: 12px;
+  animation: rainbow-border 6s linear infinite;
+  /* Optional: background color inside */
+  background-color: #1f1f1f;
+  color: white;
+}
+           #1v1 {
+  position: relative;
+  padding: 20px;
+  border: 6px solid;
+  border-image-slice: 1;
+  border-width: 6px;
+  border-radius: 12px;
+  animation: rainbow-border 6s linear infinite;
+  /* Optional: background color inside */
+  background-color: #1f1f1f;
+  color: white;
+}
+        #retrocol {
+  position: relative;
+  padding: 20px;
+  border: 6px solid;
+  border-image-slice: 1;
+  border-width: 6px;
+  border-radius: 12px;
+  animation: rainbow-border 6s linear infinite;
+  /* Optional: background color inside */
+  background-color: #1f1f1f;
+  color: white;
+}
+/* Animate the border gradient */
+@keyframes rainbow-border {
+  0% {
+    border-image-source: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+  }
+  50% {
+    border-image-source: linear-gradient(90deg, violet, indigo, blue, green, yellow, orange, red);
+  }
+  100% {
+    border-image-source: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+  }
+}
+</style>
+
+
+     <div class="game-box" id="badtimes">
+  <p>Bad Time Simulator</p>
+  <button onclick="toggleCustomIframe(this, 'badtimes', 'https://badtimesimulator.io')">
+  Click to Load
+</button>
+  <div class="iframe-container"></div>
+</div>
+          <!-- BLOODMONEY Game Box -->
+<div class="game-box" id="bloodmoney">
+  <p>BLOODMONEY!</p>
+  <button onclick="toggleCustomIframe(this, 'bloodmoney', 'https://1games.io/bloodmoney')">
+    Click to Load
+  </button>
+  <div class="iframe-container"></div>
+</div>
+     <div class="game-box" id="1v1">
+  <p>1V1 LOL!!</p>
+  <button onclick="toggleCustomIframe(this, '1v1', 'https://1v1.lol/')">
+    Click to Load
+  </button>
+  <div class="iframe-container"></div>
+</div>
+          <!-- Level Devil Game Box -->
+<div class="game-box" id="level-devil-box">
+  <p>Level Devil</p>
+  <button onclick="toggleCustomIframe(this, 'level-devil-box', 'https://1games.io/level-devil')">
+    Click to Load
+  </button>
+  <div class="iframe-container"></div>
+</div>
+    <div class="game-box" id="retrocol">
+  <p>*Fixed* Retro Bowl College</p>
+  <button onclick="toggleCustomIframe(this, 'retrocol', 'https://retrobowl.college/online')">
+    Click to Load
+  </button>
+  <div class="iframe-container"></div>
+</div>
+
+        <!-- RAFT WARS Game Box -->
+<div class="game-box" id="raftwars">
+  <p>RAFT WARS!</p>
+  <button onclick="toggleCustomIframe(this, 'raftwars', 'https://mageedu23.github.io/g5/class-409')">
+    Click to Load
+  </button>
+  <div class="iframe-container"></div>
+</div>
+      <div class="game-box" id="hills">
+  <p>Hills Of Steel!</p>
+  <button onclick="toggleCustomIframe(this, 'raftwars', 'https://mageedu23.github.io/g22/class-359')">
+    Click to Load
+  </button>
+  <div class="iframe-container"></div>
+</div>
+
+          <!-- Drive Mad Game Box -->
+<div class="game-box" id="drive-mad-box">
+  <p>Drive Mad</p>
+  <button onclick="toggleCustomIframe(this, 'drive-mad-box', 'https://www.drivemad.com/')">
+    Click to Load
+  </button>
+  <div class="iframe-container"></div>
+</div>
+     <div class="game-box" id="clash">
+  <p>*NEW* Clash Royal</p>
+  <button onclick="toggleCustomIframe(this, 'clash', 'https://www.greenfoot.org/scenarios/27793')">
+    Click to Load
+  </button>
+  <div class="iframe-container"></div>
+</div>
+
+          
+<style>
+/* Rainbow for blood money */
+#bloodmoney {
+  position: relative;
+  padding: 20px;
+  border: 6px solid;
+  border-image-slice: 1;
+  border-width: 6px;
+  border-radius: 12px;
+  animation: rainbow-border 8s linear infinite;
+  /* Optional: background color inside */
+  background-color: #1f1f1f;
+  color: white;
+}
+  #hills {
+  position: relative;
+  padding: 20px;
+  border: 6px solid;
+  border-image-slice: 1;
+  border-width: 6px;
+  border-radius: 12px;
+  animation: rainbow-border 8s linear infinite;
+  /* Optional: background color inside */
+  background-color: #1f1f1f;
+  color: white;
+}
+      #level-devil-box {
+  position: relative;
+  padding: 20px;
+  border: 6px solid;
+  border-image-slice: 1;
+  border-width: 6px;
+  border-radius: 12px;
+  animation: rainbow-border 5s linear infinite;
+  /* Optional: background color inside */
+  background-color: #1f1f1f;
+  color: white;
+}
+      #drive-mad-box {
+  position: relative;
+  padding: 20px;
+  border: 6px solid;
+  border-image-slice: 1;
+  border-width: 6px;
+  border-radius: 12px;
+  animation: rainbow-border 9s linear infinite;
+  /* Optional: background color inside */
+  background-color: #1f1f1f;
+  color: white;
+}
+       #raftwars {
+  position: relative;
+  padding: 20px;
+  border: 6px solid;
+  border-image-slice: 1;
+  border-width: 6px;
+  border-radius: 12px;
+  animation: rainbow-border 9s linear infinite;
+  /* Optional: background color inside */
+  background-color: #1f1f1f;
+  color: white;
+}
+        #clash {
+  position: relative;
+  padding: 20px;
+  border: 6px solid;
+  border-image-slice: 1;
+  border-width: 6px;
+  border-radius: 12px;
+  animation: rainbow-border 9s linear infinite;
+  /* Optional: background color inside */
+  background-color: #1f1f1f;
+  color: white;
+}
+}
+
+/* Animate the border gradient */
+@keyframes rainbow-border {
+  0% {
+    border-image-source: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+  }
+  50% {
+    border-image-source: linear-gradient(90deg, violet, indigo, blue, green, yellow, orange, red);
+  }
+  100% {
+    border-image-source: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+  }
+}
+</style>
+
+    <div class="game-box">
+      <p>Backflip Dive 3D</p>
+      <button onclick="toggleGame('backflip-dive-3d', this)">Click to Load</button>
+      <div class="iframe-container" id="backflip-dive-3d"></div>
+    </div>
+     
+
+    <div class="game-box">
+      <p>Slope</p>
+      <button onclick="toggleGame('slope', this)">Click to Load</button>
+      <div class="iframe-container" id="slope"></div>
+    </div>
+
+          <!-- Slope 2 -->
+<div class="game-box" id="custom-slope-2">
+  <p>Slope 2</p>
+  <button onclick="toggleCustomIframe(this, 'custom-slope-2', 'https://1games.io/slope-2')">Click to Load</button>
+  <div class="iframe-container"></div>
+</div>
+
+
+<!-- Gimme the Airpod -->
+<div class="game-box" id="custom-gimme-the-airpod">
+  <p>Gimme the Airpod</p>
+  <button onclick="toggleCustomIframe(this, 'custom-gimme-the-airpod', 'https://adfree3kh0.github.io/projects/gimme-the-airpod/index.html')">Click to Load</button>
+  <div class="iframe-container"></div>
+</div>
+
+        
+    <div class="game-box">
+      <p>2048</p>
+      <button onclick="toggleGame('2048', this)">Click to Load</button>
+      <div class="iframe-container" id="2048"></div>
+    </div>
+
+    <div class="game-box">
+      <p>Subway Surfers</p>
+      <button onclick="toggleGame('subway-surfers', this)">Click to Load</button>
+      <div class="iframe-container" id="subway-surfers"></div>
+    </div>
+
+    <div class="game-box">
+      <p>Retro Bowl</p>
+      <button onclick="toggleGame('retro-bowl', this)">Click to Load</button>
+      <div class="iframe-container" id="retro-bowl"></div>
+    </div>
+    
+    
+
+    <div class="game-box">
+      <p>Flappy Bird</p>
+      <button onclick="toggleGame('flappy-bird', this)">Click to Load</button>
+      <div class="iframe-container" id="flappy-bird"></div>
+    </div>
+
+    <div class="game-box">
+      <p>Basketball Stars</p>
+      <button onclick="toggleGame('basketball-stars', this)">Click to Load</button>
+      <div class="iframe-container" id="basketball-stars"></div>
+    </div>
+
+    <!-- Cookie Clicker (1games.io) -->
+<div class="game-box" id="custom-cookie-clicker">
+  <p>Cookie Clicker</p>
+  <button onclick="toggleCustomIframe(this, 'custom-cookie-clicker', 'https://1games.io/cookie-clicker')">Click to Load</button>
+  <div class="iframe-container"></div>
+</div>
+
+<div class="game-box" id="custom-drift-boss">
+  <p>Drift Boss</p>
+  <button onclick="toggleCustomIframe(this, 'custom-drift-boss', 'https://html5.gamedistribution.com/0a8b51e5eaee42e7b4db83ca00afc92e/?utm_source=bubbleshooter.net&utm_medium=drift-boss&utm_campaign=block-and-redirect')">Click to Load</button>
+  <div class="iframe-container"></div>
+</div>
+
+
+    <!-- Eaglercraft Minecraft -->
+    <div class="game-box">
+      <p>Minecraft</p>
+      <button onclick="toggleEagler(false, this)">Click to Load</button>
+      <button onclick="toggleEagler(true, this)">Fullscreen</button>
+      <div class="iframe-container" id="eagler-container"></div>
+    </div>
+  </div>
+
+      <!-- ADD THIS anywhere below your existing games, for example, after your "Drift Boss" block: -->
+
+
+<!-- Ragdoll Playground™ -->
+
+      <!-- Fireboy & Watergirl: Forest Temple -->
+<div class="game-box" id="custom-fireboy-watergirl">
+  <p>Fireboy & Watergirl</p>
+  <button onclick="toggleCustomIframe(this, 'custom-fireboy-watergirl', 'https://1games.io/fireboy-and-watergirl')">Click to Load</button>
+  <div class="iframe-container"></div>
+</div>
+
+<!-- Life: The Game -->
+<div class="game-box" id="custom-life-the-game">
+  <p>Life: The Game</p>
+  <button onclick="toggleCustomIframe(this, 'custom-life-the-game', 'https://1games.io/life-the-game')">Click to Load</button>
+  <div class="iframe-container"></div>
+</div>
+
+<!-- Krunker.io -->
+<div class="game-box" id="custom-krunker">
+  <p>Krunker.io</p>
+  <button onclick="toggleCustomIframe(this, 'custom-krunker', 'https://1games.io/krunker')">Click to Load</button>
+  <div class="iframe-container"></div>
+</div>
+
+<!-- Basket Random -->
+<div class="game-box" id="custom-basket-random">
+  <p>Basket Random</p>
+  <button onclick="toggleCustomIframe(this, 'custom-basket-random', 'https://1games.io/basket-random')">Click to Load</button>
+  <div class="iframe-container"></div>
+</div>
+
+<!-- Doge Miner 2 -->
+<div class="game-box" id="custom-doge-miner-2">
+  <p>Doge Miner 2</p>
+  <button onclick="toggleCustomIframe(this, 'custom-doge-miner-2', 'https://1games.io/doge-miner-2')">Click to Load</button>
+  <div class="iframe-container"></div>
+</div>
+
+      <!-- Stickman Hook -->
+<div class="game-box" id="custom-stickman-hook">
+  <p>Stickman Hook</p>
+  <button onclick="toggleCustomIframe(this, 'custom-stickman-hook', 'https://1games.io/stickman-hook')">Click to Load</button>
+  <div class="iframe-container"></div>
+</div>
+
+      <!-- Tunnel Rush -->
+<div class="game-box" id="custom-tunnel-rush">
+  <p>Tunnel Rush</p>
+  <button onclick="toggleCustomIframe(this, 'custom-tunnel-rush', 'https://1games.io/tunnel-rush')">Click to Load</button>
+  <div class="iframe-container"></div>
+</div>
+
+
+      <!-- 1v1.LOL -->
+<div class="game-box" id="custom-1v1lol">
+  <p>1v1.LOL</p>
+  <button onclick="toggleCustomIframe(this, 'custom-1v1lol', 'https://1games.io/1v1-lol')">Click to Load</button>
+  <div class="iframe-container"></div>
+</div>
+
+      
+<!-- Vectaria.io -->
+<div class="game-box" id="custom-vectaria">
+  <p>Vectaria.io</p>
+  <button onclick="toggleCustomIframe(this, 'custom-vectaria', 'https://1games.io/vectaria')">Click to Load</button>
+  <div class="iframe-container"></div>
+</div>
+      
+<!-- Duck Life -->
+<div class="game-box" id="custom-duck-life">
+  <p>Duck Life</p>
+  <button onclick="toggleCustomIframe(this, 'custom-duck-life', 'https://1games.io/duck-life')">Click to Load</button>
+  <div class="iframe-container"></div>
+</div>
+
+
+<!-- Getting Over It -->
+<div class="game-box" id="custom-getting-over-it">
+  <p>Getting Over It</p>
+  <button onclick="toggleCustomIframe(this, 'custom-getting-over-it', 'https://1games.io/getting-over-it')">Click to Load</button>
+  <div class="iframe-container"></div>
+</div>
+
+<!-- Zombie Derby: Pixel Survival -->
+<div class="game-box" id="custom-zombie-derby">
+  <p>Zombie Derby</p>
+  <button onclick="toggleCustomIframe(this, 'custom-zombie-derby', 'https://1games.io/zombie-derby')">Click to Load</button>
+  <div class="iframe-container"></div>
+</div>
+
+  <!-- Crazy Cattle 3D -->
+<div class="game-box" id="grow-a-garden">
+  <p>Grow A Garden</p>
+  <button onclick="toggleCustomIframe(this, 'grow-a-garden', 'https://1games.io/grow-a-garden')">Click to Load</button>
+  <div class="iframe-container"></div>
+</div>
+            
+      <!-- Crazy Cattle 3D -->
+<div class="game-box" id="custom-crazy-cattle">
+  <p>Crazy Cattle 3D</p>
+  <button onclick="toggleCustomIframe(this, 'custom-crazy-cattle', 'https://1games.io/crazy-cattle-3d')">Click to Load</button>
+  <div class="iframe-container"></div>
+</div>
+         <a href="https://forms.gle/VJPuheo1gE1dMqhR8" target="_blank">
+  <button type="button">Rate Us!</button>
+           <a href="https://forms.gle/5B5ayMtofttxB5vb9" target="_blank">
+  <button type="button">Suggest Games</button>
+</a>
+</a>
+</div>
+<body>
+
+     <script>
+  function openContact() {
+    // Remove all existing elements
+    document.body.innerHTML = "";
+    document.body.style.background = "darkgreen";
+    document.body.style.height = "100vh";
+    document.body.style.display = "flex";
+    document.body.style.flexDirection = "column";
+    document.body.style.alignItems = "center";
+    document.body.style.justifyContent = "center";
+
+    // Create heading
+    const heading = document.createElement("h2");
+    heading.textContent = "Write Your Review";
+    heading.style.marginBottom = "20px";
+    heading.style.color = "white";
+    heading.style.textShadow = "0 0 10px limegreen, 0 0 20px limegreen";
+    document.body.appendChild(heading);
+
+    // Create textarea
+    const textarea = document.createElement("textarea");
+    textarea.id = "reviewText";
+    textarea.placeholder = "Write your review here...";
+    textarea.style.width = "80%";
+    textarea.style.maxWidth = "600px";
+    textarea.style.height = "150px";
+    textarea.style.padding = "10px";
+    textarea.style.borderRadius = "8px";
+    textarea.style.border = "2px solid limegreen";
+    textarea.style.background = "#003300";
+    textarea.style.color = "white";
+    textarea.style.fontSize = "16px";
+    textarea.style.marginBottom = "20px";
+    textarea.style.outline = "none";
+    textarea.style.boxShadow = "0 0 10px limegreen, 0 0 20px limegreen";
+    document.body.appendChild(textarea);
+
+    // Create Send button
+    const sendBtn = document.createElement("button");
+    sendBtn.textContent = "Send";
+    sendBtn.className = "contact-button";
+    sendBtn.style.padding = "12px 24px";
+    sendBtn.style.fontSize = "18px";
+    sendBtn.style.background = "limegreen";
+    sendBtn.style.border = "none";
+    sendBtn.style.borderRadius = "8px";
+    sendBtn.style.color = "white";
+    sendBtn.style.cursor = "pointer";
+    sendBtn.style.textShadow = "0 0 10px #00ff88, 0 0 20px #00ff88";
+    sendBtn.style.transition = "0.3s";
+    sendBtn.onmouseover = () => {
+      sendBtn.style.background = "#00cc66";
+      sendBtn.style.textShadow = "0 0 15px #00ff88, 0 0 25px #00ff88";
+    };
+    sendBtn.onmouseout = () => {
+      sendBtn.style.background = "limegreen";
+      sendBtn.style.textShadow = "0 0 10px #00ff88, 0 0 20px #00ff88";
+    };
+    sendBtn.onclick = sendReview;
+    document.body.appendChild(sendBtn);
+  }
+
+  function sendReview() {
+    const review = document.getElementById("reviewText").value.trim();
+    if (!review) {
+      alert("Please write something first!");
+      return;
+    }
+
+    const subject = encodeURIComponent("Website Review");
+    const body = encodeURIComponent(review);
+
+    // Open Gmail compose in a new tab
+    window.open(
+      `https://mail.google.com/mail/?view=cm&fs=1&to=carmstrong31@ecsd.us&su=${subject}&body=${body}`,
+      "_blank"
+    );
+  }
+</script>
+
+
+      </body>
+<script>
+function loadGalleryWalk() {
+  // Hide all game boxes
+  document.querySelectorAll('.game-box').forEach(box => {
+    box.style.display = 'none';
+  });
+
+  // Show restore button
+  document.getElementById('restoreButtonWrapper').style.display = 'block';
+}
+
+function restoreGames() {
+  // Show all game boxes again
+  document.querySelectorAll('.game-box').forEach(box => {
+    box.style.display = 'block';
+  });
+
+  // Hide restore button again if you want
+  document.getElementById('restoreButtonWrapper').style.display = 'none';
+}
+</script>
+
+      <!-- All Gallery code End-->
+      
+  <script>
+    function toggleGame(path, button) {
+      const container = document.getElementById(path);
+      const loaded = container.querySelector('iframe');
+
+      if (loaded) {
+        // Unload game
+        container.innerHTML = '';
+        button.textContent = "Click to Load";
+      } else {
+        // Load game
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://spew45.github.io/game-assets/${path}/`;
+        container.appendChild(iframe);
+        button.textContent = "Click to Unload";
+      }
+    }
+
+    function toggleEagler(fullscreen, button) {
+      const container = document.getElementById('eagler-container');
+      const loaded = container.querySelector('iframe');
+
+      if (loaded && !fullscreen) {
+        container.innerHTML = '';
+        button.textContent = "Click to Load";
+      } else if (loaded && fullscreen) {
+        container.classList.add('fullscreen');
+        container.innerHTML = `
+          <button class="exit-fullscreen" onclick="exitFullscreen()">Exit Fullscreen</button>
+          <iframe src="https://eaglercraft.com/mc/1.8.8/" allowfullscreen sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-forms"></iframe>
+        `;
+      } else {
+        container.innerHTML = `
+          <iframe src="https://eaglercraft.com/mc/1.8.8/" allowfullscreen sandbox="allow-scripts allow-same-origin allow-pointer-lock allow-forms"></iframe>
+        `;
+        button.textContent = "Click to Unload";
+        container.classList.remove('fullscreen');
+      }
+    }
+
+    function exitFullscreen() {
+      const container = document.getElementById('eagler-container');
+      container.classList.remove('fullscreen');
+      container.innerHTML = '';
+      // Reset button text for Eaglercraft Load button
+      const loadBtn = container.parentElement.querySelector('button[onclick^="toggleEagler(false"]');
+      if (loadBtn) loadBtn.textContent = "Click to Load";
+    }
+
+        function updateClock() {
+    const now = new Date();
+    let hours = now.getHours();
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+   
+    hours = hours % 12;
+    hours = hours ? hours : 12; // '0' should be '12'
+    const timeString = `${String(hours).padStart(2, '0')}:${minutes}:${seconds} ${ampm}`;
+   
+    document.getElementById('clock').textContent = timeString;
+  }
+
+  setInterval(updateClock, 1000);
+  updateClock(); // Initial load
+
+  // Set load for custom 
+  function toggleCustomIframe(button, boxId, url) {
+  const box = document.getElementById(boxId);
+  const iframeContainer = box.querySelector('.iframe-container');
+  const loadedIframe = iframeContainer.querySelector('iframe');
+
+  if (loadedIframe) {
+    // Unload iframe
+    iframeContainer.innerHTML = '';
+    button.textContent = "Click to Load";
+  } else {
+    // Load iframe
+    const iframe = document.createElement('iframe');
+    iframe.src = url;
+    iframe.allowFullscreen = true;
+    iframeContainer.appendChild(iframe);
+    button.textContent = "Click to Unload";
+
+    // Scroll to box smoothly
+    box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+  // End custom Button Iframe Loader
+    
+  </script>
+      
+<footer style="
+  background-color: #1e1e1e;
+  color: limegreen;
+  text-align: center;
+  padding: 12px 0;
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  border-top: 3px solid limegreen;
+  font-size: 18px;
+  user-select: none;
+">
+  &copy; Green Iguana Studios & AR Studios
+  <p>note: if Spew13 is blocked we will move our servises to spew14.github.io. </p>
+  <a href="https://sites.google.com/ecsd.us/thechuckleweb/home?authuser=0" style="font-size: 2px;">Sussy chuckle web</a>
+
+</footer>
+<style>
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* centers all .game-box horizontally */
+  padding: 20px;
+}
+
+.game-box {
+  background: #1f1f1f;
+  border: 2px solid limegreen;
+  border-radius: 12px;
+  margin: 20px auto; /* auto left/right margin to center */
+  padding: 20px;
+  width: 90%;
+  max-width: 800px;
+  box-shadow: 0 0 10px limegreen;
+  position: relative;
+  text-align: center; /* center all text/buttons inside */
+  display: block; /* ensure block-level */
+}
+
+.game-box .iframe-container {
+  margin-top: 20px;
+  width: 100%; /* full width of game-box */
+}
+
+.game-box .iframe-container iframe {
+  width: 100%; /* fill container */
+  height: 600px;
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 0 10px limegreen;
+  display: block; /* remove inline spacing */
+}
+
+</style>
+
+      <!-- Theme Buttons -->
+
+<style>
+  /* Base styles for elements */
+  header, footer, .game-box, #spew-clock, .click-btn {
+    border: 3px solid #00ff00; /* initial lime */
+    box-shadow: 0 0 20px #00ff00;
+    color: #00ff00;
+    transition: border-color 0.5s ease, box-shadow 0.5s ease, color 0.5s ease;
+  }
+
+  /* Theme buttons styling */
+  .theme-btn {
+    padding:10px 20px;
+    border:2px solid #fff;
+    border-radius:8px;
+    cursor:pointer;
+    margin:0 5px;
+  }
+</style>
+
+<script>
+  // Theme colors
+  const themes = {
+    neon: '#00ff88',
+    ocean: '#00ccff',
+    retro: '#ff0066'
+  };
+
+  // Set selected theme for all elements
+  function setTheme(theme) {
+    document.body.dataset.theme = theme;
+  }
+
+  // Random flicker function
+  function randomColorFlicker() {
+    const elements = document.querySelectorAll('header, footer, .game-box, #spew-clock, .click-btn');
+    const theme = document.body.dataset.theme || 'lime';
+
+    elements.forEach(el => {
+      setTimeout(() => {
+        let color;
+        if (theme === 'lime') {
+          // Random lime variations
+          const shades = ['#00ff00','#33ff33','#66ff66','#99ff99'];
+          color = shades[Math.floor(Math.random()*shades.length)];
+        } else {
+          color = themes[theme];
+        }
+
+        el.style.borderColor = color;
+        el.style.boxShadow = `0 0 20px ${color}`;
+        el.style.color = color;
+      }, Math.random() * 3500); // random delay between 0-2s
+    });
+  }
+
+  // Loop the random flicker continuously
+  setInterval(randomColorFlicker, 500); // every 0.5s, pick some random changes
+</script>
+
+<!-- Theme Buttons  End-->
+ /html>
