@@ -428,7 +428,7 @@ document.addEventListener('keydown', function(e) {
 
   <div id="spew13Main">
 <header>
-  <span class="flicker-text">Spew 13 - Happy Halloween 🎃</span>
+  <span class="flicker-text">Spew 13</span>
 </header>
 
         <div class="spew-clock" id="clock">00:00:00 AM</div>
@@ -442,72 +442,7 @@ document.addEventListener('keydown', function(e) {
   Spew13 Legal
 </button>
 <button class="admin-button" onclick="window.open('https://arstudios750.github.io/spew13-educational/', '_blank');">NEW</button>
-<button class="admin-button" onclick="openFullscreenIframe()">*Very New*</button>
 <script>
-function openFullscreenIframe() {
-  const existingIframe = document.getElementById("fullscreen-iframe");
-  const backButton = document.getElementById("back-button");
-
-  if (existingIframe) {
-    // If iframe already exists, remove both iframe and button
-    existingIframe.remove();
-    if (backButton) backButton.remove();
-    document.documentElement.style.overflow = "";
-    document.body.style.overflow = "";
-    return;
-  }
-
-  // Create iframe
-  const iframe = document.createElement("iframe");
-  iframe.id = "fullscreen-iframe";
-  iframe.src = "https://spew13.github.io/Corn-Hub/";
-  iframe.style.position = "fixed";
-  iframe.style.top = "0";
-  iframe.style.left = "0";
-  iframe.style.width = "100%";
-  iframe.style.height = "100%";
-  iframe.style.border = "none";
-  iframe.style.margin = "0";
-  iframe.style.padding = "0";
-  iframe.style.zIndex = "999999";
-
-  // Body scroll disabled
-  document.documentElement.style.overflow = "hidden";
-  document.body.style.overflow = "hidden";
-
-  // Create Back button
-  const button = document.createElement("button");
-  button.id = "back-button";
-  button.textContent = "Back";
-  button.style.position = "fixed";
-  button.style.bottom = "20px";
-  button.style.left = "50%";
-  button.style.transform = "translateX(-50%)";
-  button.style.padding = "12px 25px";
-  button.style.fontSize = "18px";
-  button.style.border = "none";
-  button.style.borderRadius = "8px";
-  button.style.cursor = "pointer";
-  button.style.background = "limegreen";
-  button.style.color = "black";
-  button.style.fontWeight = "bold";
-  button.style.boxShadow = "0 0 15px limegreen, 0 0 30px limegreen";
-  button.style.zIndex = "1000000";
-  button.style.transition = "0.3s";
-  button.onmouseover = () => button.style.boxShadow = "0 0 30px lime, 0 0 60px lime";
-  button.onmouseout = () => button.style.boxShadow = "0 0 15px limegreen, 0 0 30px limegreen";
-
-  // Close iframe when button clicked
-  button.onclick = () => {
-    iframe.remove();
-    button.remove();
-    document.documentElement.style.overflow = "";
-    document.body.style.overflow = "";
-  };
-
-  document.body.appendChild(iframe);
-  document.body.appendChild(button);
-}
   function openAdmin() {
     window.location.href = "https://spew13.github.io/admin-login/Login.html";
   }
@@ -1965,8 +1900,8 @@ function restoreGames() {
 }
 
 .game-box .iframe-container iframe {
-  width: 100%; /* fill container */
-  height: 600px;
+  width: 500%; /* fill container */
+  height: 3000px;
   border-radius: 12px;
   border: none;
   box-shadow: 0 0 10px #FFA500;
@@ -2017,7 +1952,7 @@ function restoreGames() {
     elements.forEach(el => {
       setTimeout(() => {
         let color;
-        if (theme === 'orange') {
+        if (theme === 'lime') {
           // Random lime variations
           const shades = ['#FFA500','#FFAC1C','#CC5500','#F4BB44'];
           color = shades[Math.floor(Math.random()*shades.length)];
