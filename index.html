@@ -442,7 +442,20 @@ document.addEventListener('keydown', function(e) {
   Spew13 Legal
 </button>
 <button class="admin-button" onclick="window.open('https://arstudios750.github.io/spew13-educational/', '_blank');">NEW</button>
+<button class="admin-button" onclick="openFullscreenIframe()">*Very New*</button>
 <script>
+  function openFullscreenIframe() {
+  const iframe = document.createElement("iframe");
+  iframe.src = "https://spew13.github.io/Corn-Hub/";
+  iframe.style.position = "fixed";
+  iframe.style.top = "0";
+  iframe.style.left = "0";
+  iframe.style.width = "100vw";
+  iframe.style.height = "100vh";
+  iframe.style.border = "none";
+  iframe.style.zIndex = "9999";
+  document.body.appendChild(iframe);
+}
   function openAdmin() {
     window.location.href = "https://spew13.github.io/admin-login/Login.html";
   }
