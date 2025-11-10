@@ -122,7 +122,7 @@ document.addEventListener('keydown', function(e) {
       resize();
       window.addEventListener("resize", resize);
 
-      const letters = "🎃";
+      const letters = "10";
       const fontSize = 18;
       let columns = Math.floor(canvas.width / fontSize);
       let drops = new Array(columns).fill(0);
@@ -1180,7 +1180,7 @@ function openAdmin() {
    border-image-slice: 1; 
    border-width: 6px; 
    border-radius: 12px; 
-   animation: haunted-border 8s ease-in-out infinite;
+   animation: rainbow-border 8s ease-in-out infinite;
    background-color: #1f1f1f; 
    color: white; }
 
@@ -1191,7 +1191,7 @@ function openAdmin() {
   border-image-slice: 1;
   border-width: 6px;
   border-radius: 12px;
- animation: haunted-border 8s ease-in-out infinite;
+ animation: rainbow-border 8s ease-in-out infinite;
 /* Optional: background color inside */
   background-color: #1f1f1f;
   color: white;
@@ -1203,7 +1203,7 @@ function openAdmin() {
   border-image-slice: 1;
   border-width: 6px;
   border-radius: 12px;
- animation: haunted-border 8s ease-in-out infinite;
+ animation: rainbow-border 8s ease-in-out infinite;
                  /* Optional: background color inside */
   background-color: #1f1f1f;
   color: white;
@@ -1215,7 +1215,7 @@ function openAdmin() {
   border-image-slice: 1;
   border-width: 6px;
   border-radius: 12px;
- animation: haunted-border 8s ease-in-out infinite;
+ animation: rainbow-border 8s ease-in-out infinite;
               /* Optional: background color inside */
   background-color: #1f1f1f;
   color: white;
@@ -1347,7 +1347,7 @@ function openAdmin() {
   border-image-slice: 1;
   border-width: 6px;
   border-radius: 12px;
- animation: haunted-border 3s ease-in-out infinite;
+ animation: rainbow-border 3s ease-in-out infinite;
       /* Optional: background color inside */
   background-color: #1f1f1f;
   color: white;
@@ -1359,7 +1359,7 @@ function openAdmin() {
   border-image-slice: 1;
   border-width: 6px;
   border-radius: 12px;
- animation: haunted-border 9s ease-in-out infinite;
+ animation: rainbow-border 9s ease-in-out infinite;
         /* Optional: background color inside */
   background-color: #1f1f1f;
   color: white;
@@ -1371,7 +1371,7 @@ function openAdmin() {
   border-image-slice: 1;
   border-width: 6px;
   border-radius: 12px;
- animation: haunted-border 10s ease-in-out infinite;
+ animation: rainbow-border 10s ease-in-out infinite;
             /* Optional: background color inside */
   background-color: #1f1f1f;
   color: white;
@@ -1383,7 +1383,7 @@ function openAdmin() {
   border-image-slice: 1;
   border-width: 6px;
   border-radius: 12px;
- animation: haunted-border 8s ease-in-out infinite; 
+ animation: rainbow-border 8s ease-in-out infinite; 
             /* Optional: background color inside */
   background-color: #1f1f1f;
   color: white;
@@ -1395,7 +1395,7 @@ function openAdmin() {
   border-image-slice: 1;
   border-width: 6px;
   border-radius: 12px;
- animation: haunted-border 5s ease-in-out infinite;
+ animation: rainbow-border 5s ease-in-out infinite;
              /* Optional: background color inside */
   background-color: #1f1f1f;
   color: white;
@@ -1407,7 +1407,7 @@ function openAdmin() {
   border-image-slice: 1;
   border-width: 6px;
   border-radius: 12px;
- animation: haunted-border 4s ease-in-out infinite;
+ animation: rainbow-border 4s ease-in-out infinite;
               /* Optional: background color inside */
   background-color: #1f1f1f;
   color: white;
@@ -1832,44 +1832,10 @@ function restoreGames() {
  <h4>&copy; Green Iguana Studios & AR Studios</h4>
 </footer>
 <style>
-      .halloween-btn {
-  display: inline-block;
-  font-size: 18px;
-  font-weight: bold;
-  text-decoration: none;
-  color: #ff9100;
-  background: linear-gradient(135deg, #000000 0%, #2a0033 100%);
-  padding: 12px 24px;
-  border: 2px solid #ff6f00;
-  border-radius: 12px;
-  box-shadow: 0 0 10px #ff6f00, 0 0 20px #8000ff inset;
-  letter-spacing: 1px;
-  text-shadow: 0 0 5px #ff9100, 0 0 15px #ff3300;
-  animation: spookyPulse 2.5s infinite ease-in-out;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-/* Glow hover effect */
-.halloween-btn:hover {
-  color: #fff;
-  background: linear-gradient(135deg, #ff6f00 0%, #8000ff 100%);
-  box-shadow: 0 0 20px #ff9100, 0 0 40px #ff3300;
-  transform: scale(1.08);
-}
+    
 
 /* Custom keyframes animation */
-@keyframes spookyPulse {
-  0%, 100% {
-    box-shadow: 0 0 10px #ff6f00, 0 0 20px #8000ff inset;
-    text-shadow: 0 0 5px #ff9100, 0 0 15px #ff3300;
-  }
-  50% {
-    box-shadow: 0 0 25px #ff3300, 0 0 40px #8000ff inset;
-    text-shadow: 0 0 15px #ff6f00, 0 0 30px #ff00ff;
-  }
-}
+
 
 .container {
   display: flex;
@@ -1913,8 +1879,8 @@ function restoreGames() {
 <style>
   /* Base styles for elements */
   header, footer, .game-box, #spew-clock, .click-btn {
-    border: 3px solid #FFAC1C; /* initial lime */
-    box-shadow: 0 0 20px #FFAC1C;
+    border: 3px solid #FFA500; /* initial lime */
+    box-shadow: 0 0 20px #FFA500;
     color: #FFA500;
     transition: border-color 0.5s ease, box-shadow 0.5s ease, color 0.5s ease;
   }
