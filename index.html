@@ -371,28 +371,7 @@ document.addEventListener('keydown', function(e) {
       z-index: 1000;
       font-color: #FF4F00;
 }
-#bat-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 9999;
-}
-
-.bat {
-  position: absolute;
-  width: 40px;
-  height: 20px;
-  background: url('https://upload.wikimedia.org/wikipedia/commons/3/3e/Bat_silhouette.svg') no-repeat center/contain;
-  opacity: 0.8;
-  animation-timing-function: linear;
-  animation-fill-mode: forwards;
-  filter: drop-shadow(0 0 6px #8000ff);
-}
-
+  
 /* Keyframes for left → right */
 @keyframes fly-right {
   0% { transform: translateX(-120px) rotate(5deg); opacity: 0; }
@@ -420,12 +399,24 @@ document.addEventListener('keydown', function(e) {
   0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
   20%, 24%, 55% { opacity: 0.4; } /* only opacity changes */
 }
+  /* Image fixed to bottom-left corner */
+    .bottom-left-img {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      width: 250px; /* You can change size */
+      height: auto;
+      z-index: 100;
+    }
 
   </style>
 </head>
       
 <body>
-      <div id="bat-container"></div>
+  <img 
+    src="https://raw.githubusercontent.com/Spew13/Spew13.github.io/main/image/Tomm%20The%20Turkey.png" 
+    alt="Tomm The Turkey" 
+    class="bottom-left-img">
 
   <div id="spew13Main">
 <header>
@@ -501,35 +492,6 @@ btn.addEventListener('click', () => {
   showNextText();
 });
 </script>
- <script>
-const batContainer = document.getElementById('bat-container');
-
-function spawnBatGroup() {
-  const direction = Math.random() > 0.5 ? 'right' : 'left';
-  const groupY = Math.random() * window.innerHeight * 0.8;
-
-  for (let i = 0; i < 3; i++) {
-    const bat = document.createElement('div');
-    bat.classList.add('bat');
-    bat.style.top = `${groupY + i * 25}px`;
-    bat.style.animation = `${direction === 'right' ? 'fly-right' : 'fly-left'} ${4 + Math.random() * 2}s linear`;
-    batContainer.appendChild(bat);
-    setTimeout(() => bat.remove(), 7000);
-  }
-}
-
-function randomBatTimer() {
-  const delay = 240000 + Math.random() * 10000; // 4–5 minutes (in ms)
-  setTimeout(() => {
-    spawnBatGroup();
-    randomBatTimer(); // schedule next group
-  }, delay);
-}
-
-// start the first bat flight
-randomBatTimer();
-</script>
-
 
 <!-- Visitor Counter, directly in page (counts correctly) -->
 <div style="width: 100%; text-align: center; margin-top: 10px;">
