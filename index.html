@@ -408,6 +408,16 @@ document.addEventListener('keydown', function(e) {
       height: auto;
       z-index: 100;
     }
+  .leaf {
+    position: absolute;
+    top: -80px; /* start above the screen */
+    pointer-events: none;
+    z-index: 1; /* behind the header */
+    opacity: 1;
+    will-change: transform, opacity;
+    user-select: none;
+    transform-origin: center center;
+  }
 
   </style>
 </head>
@@ -441,6 +451,72 @@ document.addEventListener('keydown', function(e) {
    function openWebBlock() {
     window.location.href = "https://spew13.github.io/WebBlock/";
   }
+</script>
+  <script>
+const leafUrl = "https://raw.githubusercontent.com/Spew13/Spew13.github.io/main/image/FALLING%20LEAVESESESESES.png";
+const bodyWidth = window.innerWidth;
+const bodyHeight = window.innerHeight;
+
+function createLeaf() {
+  const leaf = document.createElement('img');
+  leaf.src = leafUrl;
+  leaf.className = 'leaf';
+
+  const size = 20 + Math.random() * 50;
+  leaf.style.width = size + 'px';
+
+  const startX = Math.random() * bodyWidth;
+  leaf.style.left = startX + 'px';
+
+  const swayAmplitude = 20 + Math.random() * 40;
+  const swaySpeed = 0.5 + Math.random() * 1;
+  const fallSpeed = 20 + Math.random() * 30;
+  const spinSpeed = (Math.random() * 60 + 30) * (Math.random() < 0.5 ? 1 : -1);
+
+  document.body.appendChild(leaf);
+
+  let startTime = null;
+
+  function animateLeaf(time) {
+    if (!startTime) startTime = time;
+    const elapsed = (time - startTime) / 1000;
+
+    // vertical fall
+    const y = elapsed * fallSpeed;
+    leaf.style.top = y + 'px';
+
+    // horizontal sway
+    const x = startX + Math.sin(elapsed * swaySpeed) * swayAmplitude;
+
+    // spin rotation
+    const rotation = elapsed * spinSpeed;
+    leaf.style.transform = `translateX(${x - startX}px) rotate(${rotation}deg)`;
+
+    // opacity fades slower
+    leaf.style.opacity = Math.max(0, 1 - elapsed / 8);
+
+    // remove after it falls off screen
+    if (y < bodyHeight + 100) {
+      requestAnimationFrame(animateLeaf);
+    } else {
+      leaf.remove();
+    }
+  }
+
+  requestAnimationFrame(animateLeaf);
+}
+
+// continuously spawn leaves
+setInterval(() => {
+  createLeaf();
+  if (Math.random() < 0.3) createLeaf();
+}, 700);
+
+// optional: adjust for window resize
+window.addEventListener('resize', () => {
+  bodyWidth = window.innerWidth;
+  bodyHeight = window.innerHeight;
+});
 </script>
   <button id="enterRoomBtn">. . .</button>
    
