@@ -1,3 +1,135 @@
+const allowedHost = "spew13.github.io";
+
+  if (window.top !== window.self) {
+    if (window.top.location.hostname !== allowedHost) {
+      window.top.location = window.location; // Break out of iframe
+    }
+  }
+
+    // Prevent embedding in an iframe
+    if (window.top !== window.self) {
+      // Break out of the iframe
+      window.top.location = window.self.location;
+    }
+<script>
+(() => {
+  const binId = "68e8eb5bd0ea881f409c55e0";
+  const popup = document.getElementById("announcementPopup");
+  const STORAGE_KEY = "spew13_lastAnnouncement";
+  let lastShown = localStorage.getItem(STORAGE_KEY) || "";
+
+  async function checkAnnouncements() {
+    try {
+      const res = await fetch(`https://api.jsonbin.io/v3/b/${binId}/latest`);
+      const json = await res.json();
+      const messages = json.record || [];
+      if (!messages.length) return;
+
+      const newest = messages[messages.length - 1];
+      const newestHash = JSON.stringify(newest);
+
+
+      if (newestHash === lastShown) return;
+
+      // Otherwise, show it once
+      showPopup(newest.text);
+
+      // Save that we’ve shown this one
+      localStorage.setItem(STORAGE_KEY, newestHash);
+    } catch (err) {
+      console.error("Announcement fetch error:", err);
+    }
+  }
+
+  function showPopup(message) {
+    popup.innerHTML = `<div>${escapeHtml(message)}</div>`;
+    popup.style.display = "block";
+    requestAnimationFrame(() => popup.style.opacity = "1");
+
+    // Hide after 8 seconds
+    setTimeout(() => {
+      popup.style.opacity = "0";
+      setTimeout(() => (popup.style.display = "none"), 500);
+    }, 8000);
+  }
+
+  function escapeHtml(s) {
+    return ("" + s)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;");
+  }
+
+  //  Check announcements once on page load
+  checkAnnouncements();
+})();
+
+      const canvas = document.getElementById("matrixCanvas");
+      const ctx = canvas.getContext("2d");
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+      resize();
+      window.addEventListener("resize", resize);
+
+      const letters = "🦃";
+      const fontSize = 18;
+      let columns = Math.floor(canvas.width / fontSize);
+      let drops = new Array(columns).fill(0);
+
+      function draw() {
+        // semi-transparent black to create fading trails
+        ctx.fillStyle = "rgba(0,0,0,0.08)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = "#e9d66b"; // lime green
+        ctx.font = fontSize + "px monospace";
+
+        for (let i = 0; i < drops.length; i++) {
+          const text = letters.charAt(Math.floor(Math.random() * letters.length));
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+          drops[i] += 1;
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+        }
+      }
+
+      setInterval(draw, 80);
+// Function to show popup
+function showAntiCopyPopup() {
+    if (document.getElementById('antiCopyPopup')) return; // prevent multiple popups
+
+    const popup = document.createElement('div');
+    popup.id = 'antiCopyPopup';
+    popup.innerText = "denied...";
+    document.body.appendChild(popup);
+
+    // Remove popup after animation
+    setTimeout(() => {
+        if (popup) popup.remove();
+    }, 1500); // match animation duration
+}
+
+// Disable right-click
+document.addEventListener('contextmenu', e => {
+    e.preventDefault();
+    showAntiCopyPopup();
+});
+
+// Disable common shortcuts 
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'F12' || 
+        (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase())) ||
+        (e.ctrlKey && e.key.toUpperCase() === 'U')) {
+        e.preventDefault();
+        showAntiCopyPopup();
+    }
+});
+
 function openContact() {
     // Remove all existing elements
     document.body.innerHTML = "";
