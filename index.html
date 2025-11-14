@@ -1259,6 +1259,15 @@ function openAdmin() {
   border-width: 6px;
   border-radius: 12px;
  animation: haunted-border 8s ease-in-out infinite;
+            }
+          #granny {
+  position: relative;
+  padding: 20px;
+  border: 6px solid;
+  border-image-slice: 1;
+  border-width: 6px;
+  border-radius: 12px;
+ animation: haunted-border 8s ease-in-out infinite;
               /* Optional: background color inside */
   background-color: #1f1f1f;
   color: white;
@@ -1303,7 +1312,13 @@ function openAdmin() {
 }
 
 </style>
-
+<div class="game-box" id="granny">
+  <p>Granny</p>
+  <button onclick="toggleCustomIframe(this, 'granny', 'https://granny-games.com/')">
+  Click to Load
+</button>
+  <div class="iframe-container"></div>
+</div>
 
      <div class="game-box" id="custom-fluff-box">
   <p>Bad Time Simulator</p>
