@@ -11,7 +11,7 @@ const allowedHost = "spew13.github.io";
       // Break out of the iframe
       window.top.location = window.self.location;
     }
-<script>
+
 (() => {
   const binId = "68e8eb5bd0ea881f409c55e0";
   const popup = document.getElementById("announcementPopup");
@@ -129,6 +129,140 @@ document.addEventListener('keydown', function(e) {
         showAntiCopyPopup();
     }
 });
+
+const leafUrl = "https://raw.githubusercontent.com/Spew13/Spew13.github.io/main/image/FALLING%20LEAVESESESESES.png";
+const bodyWidth = window.innerWidth;
+const bodyHeight = window.innerHeight;
+
+function createLeaf() {
+  const leaf = document.createElement('img');
+  leaf.src = leafUrl;
+  leaf.className = 'leaf';
+
+  const size = 20 + Math.random() * 50;
+  leaf.style.width = size + 'px';
+
+  const startX = Math.random() * bodyWidth;
+  leaf.style.left = startX + 'px';
+
+  const swayAmplitude = 20 + Math.random() * 40;
+  const swaySpeed = 0.5 + Math.random() * 1;
+  const fallSpeed = 20 + Math.random() * 30;
+  const spinSpeed = (Math.random() * 60 + 30) * (Math.random() < 0.5 ? 1 : -1);
+
+  document.body.appendChild(leaf);
+
+  let startTime = null;
+
+  function animateLeaf(time) {
+    if (!startTime) startTime = time;
+    const elapsed = (time - startTime) / 1000;
+
+    // vertical fall
+    const y = elapsed * fallSpeed;
+    leaf.style.top = y + 'px';
+
+    // horizontal sway
+    const x = startX + Math.sin(elapsed * swaySpeed) * swayAmplitude;
+
+    // spin rotation
+    const rotation = elapsed * spinSpeed;
+    leaf.style.transform = `translateX(${x - startX}px) rotate(${rotation}deg)`;
+
+    // opacity fades slower
+    leaf.style.opacity = Math.max(0, 1 - elapsed / 8);
+
+    // remove after it falls off screen
+    if (y < bodyHeight + 100) {
+      requestAnimationFrame(animateLeaf);
+    } else {
+      leaf.remove();
+    }
+  }
+
+  requestAnimationFrame(animateLeaf);
+}
+
+// continuously spawn leaves
+setInterval(() => {
+  createLeaf();
+  if (Math.random() < 0.3) createLeaf();
+}, 700);
+
+// optional: adjust for window resize
+window.addEventListener('resize', () => {
+  bodyWidth = window.innerWidth;
+  bodyHeight = window.innerHeight;
+});
+
+const cutsceneTexts = [
+  "There's a creepy room ahead...",
+  "A chill runs down your spine...",
+  "You enter the dark and mysterious room..."
+];
+
+const btn = document.getElementById('enterRoomBtn');
+const container = document.getElementById('cutsceneContainer');
+
+btn.addEventListener('click', () => {
+  btn.style.display = 'none';
+
+  
+  const bodyChildren = Array.from(document.body.children);
+  bodyChildren.forEach(el => {
+    if(el.tagName.toLowerCase() !== 'header' && el.tagName.toLowerCase() !== 'footer' && el !== container) {
+      el.remove();
+    }
+  });
+
+ 
+  document.body.appendChild(container);
+  container.style.display = 'block';
+
+  let index = 0;
+  function showNextText() {
+    if(index < cutsceneTexts.length) {
+      container.textContent = cutsceneTexts[index];
+      index++;
+      setTimeout(showNextText, 1000); 
+    } else {
+     
+    window.location.href = "https://arstudios750.github.io/spew13gamble/";
+    }
+  }
+
+  showNextText();
+});
+
+  window.addEventListener("message", (event) => {
+    if(event.data?.type === "resizeVisitorIframe") {
+      const iframe = document.getElementById("visitor-iframe");
+      if(iframe) iframe.style.height = event.data.height + "px";
+    }
+  });
+
+  // Auto-resize iframe height
+  window.addEventListener("message", (event) => {
+    if(event.data?.type === "resizeVisitorIframe") {
+      const iframe = document.getElementById("visitor-iframe");
+      if(iframe) iframe.style.height = event.data.height + "px";
+    }
+  });
+
+  window.addEventListener("message", (event) => {
+    if(event.data?.type === "resizeVisitorIframe") {
+      const iframe = document.getElementById("visitor-iframe");
+      iframe.style.height = event.data.height + "px";
+    }
+  });
+
+  // Listen for iframe height messages
+  window.addEventListener("message", (event) => {
+    if(event.data?.type === "resizeVisitorIframe") {
+      const iframe = document.getElementById("visitor-iframe");
+      iframe.style.height = event.data.height + "px";
+    }
+  });
 
 function openContact() {
     // Remove all existing elements
