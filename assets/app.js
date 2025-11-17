@@ -830,12 +830,12 @@ function restoreGames() {
   // Random flicker function
   function randomColorFlicker() {
     const elements = document.querySelectorAll('header, footer, .game-box, #spew-clock, .click-btn');
-    const theme = document.body.dataset.theme || 'orange';
+    const theme = document.body.dataset.theme || 'lime';
 
     elements.forEach(el => {
       setTimeout(() => {
         let color;
-        if (theme === 'orange') {
+        if (theme === 'lime') {
           // Random lime variations
           const shades = ['#FFA500','#FFAC1C','#CC5500','#F4BB44'];
           color = shades[Math.floor(Math.random()*shades.length)];
