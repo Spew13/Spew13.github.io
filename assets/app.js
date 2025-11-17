@@ -263,6 +263,40 @@ btn.addEventListener('click', () => {
       iframe.style.height = event.data.height + "px";
     }
   });
+function openWebBlock() {
+    // Create iframe
+    const iframe = document.createElement('iframe');
+    iframe.src = "https://spew13.github.io/WebBlock/";
+    iframe.style.position = "fixed";
+    iframe.style.top = "0";
+    iframe.style.left = "0";
+    iframe.style.width = "100%";
+    iframe.style.height = "100%";
+    iframe.style.border = "none";
+    iframe.style.zIndex = "9999";
+
+    // Optional: add a close button
+    const closeBtn = document.createElement('button');
+    closeBtn.innerText = "×";
+    closeBtn.style.position = "fixed";
+    closeBtn.style.top = "10px";
+    closeBtn.style.right = "20px";
+    closeBtn.style.fontSize = "36px";
+    closeBtn.style.color = "white";
+    closeBtn.style.background = "transparent";
+    closeBtn.style.border = "none";
+    closeBtn.style.cursor = "pointer";
+    closeBtn.style.zIndex = "10000";
+
+    closeBtn.onclick = () => {
+        document.body.removeChild(iframe);
+        document.body.removeChild(closeBtn);
+    };
+
+    // Add iframe and close button to body
+    document.body.appendChild(iframe);
+    document.body.appendChild(closeBtn);
+}
 
 function openContact() {
     // Remove all existing elements
