@@ -264,36 +264,44 @@ btn.addEventListener('click', () => {
     }
   });
 function openWebBlock() {
-    // Create iframe
+    // Prevent scrolling behind the iframe
+    document.body.style.overflow = 'hidden';
+    document.body.style.margin = '0';
+
+    // Create fullscreen iframe
     const iframe = document.createElement('iframe');
     iframe.src = "https://spew13.github.io/WebBlock/";
     iframe.style.position = "fixed";
     iframe.style.top = "0";
     iframe.style.left = "0";
-    iframe.style.width = "100%";
-    iframe.style.height = "100%";
+    iframe.style.width = "100vw";
+    iframe.style.height = "100vh";
     iframe.style.border = "none";
     iframe.style.zIndex = "9999";
+    iframe.id = "webBlockIframe";
 
-    // Optional: add a close button
+    // Create close button
     const closeBtn = document.createElement('button');
     closeBtn.innerText = "×";
     closeBtn.style.position = "fixed";
-    closeBtn.style.top = "10px";
-    closeBtn.style.right = "20px";
-    closeBtn.style.fontSize = "36px";
+    closeBtn.style.top = "0";
+    closeBtn.style.right = "0";
+    closeBtn.style.fontSize = "48px";
     closeBtn.style.color = "white";
     closeBtn.style.background = "transparent";
     closeBtn.style.border = "none";
     closeBtn.style.cursor = "pointer";
     closeBtn.style.zIndex = "10000";
+    closeBtn.id = "webBlockClose";
 
     closeBtn.onclick = () => {
         document.body.removeChild(iframe);
         document.body.removeChild(closeBtn);
+        document.body.style.overflow = '';
+        document.body.style.margin = '';
     };
 
-    // Add iframe and close button to body
+    // Append to body
     document.body.appendChild(iframe);
     document.body.appendChild(closeBtn);
 }
