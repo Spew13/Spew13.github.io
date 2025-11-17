@@ -264,9 +264,13 @@ btn.addEventListener('click', () => {
     }
   });
 function openWebBlock() {
-    // Prevent scrolling behind the iframe
+    // Disable scrolling behind iframe
+    document.documentElement.style.overflow = 'hidden';
     document.body.style.overflow = 'hidden';
+    document.documentElement.style.margin = '0';
     document.body.style.margin = '0';
+    document.documentElement.style.padding = '0';
+    document.body.style.padding = '0';
 
     // Create fullscreen iframe
     const iframe = document.createElement('iframe');
@@ -274,13 +278,14 @@ function openWebBlock() {
     iframe.style.position = "fixed";
     iframe.style.top = "0";
     iframe.style.left = "0";
-    iframe.style.width = "100vw";
-    iframe.style.height = "100vh";
+    iframe.style.width = "100%";
+    iframe.style.height = "100%";
     iframe.style.border = "none";
     iframe.style.zIndex = "9999";
+    iframe.style.backgroundColor = "#000"; // prevents background showing through
     iframe.id = "webBlockIframe";
 
-    // Create close button
+    // Close button
     const closeBtn = document.createElement('button');
     closeBtn.innerText = "×";
     closeBtn.style.position = "fixed";
@@ -297,14 +302,19 @@ function openWebBlock() {
     closeBtn.onclick = () => {
         document.body.removeChild(iframe);
         document.body.removeChild(closeBtn);
+        document.documentElement.style.overflow = '';
         document.body.style.overflow = '';
+        document.documentElement.style.margin = '';
         document.body.style.margin = '';
+        document.documentElement.style.padding = '';
+        document.body.style.padding = '';
     };
 
-    // Append to body
+    // Append to body last so it covers everything
     document.body.appendChild(iframe);
     document.body.appendChild(closeBtn);
 }
+
 
 function openContact() {
     // Remove all existing elements
