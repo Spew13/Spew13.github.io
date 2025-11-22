@@ -9,6 +9,44 @@ We strongly advise all users and visitors to respect the integrity and security 
 
 <html lang="en">
 <head>
+  <head>
+
+<!-- anti-local-run protection -->
+<script>
+(function() {
+    const allowedHost = "spew13.github.io";
+
+    // If opened as a file or from another domain → block the game
+    if (location.protocol === "file:" || location.hostname !== allowedHost) {
+        document.documentElement.innerHTML = `
+            <style>
+                body {
+                    background: #1b0000;
+                    color: #ff4444;
+                    font-family: Arial, sans-serif;
+                    text-align: center;
+                    padding-top: 100px;
+                }
+                .err {
+                    font-size: 40px;
+                    font-weight: bold;
+                }
+                .sub {
+                    font-size: 20px;
+                    margin-top: 20px;
+                    opacity: 0.8;
+                }
+            </style>
+            <div class="err">ERROR 13 — Unauthorized Copy</div>
+            <div class="sub">This game cannot run offline or from a saved file.<br>
+            Load it at <b>https://spew13.github.io/</b></div>
+        `;
+        throw new Error("Unauthorized offline/local execution blocked.");
+    }
+})();
+</script>
+
+
 <link rel="stylesheet" href="assets/styles.css" />
 <script src="assets/app.js" defer></script>
 <title>Spew13</title>
