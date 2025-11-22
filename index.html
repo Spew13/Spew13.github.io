@@ -8,11 +8,41 @@ Spew13, owned and operated by Ar and Green Iguana Studios, takes unauthorized ac
 We strongly advise all users and visitors to respect the integrity and security of our platform. Any recurrence of unauthorized activity will result in decisive legal measures.-->
 
 <html lang="en">
-<head>
-  <head>
-
-<!-- anti-local-run protection -->
+<head> 
 <script>
+(async()=>{
+    const F={
+        "beans.data":"H1",
+        "cheese.bin":"H2",
+        "x13.lock":"H3",
+        "spool.key":"H4",
+        "hi.hi":"H5"
+    };
+    const S=async x=>{
+        const b=new TextEncoder().encode(x);
+        const h=await crypto.subtle.digest("SHA-256",b);
+        return Array.from(new Uint8Array(h)).map(v=>v.toString(16).padStart(2,"0")).join("");
+    };
+    const V=async(p,h)=>{
+        try{
+            const r=await fetch(p+"?v="+Math.random());
+            if(!r.ok)throw 1;
+            const t=await r.text();
+            const q=await S(t);
+            if(q!==h)throw 2;
+        }catch(e){
+            document.body.innerHTML="<h1 style='color:red;font-family:sans-serif;text-align:center;margin-top:120px'>FATAL ERROR<br>Missing or Corrupted Game Files</h1>";
+            throw new Error("file fail "+p);
+        }
+    };
+    for(const k in F){await V(k,F[k]);}
+    const O=document.documentElement.innerHTML.length;
+    setInterval(()=>{if(document.documentElement.innerHTML.length!==O)location.reload();},250);
+    if(typeof initGame==="function")initGame();
+})();
+</script>
+
+  <script>
 (function() {
     const allowedHost = "spew13.github.io";
 
