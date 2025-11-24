@@ -8,7 +8,75 @@ Spew13, owned and operated by Ar and Green Iguana Studios, takes unauthorized ac
 We strongly advise all users and visitors to respect the integrity and security of our platform. Any recurrence of unauthorized activity will result in decisive legal measures.-->
 
 <html lang="en">
-<head>
+<head> 
+<script>
+(async()=>{
+    const F={
+        "beans.data":"198becf5412b1ffbfa33111734d93c3b999e5b2e071c67757bdf2dbadc9bebd2",
+        "cheese.bin":"eeb36e726e3ffec16da7798415bb4e531bf8a57fbe276fcc3fc6ea986cb02e9a",
+        "goon.com":"0be2e2a5ec14f6fa922255b83a5a105b6bfc1d85234209a7435231a88a8a4207",
+        "mewing.streak":"03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
+        "hi.hi":"6eb228fb5b59ab49a45a48bdd9e5f0ed65b43afb52ec72cc825a567986630827"
+    };
+    const S=async x=>{
+        const b=new TextEncoder().encode(x);
+        const h=await crypto.subtle.digest("SHA-256",b);
+        return Array.from(new Uint8Array(h)).map(v=>v.toString(16).padStart(2,"0")).join("");
+    };
+    const V=async(p,h)=>{
+        try{
+            const r=await fetch(p+"?v="+Math.random());
+            if(!r.ok)throw 1;
+            const t=await r.text();
+            const q=await S(t);
+            if(q!==h)throw 2;
+        }catch(e){
+            document.body.innerHTML="<h1 style='color:red;font-family:sans-serif;text-align:center;margin-top:120px'>FATAL ERROR<br>Missing or Corrupted Game Files</h1>";
+            throw new Error("file fail "+p);
+        }
+    };
+    for(const k in F){await V(k,F[k]);}
+    const O=document.documentElement.innerHTML.length;
+    setInterval(()=>{if(document.documentElement.innerHTML.length!==O)location.reload();},250);
+    if(typeof initGame==="function")initGame();
+})();
+</script>
+
+  <script>
+(function() {
+    const allowedHost = "spew13.github.io";
+
+    // If opened as a file or from another domain → block the game
+    if (location.protocol === "file:" || location.hostname !== allowedHost) {
+        document.documentElement.innerHTML = `
+            <style>
+                body {
+                    background: #1b0000;
+                    color: #ff4444;
+                    font-family: Arial, sans-serif;
+                    text-align: center;
+                    padding-top: 100px;
+                }
+                .err {
+                    font-size: 40px;
+                    font-weight: bold;
+                }
+                .sub {
+                    font-size: 20px;
+                    margin-top: 20px;
+                    opacity: 0.8;
+                }
+            </style>
+            <div class="err">ERROR 13 — Unauthorized Copy</div>
+            <div class="sub">This game cannot run offline or from a saved file.<br>
+            Load it at <b>https://spew13.github.io/</b></div>
+        `;
+        throw new Error("Unauthorized offline/local execution blocked.");
+    }
+})();
+</script>
+
+
 <link rel="stylesheet" href="assets/styles.css" />
 <script src="assets/app.js" defer></script>
 <title>Spew13</title>
