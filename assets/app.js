@@ -130,9 +130,91 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
+const snowfallURL = "https://github.com/Spew13/Spew13.github.io/blob/main/image/Snowfall.png?raw=true";
 const leafUrl = "https://raw.githubusercontent.com/Spew13/Spew13.github.io/main/image/FALLING%20LEAVESESESESES.png";
 const bodyWidth = window.innerWidth;
 const bodyHeight = window.innerHeight;
+
+// snow image url
+const snowfallURL = "https://github.com/Spew13/Spew13.github.io/blob/main/image/Snowfall.png?raw=true";
+
+// keep body/window dimensions up-to-date
+let bodyWidth = window.innerWidth;
+let bodyHeight = window.innerHeight;
+window.addEventListener('resize', () => {
+  bodyWidth = window.innerWidth;
+  bodyHeight = window.innerHeight;
+});
+
+function createSnow() {
+  const snow = document.createElement('img');
+  snow.src = snowfallURL;
+  snow.className = 'snowflake';            // change CSS target if you want
+  snow.style.position = 'fixed';          // fixed so it follows viewport
+  snow.style.pointerEvents = 'none';      // doesn't block clicks
+  snow.style.willChange = 'transform, opacity';
+
+  // size (snow is often smaller)
+  const size = 8 + Math.random() * 32;
+  snow.style.width = size + 'px';
+  snow.style.height = 'auto';
+
+  // start horizontal position
+  const startX = Math.random() * bodyWidth;
+  snow.style.left = startX + 'px';
+
+  // movement params tuned for a snow-like feel
+  const swayAmplitude = 10 + Math.random() * 30;     // horizontal sway
+  const swaySpeed = 0.2 + Math.random() * 0.9;       // slowish sway
+  const fallSpeed = 10 + Math.random() * 40;         // vertical speed
+  const spinSpeed = (Math.random() * 40 + 10) * (Math.random() < 0.5 ? 1 : -1);
+
+  // optional starting vertical offset so snow can appear from -50..0
+  const startYOffset = -20 - Math.random() * 80;
+
+  // initial placement
+  snow.style.top = startYOffset + 'px';
+  document.body.appendChild(snow);
+
+  let startTime = null;
+
+  function animateSnow(time) {
+    if (!startTime) startTime = time;
+    const elapsed = (time - startTime) / 1000; // seconds
+
+    // vertical fall
+    const y = startYOffset + elapsed * fallSpeed;
+    // horizontal sway around startX
+    const x = startX + Math.sin(elapsed * swaySpeed) * swayAmplitude;
+    // rotation for gentle tumbling
+    const rotation = elapsed * spinSpeed;
+
+    // apply transforms (translateX relative and rotate)
+    snow.style.transform = `translateX(${x - startX}px) rotate(${rotation}deg)`;
+    snow.style.top = y + 'px';
+
+    // fade out slowly near the end
+    const life = (y + 100) / (bodyHeight + 200); // 0..1
+    snow.style.opacity = String(Math.max(0, 1 - life));
+
+    // remove when completely off screen
+    if (y < bodyHeight + 100) {
+      requestAnimationFrame(animateSnow);
+    } else {
+      snow.remove();
+    }
+  }
+
+  requestAnimationFrame(animateSnow);
+}
+
+// spawn snow continuously (tweak interval & burst chance as desired)
+const snowInterval = setInterval(() => {
+  createSnow();
+  if (Math.random() < 0.35) createSnow(); // occasional extra flake
+  // you can add conditions to stop spawning if needed:
+  // if (someCondition) clearInterval(snowInterval);
+}, 400);
 
 function createLeaf() {
   const leaf = document.createElement('img');
