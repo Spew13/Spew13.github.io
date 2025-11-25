@@ -14,9 +14,34 @@ We strongly advise all users and visitors to respect the integrity and security 
 (async()=>{
 const F=["beans.data","cheese.bin","goon.com","mewing.streak","hi.hi"];
 const T="epic secret thing";
-const C=async f=>{try{const r=await fetch(f+"?v="+Math.random());if(!r.ok)throw 1;const t=await r.text();if(!t.toLowerCase().includes(T))throw 2}catch(e){console.error("File fail:",f,e);return false}return true};
-if(location.protocol==="file:"||location.hostname!=="spew13.github.io"){document.body.innerHTML="<div style='color:red;font-size:30px;text-align:center;padding-top:100px'>ERROR 13 - Unauthorized Copy</div>";throw new Error("blocked")}let ok=true;for(const f of F)if(!(await C(f)))ok=false;if(!ok){document.body.innerHTML="<h1 style='color:red;text-align:center;margin-top:100px'>FATAL ERROR<br>Missing/Corrupt Files</h1>";throw new Error("file fail")}const O=document.documentElement.innerHTML.length;setInterval(()=>{if(document.documentElement.innerHTML.length!==O)location.reload()},200);if(typeof initGame==="function")initGame();})();
-(function(){const h="spew13.github.io";if(location.protocol==="file:"||location.hostname!==h){document.documentElement.innerHTML="<div style='color:red;font-size:30px;text-align:center;padding-top:100px'>ERROR 13 - Unauthorized Copy</div>";throw new Error("blocked")}})();
+const C=async f=>{
+  try{
+    const r=await fetch(f+"?v="+Math.random());
+    if(!r.ok)throw 1;
+    const t=await r.text();
+    if(!t.toLowerCase().includes(T))throw 2;
+  }catch(e){console.error("File fail:",f,e);return false;}
+  return true;
+};
+if(location.protocol==="file:"||location.hostname!=="spew13.github.io"){
+  document.body.innerHTML="<div style='color:red;font-size:30px;text-align:center;padding-top:100px'>ERROR 13 - Unauthorized Copy</div>";
+  throw new Error("blocked");
+}
+let ok=true;
+for(const f of F)if(!(await C(f)))ok=false;
+if(!ok){
+  document.body.innerHTML="<h1 style='color:red;text-align:center;margin-top:100px'>FATAL ERROR<br>Missing/Corrupt Files</h1>";
+  throw new Error("file fail");
+}
+if(typeof initGame==="function")initGame();
+})();
+(function(){
+const h="spew13.github.io";
+if(location.protocol==="file:"||location.hostname!==h){
+  document.documentElement.innerHTML="<div style='color:red;font-size:30px;text-align:center;padding-top:100px'>ERROR 13 - Unauthorized Copy</div>";
+  throw new Error("blocked");
+}
+})();
 
 </script>
 
