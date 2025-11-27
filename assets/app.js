@@ -134,88 +134,7 @@ document.addEventListener('keydown', function(e) {
 const leafUrl = "https://github.com/Spew13/Spew13.github.io/blob/main/image/Snowfall.png?raw=true";
 const bodyWidth = window.innerWidth;
 const bodyHeight = window.innerHeight;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+\
 function createLeaf() {
   const leaf = document.createElement('img');
   leaf.src = leafUrl;
@@ -641,7 +560,6 @@ function openContact() {
       <p>Spew13 embraces a vibrant neon aesthetic, emphasizing glowing elements, dynamic buttons, and interactive design features that engage users visually while remaining intuitive and easy to navigate.</p>
       <p>Whether you are here to explore, play, or provide feedback, Spew13 is committed to delivering a smooth, enjoyable, and memorable gaming experience.</p>
       <p>Thank you for being part of the Spew13 community!</p>
-      <p>Special Thanks to Jayce Rich for Steal A Fluff!</p>
       <p>ENJOY THE NEW GAMES MORE COMING!!!!!</p>
     `;
     document.body.appendChild(aboutBox);
