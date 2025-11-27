@@ -78,16 +78,16 @@ const fontSize = 18;
 let columns = Math.floor(canvas.width / fontSize);
 let drops = new Array(columns).fill(0);
 
-// Load the emoji as an image
+
 const img = new Image();
-img.src = "https://github.com/Spew13/Spew13.github.io/blob/main/image/tree.png"; // small tileable PNG
+img.src = "https://raw.githubusercontent.com/Spew13/Spew13.github.io/main/image/tree.png"; 
 
 function draw() {
   ctx.fillStyle = "rgba(0,0,0,0.08)";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   for (let i = 0; i < drops.length; i++) {
-    // Draw image instead of emoji character
+
     ctx.drawImage(img, i * fontSize, drops[i] * fontSize, fontSize, fontSize);
 
     drops[i] += 1;
