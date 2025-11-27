@@ -363,7 +363,7 @@
    border-image-slice: 1; 
    border-width: 6px; 
    border-radius: 12px; 
-   animation: none;
+   animation: rainbow-border;
    background-color: #1f1f1f; 
    color: white; }
 
@@ -374,7 +374,7 @@
   border-image-slice: 1;
   border-width: 6px;
   border-radius: 12px;
- animation: none;
+ animation: rainbow-border;
 /* Optional: background color inside */
   background-color: #1f1f1f;
   color: white;
@@ -386,7 +386,7 @@
   border-image-slice: 1;
   border-width: 6px;
   border-radius: 12px;
-  animation:none ;
+  animation:rainbow-border;
   background-color: #1f1f1f;
   color: #2377A4;
 }
@@ -397,7 +397,7 @@
   border-image-slice: 1;
   border-width: 6px;
   border-radius: 12px;
-  animation: none;
+  animation: rainbow-border;
  }
           #granny {
   position: relative;
@@ -406,7 +406,7 @@
   border-image-slice: 1;
   border-width: 6px;
   border-radius: 12px;
-  animation: none;
+  animation: rainbow-border;
   background-color: #1f1f1f;
   color: white;
 }
@@ -419,7 +419,7 @@
   border-image-slice: 1;
   border-width: 6px;
   border-radius: 12px;
-  animation: none;
+  animation: rainbow-border;
   background-color: #1f1f1f;
   color: white;
 }
@@ -430,7 +430,7 @@
   border-image-slice: 1;
   border-width: 6px;
   border-radius: 12px;
-  animation: none;
+  animation: rainbow-border;
   background-color: #1f1f1f;
   color: white;
 }
@@ -441,7 +441,7 @@
   border-image-slice: 1;
   border-width: 6px;
   border-radius: 12px;
-  animation: none;
+  animation: rainbow-border;
   background-color: #1f1f1f;
   color: white;
 }
@@ -452,7 +452,7 @@
   border-image-slice: 1;
   border-width: 6px;
   border-radius: 12px;
-  animation: none; 
+  animation: rainbow-border; 
   background-color: #1f1f1f;
   color: white;
 }
@@ -463,7 +463,7 @@
   border-image-slice: 1;
   border-width: 6px;
   border-radius: 12px;
-  animation: none;
+  animation: rainbow-border;
   background-color: #1f1f1f;
   color: white;
 }
@@ -474,7 +474,7 @@
   border-image-slice: 1;
   border-width: 6px;
   border-radius: 12px;
-  animation: none;
+  animation: rainbow-border;
   background-color: #1f1f1f;
   color: white;
 }
@@ -483,13 +483,13 @@
 /* Animate the border gradient */
 @keyframes rainbow-border {
   0% {
-    border-image-source: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+    border-image-source: linear-gradient(90deg, blue, indigo, violet);
   }
   50% {
-    border-image-source: linear-gradient(90deg, violet, indigo, blue, green, yellow, orange, red);
+    border-image-source: linear-gradient(90deg, violet, indigo, blue);
   }
   100% {
-    border-image-source: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+    border-image-source: linear-gradient(90deg, blue, indigo, violet);
   }
 }
 
