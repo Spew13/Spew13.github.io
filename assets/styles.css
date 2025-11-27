@@ -31,23 +31,23 @@
     font-size: 16px;
     padding: 12px 24px;
     margin: 10px;
-    border: 2px solid orange; /* same color as glowing text */
+    border: 2px solid #2377A4; /* same color as glowing text */
     border-radius: 12px;
     cursor: pointer;
     text-transform: uppercase;
     transition: all 0.3s ease;
-    box-shadow: 0 0 10px orange, 0 0 20px orange, 0 0 30px orange;
+    box-shadow: 0 0 10px #2377A4, 0 0 20px #2377A4, 0 0 30px #2377A4;
   }
 
   .neon-btn:hover {
-    box-shadow: 0 0 15px #00ff88, 0 0 30px #00ff88, 0 0 45px orange;
+    box-shadow: 0 0 15px #50A3C6, 0 0 30px #50A3C6, 0 0 45px blue;
     transform: scale(1.05);
   }
     body {
       margin: 0;
       padding: 0;
       font-family: Arial, sans-serif;
-      background-color: #121212;
+      background-color: #313040;
       color: white;
       text-align: center;
     }
@@ -57,7 +57,7 @@
       font-size: 32px;
       font-weight: bold;
       color: limegreen;
-      border-bottom: 4px solid orange;
+      border-bottom: 4px solid #79C0D7;
     }
     .container {
       display: flex;
@@ -66,14 +66,14 @@
       padding: 20px;
     }
     .game-box {
-      background: #1f1f1f;
-      border: 2px solid limegreen;
+      background: #2d2d30;
+      border: 2px solid #79C0D7;
       border-radius: 12px;
       margin: 20px;
       padding: 10px;
       width: 90%;
       max-width: 800px;
-      box-shadow: 0 0 10px limegreen;
+      box-shadow: 0 0 10px #79C0D7;
       position: relative;
     }
     .game-box p {
@@ -83,7 +83,7 @@
     }
 
     button {
-      background-color: #FF4F00;
+      background-color: #2377A4;
       color: black;
       padding: 10px 20px;
       font-size: 16px;
@@ -91,15 +91,15 @@
       border-radius: 8px;
       cursor: pointer;
       margin: 5px;
-      box-shadow: 0 0 10px #FF4F00;
+      box-shadow: 0 0 10px #2377A4;
       transition: transform 0.2s ease, box-shadow 0.3s ease;
       user-select: none;
     }
 
     button:hover {
-      background-color: #aaffaa;
+      background-color: #50A3C6;
       animation: wobble 0.6s ease-in-out;
-      box-shadow: 0 0 25px limegreen;
+      box-shadow: 0 0 25px #79C0D7;
       transform-origin: center;
     }
 
@@ -120,7 +120,7 @@
       border-radius: 8px;
       margin-top: 15px;
       opacity: 0;
-      animation: fadeIn 0.5s forwards;
+      animation: fadeIn 0.67s forwards;
     }
 
     @keyframes fadeIn {
@@ -162,13 +162,13 @@
       top: 80px; /* adjust depending on your header height */
       font-size: 1.5rem;
       background-color: #222;
-      color: #FF4F00;
+      color: #50A3C6;
       padding: 8px 16px;
       border-radius: 0px;
       font-family: 'Courier New', Courier, monospace;
-      box-shadow: 0 0 12px #FF4F00;
+      box-shadow: 0 0 12px #50A3C6;
       z-index: 1000;
-      font-color: #FF4F00;
+      font-color: #50A3C6;
 }
   
 /* Keyframes for left → right */
@@ -187,8 +187,8 @@
   100% { transform: translateX(-120px) rotate(0deg); opacity: 0; }
 }
       .flicker-text {
-  color: #ff9100;
-  text-shadow: 0 0 10px #ff3300, 0 0 25px #8000ff;
+  color: #2377A4;
+  text-shadow: 0 0 10px #2377A4, 0 0 25px #50A3C6;
   font-family: 'Trebuchet MS', sans-serif;
   font-size: 32px; /* adjust as needed */
   animation: flicker 2s infinite;
@@ -201,8 +201,8 @@
   /* Image fixed to bottom-left corner */
     .bottom-left-img {
       position: fixed;
-      bottom: 10px;
-      left: 10px;
+      bottom: 10.67px;
+      left: 10.67px;
       width: 325px; /* You can change size */
       height: auto;
       z-index: 100;
@@ -226,7 +226,7 @@
     font-size: 16px;
     padding: 12px 24px;
     margin: 10px;
-    border: 2px solid #FFA500;
+    border: 2px solid #2377A4;
     border-radius: 12px;
     cursor: pointer;
     text-transform: uppercase;
@@ -241,7 +241,7 @@
     font-size: 16px;
     padding: 12px 24px;
     margin: 10px;
-    border: 2px solid #FFA500;
+    border: 2px solid #2377A4;
     border-radius: 12px;
     cursor: pointer;
     text-transform: uppercase;
@@ -256,7 +256,7 @@
     font-size: 16px;
     padding: 12px 24px;
     margin: 10px;
-    border: 2px solid #FFA500;
+    border: 2px solid #2377A4;
     border-radius: 12px;
     cursor: pointer;
     text-transform: uppercase;
@@ -271,7 +271,7 @@
     font-size: 16px;
     padding: 12px 24px;
     margin: 10px;
-    border: 2px solid #FFA500;
+    border: 2px solid #2377A4;
     border-radius: 12px;
     cursor: pointer;
     text-transform: uppercase;
@@ -286,7 +286,7 @@
     font-size: 16px;
     padding: 12px 24px;
     margin: 10px;
-    border: 2px solid #FFA500;
+    border: 2px solid #2377A4;
     border-radius: 12px;
     cursor: pointer;
     text-transform: uppercase;
@@ -302,7 +302,7 @@
     font-size: 16px;
     padding: 12px 24px;
     margin: 10px;
-    border: 2px solid #FFA500;
+    border: 2px solid #2377A4;
     border-radius: 12px;
     cursor: pointer;
     text-transform: uppercase;
@@ -318,7 +318,7 @@
     font-size: 16px;
     padding: 12px 24px;
     margin: 10px;
-    border: 2px solid #FFA500;
+    border: 2px solid #2377A4;
     border-radius: 12px;
     cursor: pointer;
     text-transform: uppercase;
@@ -333,7 +333,7 @@
     font-size: 16px;
     padding: 12px 24px;
     margin: 10px;
-    border: 2px solid #FFA500;
+    border: 2px solid #2377A4;
     border-radius: 12px;
     cursor: pointer;
     text-transform: uppercase;
@@ -389,7 +389,7 @@
  animation: haunted-border 8s ease-in-out infinite;
                  /* Optional: background color inside */
   background-color: #1f1f1f;
-  color: white;
+  color: #2377A4;
 }
         #retrocol {
   position: relative;
@@ -587,13 +587,13 @@
 
 .game-box {
   background: #1f1f1f;
-  border: 2px solid #FFA500;
+  border: 2px solid #79C0D7;
   border-radius: 12px;
   margin: 20px auto; /* auto left/right margin to center */
   padding: 20px;
   width: 90%;
   max-width: 800px;
-  box-shadow: 0 0 10px #FFA500;
+  box-shadow: 0 0 10px #79C0D7;
   position: relative;
   text-align: center; /* center all text/buttons inside */
   display: block; /* ensure block-level */
@@ -609,7 +609,7 @@
   height: 600px;
   border-radius: 12px;
   border: none;
-  box-shadow: 0 0 10px #FFA500;
+  box-shadow: 0 0 10px #79C0D7;
   display: block; /* remove inline spacing */
 }
 
@@ -617,7 +617,7 @@
   header, footer, .game-box, #spew-clock, .click-btn {
     border: 3px solid #FFAC1C; /* initial lime */
     box-shadow: 0 0 20px #FFAC1C;
-    color: #FFA500;
+    color: #79C0D7;
     transition: border-color 0.5s ease, box-shadow 0.5s ease, color 0.5s ease;
   }
 
