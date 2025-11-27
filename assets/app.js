@@ -80,7 +80,7 @@ let drops = new Array(columns).fill(0);
 
 
 const img = new Image();
-img.src = "https://raw.githubusercontent.com/Spew13/Spew13.github.io/main/image/tree.png"; 
+img.src = "https://github.com/Spew13/Spew13.github.io/blob/main/image/tree.png?raw=true"; 
 
 function draw() {
   ctx.fillStyle = "rgba(0,0,0,0.08)";
