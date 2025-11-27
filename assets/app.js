@@ -134,7 +134,7 @@ document.addEventListener('keydown', function(e) {
 const leafUrl = "https://github.com/Spew13/Spew13.github.io/blob/main/image/Snowfall.png?raw=true";
 const bodyWidth = window.innerWidth;
 const bodyHeight = window.innerHeight;
-\
+
 function createLeaf() {
   const leaf = document.createElement('img');
   leaf.src = leafUrl;
