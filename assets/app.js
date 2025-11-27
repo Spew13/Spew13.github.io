@@ -65,40 +65,40 @@ const allowedHost = "spew13.github.io";
 })();
 
       const canvas = document.getElementById("matrixCanvas");
-      const ctx = canvas.getContext("2d");
+const ctx = canvas.getContext("2d");
 
-      function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      }
-      resize();
-      window.addEventListener("resize", resize);
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener("resize", resize);
 
-      const letters = "🦃";
-      const fontSize = 18;
-      let columns = Math.floor(canvas.width / fontSize);
-      let drops = new Array(columns).fill(0);
+const fontSize = 18;
+let columns = Math.floor(canvas.width / fontSize);
+let drops = new Array(columns).fill(0);
 
-      function draw() {
-        // semi-transparent black to create fading trails
-        ctx.fillStyle = "rgba(0,0,0,0.08)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+// Load the emoji as an image
+const img = new Image();
+img.src = "https://github.com/Spew13/Spew13.github.io/blob/main/image/tree.png"; // small tileable PNG
 
-        ctx.fillStyle = "#e9d66b"; // lime green
-        ctx.font = fontSize + "px monospace";
+function draw() {
+  ctx.fillStyle = "rgba(0,0,0,0.08)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        for (let i = 0; i < drops.length; i++) {
-          const text = letters.charAt(Math.floor(Math.random() * letters.length));
-          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+  for (let i = 0; i < drops.length; i++) {
+    // Draw image instead of emoji character
+    ctx.drawImage(img, i * fontSize, drops[i] * fontSize, fontSize, fontSize);
 
-          drops[i] += 1;
-          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-            drops[i] = 0;
-          }
-        }
-      }
+    drops[i] += 1;
+    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+      drops[i] = 0;
+    }
+  }
+}
 
-      setInterval(draw, 80);
+setInterval(draw, 80);
+
 // Function to show popup
 function showAntiCopyPopup() {
     if (document.getElementById('antiCopyPopup')) return; // prevent multiple popups
