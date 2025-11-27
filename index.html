@@ -42,15 +42,10 @@ if(location.protocol==="file:"||location.hostname!==h){
   throw new Error("blocked");
 }
 })();
-
 </script>
-
-
   <script>
 (function() {
     const allowedHost = "spew13.github.io";
-
-    // If opened as a file or from another domain → block the game
     if (location.protocol === "file:" || location.hostname !== allowedHost) {
         document.documentElement.innerHTML = `
             <style>
@@ -154,7 +149,6 @@ if(location.protocol==="file:"||location.hostname!==h){
 <div id="cutsceneContainer" style=" display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; text-align:center; color:orange; font-size:35px; background-color:black; padding-top:50px; z-index:1000;"> </div>
    
 
-<!-- Visitor Counter, directly in page (counts correctly) -->
 <div style="width: 100%; text-align: center; margin-top: 10px;">
   <p style="color: #FFA500; font-weight: bold; font-size: 1.2em;">Spew13 Visitor Counter</p>
   <div id="visitor-counter" style="display: inline-block;">
