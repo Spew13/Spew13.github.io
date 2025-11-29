@@ -869,9 +869,9 @@ function restoreGames() {
 
   // Theme colors
   const themes = {
-    neon: '#FFA500',
-    ocean: '#FFAC1C',
-    retro: '#CC5500'
+    neon: '#729ACF',
+    ocean: '#50A3C6',
+    retro: '#00E4FF'
   };
 
   // Set selected theme for all elements
