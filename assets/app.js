@@ -888,8 +888,7 @@ function restoreGames() {
       setTimeout(() => {
         let color;
         if (theme === 'lime') {
-          // Random lime variations
-          const shades = ['#FFA500','#FFAC1C','#CC5500','#F4BB44'];
+          const shades = ['#2377A4','#50A3C6','#79C0D7','#729ACF','#004D4D','#00E4FF'];
           color = shades[Math.floor(Math.random()*shades.length)];
         } else {
           color = themes[theme];
@@ -901,6 +900,4 @@ function restoreGames() {
       }, Math.random() * 3500); // random delay between 0-2s
     });
   }
-
-  // Loop the random flicker continuously
-  setInterval(randomColorFlicker, 500); // every 0.5s, pick some random changes
+  setInterval(randomColorFlicker, 525);
