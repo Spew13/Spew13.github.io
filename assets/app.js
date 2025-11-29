@@ -881,7 +881,7 @@ function restoreGames() {
 
   // Random flicker function
   function randomColorFlicker() {
-    const elements = document.querySelectorAll('header, footer, .game-box, #spew-clock, .click-btn');
+    const elements = document.querySelectorAll('footer, .game-box, .click-btn');
     const theme = document.body.dataset.theme || 'lime';
 
     elements.forEach(el => {
