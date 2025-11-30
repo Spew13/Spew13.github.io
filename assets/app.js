@@ -130,6 +130,27 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
+      function openFullscreenGame() {
+  document.getElementById("fullscreen-frame").style.display = "block";
+  document.getElementById("game-frame").src =
+    "https://spew13.github.io/lymo-30bc4ccf3fbc6640b7b0485b448c4b36d8ab0236e0a964aa0fd9e27d6aa01f14/";
+}
+
+function closeFullscreenGame() {
+  document.getElementById("fullscreen-frame").style.display = "none";
+  document.getElementById("game-frame").src = "";
+}
+
+function openWebBlock() {
+  document.getElementById("webblock-frame").style.display = "block";
+  document.getElementById("webblock-iframe").src =
+    "https://spew13.github.io/WebBlock-Application/";
+}
+
+function closeWebBlock() {
+  document.getElementById("webblock-frame").style.display = "none";
+  document.getElementById("webblock-iframe").src = "";
+}
 
 const leafUrl = "https://github.com/Spew13/Spew13.github.io/blob/main/image/Snowfall.png?raw=true";
 const bodyWidth = window.innerWidth;
