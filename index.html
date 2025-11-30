@@ -126,6 +126,52 @@ function _0x3540(){const _0x580a6f=['5ciTZjc','1564AAUWru','684fnwmto','toLowerC
   <button class="about-button" onclick="openAbout()">About</button>
   <button class="contact-button" onclick="openContact()">Contact</button>
   <button class="contact-button" onclick="openWebBlock()">WebBlock</button>
+  <button class="admin-button" onclick="openFullscreenGame()">*New* Lymo</button>
+
+<!-- Fullscreen overlay -->
+<div id="fullscreen-frame" style="
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  z-index: 99999;
+  background: #000;
+">
+  <button onclick="closeFullscreenGame()" style="
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 32px;
+    font-weight: bold;
+    background: rgba(255,255,255,0.15);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    z-index: 100000;
+  ">X</button>
+
+  <iframe id="game-frame" src="" style="
+    width: 100%;
+    height: 100%;
+    border: 0;
+  "></iframe>
+</div>
+
+<script>
+function openFullscreenGame() {
+  document.getElementById("fullscreen-frame").style.display = "block";
+  document.getElementById("game-frame").src =
+    "https://spew13.github.io/lymo-30bc4ccf3fbc6640b7b0485b448c4b36d8ab0236e0a964aa0fd9e27d6aa01f14/";
+}
+
+function closeFullscreenGame() {
+  document.getElementById("fullscreen-frame").style.display = "none";
+  document.getElementById("game-frame").src = "";
+}
+</script>
   <button class="admin-button" onclick="">
   Spew13 Legal
 </button>
@@ -154,6 +200,14 @@ function _0x3540(){const _0x580a6f=['5ciTZjc','1564AAUWru','684fnwmto','toLowerC
   <button onclick="toggleCustomIframe(this, 'granny', 'https://granny-games.com/')">
   Click to Load
 </button>
+  <div class="iframe-container"></div>
+</div>
+
+      <div class="game-box" id="scoring-champion">
+  <p>*New! *Scoring Champion</p>
+  <button onclick="toggleCustomIframe(this, 'scoring-champion', 'https://www.brightestgames.com/game/scoring-champion')">
+    Click to Load
+  </button>
   <div class="iframe-container"></div>
 </div>
 
