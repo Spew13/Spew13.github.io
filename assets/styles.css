@@ -340,6 +340,21 @@
     transition: box-shadow 0.3s, border-color 0.3s;
     animation: floatBtn 3s ease-in-out infinite, deployBtn 1s ease forwards;
   }
+ .support-button{
+    display: inline-block;
+    background-color: #000;
+    color: #fff;
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    padding: 12px 24px;
+    margin: 10px;
+    border: 2px solid #2377A4;
+    border-radius: 12px;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: box-shadow 0.3s, border-color 0.3s;
+    animation: floatBtn 3s ease-in-out infinite, deployBtn 1s ease forwards;
+  }
   /* Floating animation */
   @keyframes floatBtn {
     0% { transform: translateY(0px) rotate(0deg); }
