@@ -91,101 +91,270 @@ We strongly advise all users and visitors to respect the integrity and security 
   <button class="contact-button" onclick="openContact()">Contact</button>
       <button class="support-button" onclick="window.open('https://arstudios750.github.io/spew13supportpage/', '_blank');">Support us!!</button>
 <button class="contact-button" onclick="openWebBlock()">WebBlock</button>
-      <!-- index.html snippet -->
-<div id="command-output"></div>
-<script>
-/*
-  CONFIG:
-  - BIN_URL: set to the JSONBin raw/latest URL that is readable publicly
-    Example placeholder: "https://api.jsonbin.io/v3/b/<BIN_ID>/latest"
-  - POLL_INTERVAL_MS: how often to check (ms)
-  - commandsMap: mapping from command strings to asset paths on your site
-*/
+     <script>
+/* === CONFIG - REPLACE YOUR_BIN_ID BELOW === */
+const JSONBIN_ID = "YOUR_BIN_ID"; // <-- replace with your bin id (the part after /b/)
+const BIN_URL = `https://api.jsonbin.io/v3/b/${JSONBIN_ID}/latest`;
+const POLL_INTERVAL_MS = 2000;
+const ALLOW_ASSET_SCRIPTS = false; // only true for fully trusted same-origin assets
 
-const YOUR_BIN_ID = "6936e629ae596e708f8b95a7";
-const BIN_URL = "https://api.jsonbin.io/v3/b/6936e629ae596e708f8b95a7/latest"; // replace
-const POLL_INTERVAL_MS = 3000;
-
+/* map commands to files in /assets */
 const commandsMap = {
   "//null-wifi": "/assets/null-wifi.html",
   "//hello": "/assets/hello.html",
-  "//update-banner": "/assets/banner.html"
-  // add more commands => assets
+  "//update-banner": "/assets/banner.html",
+  "//clear": null // special command handled below
 };
 
-let lastSeenCommand = null;
+/* Internal state */
+let lastSeenMarker = null;
+let currentOverlay = null; // reference to overlay element if admin asset shown
 
-// fetch JSONBin (public)
+/* Helpers */
+function extractPayload(json) {
+  if (!json) return null;
+  return json.record ?? json;
+}
+
 async function fetchBin() {
   try {
     const res = await fetch(BIN_URL, { cache: "no-store" });
     if (!res.ok) throw new Error("Fetch failed: " + res.status);
-    const body = await res.json();
-    // JSONBin v3 wraps data under 'record' for some endpoints; attempt to be flexible:
-    const payload = body.record ?? body; // if v3 returns { record: {...} }
-    return payload;
+    const j = await res.json();
+    return extractPayload(j);
   } catch (err) {
-    console.error("Error fetching bin:", err);
+    console.error("fetchBin error:", err);
     return null;
   }
 }
 
-async function loadAssetIntoContainer(assetPath, containerId = "command-output") {
+/* Create a fullscreen overlay and show the asset HTML inside a sandboxed iframe.
+   This is used for admin commands (front of everything). */
+function createFullscreenOverlay(htmlContent, allowScripts=false) {
+  // remove existing overlay if any
+  removeOverlay();
+
+  const overlay = document.createElement("div");
+  overlay.id = "admin-overlay";
+  Object.assign(overlay.style, {
+    position: "fixed",
+    inset: "0",
+    width: "100vw",
+    height: "100vh",
+    zIndex: "2147483647", // very high z-index (max int)
+    background: "rgba(0,0,0,0.6)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "0",
+    margin: "0",
+    overflow: "hidden"
+  });
+
+  const iframe = document.createElement("iframe");
+  iframe.style.width = "100%";
+  iframe.style.height = "100%";
+  iframe.style.border = "none";
+  // sandbox controls scripts — allow-same-origin so same-origin assets can behave; only allow-scripts if explicitly allowed
+  if (allowScripts) {
+    iframe.setAttribute("sandbox", "allow-same-origin allow-forms allow-scripts");
+  } else {
+    iframe.setAttribute("sandbox", "allow-same-origin allow-forms");
+  }
+
+  overlay.appendChild(iframe);
+  document.body.appendChild(overlay);
+
+  // write content into iframe
+  const doc = iframe.contentWindow.document;
+  doc.open();
+  doc.write(htmlContent);
+  doc.close();
+
+  currentOverlay = overlay;
+
+  // add a keyboard escape to close overlay (optional convenience)
+  function onKey(e) {
+    if (e.key === "Escape") {
+      removeOverlay();
+    }
+  }
+  overlay._escHandler = onKey;
+  window.addEventListener("keydown", onKey);
+}
+
+/* Remove overlay if present */
+function removeOverlay() {
+  if (currentOverlay) {
+    try {
+      window.removeEventListener("keydown", currentOverlay._escHandler);
+    } catch {}
+    currentOverlay.remove();
+    currentOverlay = null;
+  }
+}
+
+/* Load asset into normal panel (not admin) */
+async function loadAssetInPanel(assetPath) {
+  const container = document.getElementById("command-output");
+  if (!container) return;
+  container.innerHTML = "<div class='status'>Loading asset...</div>";
   try {
-    const res = await fetch(assetPath, { cache: "no-store" });
-    if (!res.ok) {
-      console.warn("Asset not found:", assetPath, res.status);
-      document.getElementById(containerId).innerHTML =
-        "<p>Requested asset not found: " + assetPath + "</p>";
+    const r = await fetch(assetPath, { cache: "no-store" });
+    if (!r.ok) {
+      container.innerHTML = `<div class='status'>Asset not found: ${assetPath} (HTTP ${r.status})</div>`;
       return;
     }
-    const html = await res.text();
-    // Basic sanitization strategy: inject into a sandboxed iframe to avoid executing unknown scripts.
-    const container = document.getElementById(containerId);
-    // remove previous iframe if any
-    container.innerHTML = "";
+    const html = await r.text();
+
+    // create iframe
     const iframe = document.createElement("iframe");
     iframe.style.width = "100%";
-    iframe.style.height = "600px";
-    iframe.setAttribute("sandbox", "allow-same-origin allow-forms"); // block scripts by default
+    iframe.style.height = "520px";
+    iframe.style.border = "none";
+    if (ALLOW_ASSET_SCRIPTS) {
+      iframe.setAttribute("sandbox", "allow-same-origin allow-forms allow-scripts");
+    } else {
+      iframe.setAttribute("sandbox", "allow-same-origin allow-forms");
+    }
+
+    container.innerHTML = "";
     container.appendChild(iframe);
-
-    // write content into iframe (same-origin if hosted on same domain)
-    iframe.contentWindow.document.open();
-    iframe.contentWindow.document.write(html);
-    iframe.contentWindow.document.close();
+    const doc = iframe.contentWindow.document;
+    doc.open();
+    doc.write(html);
+    doc.close();
   } catch (err) {
-    console.error("Error loading asset:", err);
+    console.error("loadAssetInPanel error:", err);
+    container.innerHTML = `<div class='status'>Error loading asset: ${err}</div>`;
   }
 }
 
-async function checkForCommand() {
-  const data = await fetchBin();
-  if (!data) return;
-
-  const cmd = (data.lastCommand || "").trim();
-  if (!cmd || cmd === lastSeenCommand) return;
-
-  console.log("New command:", cmd);
-  lastSeenCommand = cmd;
-
-  // Only allow commands that are in the commandsMap
-  if (cmd in commandsMap) {
-    const asset = commandsMap[cmd];
-    await loadAssetIntoContainer(asset);
-  } else {
-    console.warn("Unrecognized command:", cmd);
-    // Optionally show an error
-    document.getElementById("command-output").innerHTML =
-      "<p>Unrecognized command: " + cmd + "</p>";
+/* Fetch asset text (used for admin fullscreen) */
+async function fetchAssetText(assetPath) {
+  try {
+    const r = await fetch(assetPath, { cache: "no-store" });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return await r.text();
+  } catch (err) {
+    console.error("fetchAssetText error:", err);
+    return null;
   }
 }
 
-// start polling
-setInterval(checkForCommand, POLL_INTERVAL_MS);
-// also run immediately
-checkForCommand();
+/* Determine command from payload (supports queue or single-field) */
+function extractCommandFromPayload(payload) {
+  if (!payload) return null;
+
+  // queue form
+  if (Array.isArray(payload.commands) && payload.commands.length > 0) {
+    const cmds = payload.commands.slice();
+    try {
+      cmds.sort((a,b) => {
+        const ta = a.timestamp ? Date.parse(a.timestamp) : 0;
+        const tb = b.timestamp ? Date.parse(b.timestamp) : 0;
+        return ta - tb;
+      });
+    } catch {}
+    const newest = cmds[cmds.length - 1];
+    return { text: (newest.cmd || newest.command || "").trim(), marker: newest.id ?? newest.timestamp ?? JSON.stringify(newest), raw: newest };
+  }
+
+  // single-field
+  if (payload.lastCommand || payload.command || payload.cmd) {
+    const text = (payload.lastCommand || payload.command || payload.cmd).trim();
+    const marker = payload.timestamp ?? text;
+    return { text, marker, raw: payload };
+  }
+
+  // fallback: payload string
+  if (typeof payload === "string") return { text: payload.trim(), marker: payload.trim(), raw: payload };
+
+  return null;
+}
+
+/* Main loop */
+async function checkLoop() {
+  const payload = await fetchBin();
+  if (!payload) return;
+
+  const extracted = extractCommandFromPayload(payload);
+  if (!extracted || !extracted.text) return;
+
+  // dedupe
+  if (extracted.marker && extracted.marker === lastSeenMarker) return;
+  lastSeenMarker = extracted.marker;
+
+  // update UI
+  const lastCmdEl = document.getElementById("last-cmd");
+  if (lastCmdEl) lastCmdEl.innerHTML = `<span class="cmd">${extracted.text}</span>`;
+
+  const cmd = extracted.text;
+
+  // CLEAR - immediate removal of overlay/panel
+  if (cmd === "//clear") {
+    // clear the panel and overlay
+    const container = document.getElementById("command-output");
+    if (container) container.innerHTML = `<div class="status">Cleared by //clear</div>`;
+    removeOverlay();
+    return;
+  }
+
+  // Determine if this should be admin/fullscreen:
+  // Two ways we treat as admin:
+  // 1) payload.raw.author === "admin" OR payload.raw.author === "ADMIN"
+  // 2) command starts with "//admin-" (e.g. "//admin-null-wifi")
+  const isAdminAuthor = (extracted.raw && (extracted.raw.author === "admin" || extracted.raw.author === "ADMIN"));
+  const isAdminPrefix = cmd.startsWith("//admin-") || cmd.startsWith("//admin ");
+
+  // Map admin-prefixed commands to asset by removing prefix: e.g. //admin-null-wifi -> //null-wifi
+  let effectiveCmd = cmd;
+  if (isAdminPrefix) {
+    effectiveCmd = cmd.replace(/^\/\/admin[-\s]?/i, "//");
+  }
+
+  // If command maps to an asset
+  if (effectiveCmd in commandsMap) {
+    const assetPath = commandsMap[effectiveCmd];
+
+    // if mapping is null or missing, show friendly message
+    if (!assetPath) {
+      console.warn("Command mapped but no asset defined for:", effectiveCmd);
+      const container = document.getElementById("command-output");
+      if (container) container.innerHTML = `<div class="status">No asset registered for ${effectiveCmd}</div>`;
+      return;
+    }
+
+    // Admin behavior: fetch the asset HTML and show as fullscreen overlay in front of everything
+    if (isAdminAuthor || isAdminPrefix) {
+      const html = await fetchAssetText(assetPath);
+      if (!html) {
+        // fallback show error in panel
+        const container = document.getElementById("command-output");
+        if (container) container.innerHTML = `<div class="status">Failed to load admin asset: ${assetPath}</div>`;
+        return;
+      }
+      // Show with scripts allowed only if ALLOW_ASSET_SCRIPTS === true (set with caution)
+      createFullscreenOverlay(html, ALLOW_ASSET_SCRIPTS);
+      return;
+    }
+
+    // Normal (non-admin) behavior: load into panel
+    await loadAssetInPanel(assetPath);
+    return;
+  }
+
+  // unknown command
+  const container = document.getElementById("command-output");
+  if (container) container.innerHTML = `<div class="status">Unrecognized command: <span class="cmd">${cmd}</span></div>`;
+  console.warn("Unrecognized command:", cmd, "payload:", payload);
+}
+
+/* Start polling */
+setInterval(checkLoop, POLL_INTERVAL_MS);
+checkLoop();
 </script>
+
 
       <div id="webblock-frame" style="
   position: fixed;
