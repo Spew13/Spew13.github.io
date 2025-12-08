@@ -91,6 +91,102 @@ We strongly advise all users and visitors to respect the integrity and security 
   <button class="contact-button" onclick="openContact()">Contact</button>
       <button class="support-button" onclick="window.open('https://arstudios750.github.io/spew13supportpage/', '_blank');">Support us!!</button>
 <button class="contact-button" onclick="openWebBlock()">WebBlock</button>
+      <!-- index.html snippet -->
+<div id="command-output"></div>
+<script>
+/*
+  CONFIG:
+  - BIN_URL: set to the JSONBin raw/latest URL that is readable publicly
+    Example placeholder: "https://api.jsonbin.io/v3/b/<BIN_ID>/latest"
+  - POLL_INTERVAL_MS: how often to check (ms)
+  - commandsMap: mapping from command strings to asset paths on your site
+*/
+
+const YOUR_BIN_ID = "6936e629ae596e708f8b95a7";
+const BIN_URL = "https://api.jsonbin.io/v3/b/6936e629ae596e708f8b95a7/latest"; // replace
+const POLL_INTERVAL_MS = 3000;
+
+const commandsMap = {
+  "//null-wifi": "/assets/null-wifi.html",
+  "//hello": "/assets/hello.html",
+  "//update-banner": "/assets/banner.html"
+  // add more commands => assets
+};
+
+let lastSeenCommand = null;
+
+// fetch JSONBin (public)
+async function fetchBin() {
+  try {
+    const res = await fetch(BIN_URL, { cache: "no-store" });
+    if (!res.ok) throw new Error("Fetch failed: " + res.status);
+    const body = await res.json();
+    // JSONBin v3 wraps data under 'record' for some endpoints; attempt to be flexible:
+    const payload = body.record ?? body; // if v3 returns { record: {...} }
+    return payload;
+  } catch (err) {
+    console.error("Error fetching bin:", err);
+    return null;
+  }
+}
+
+async function loadAssetIntoContainer(assetPath, containerId = "command-output") {
+  try {
+    const res = await fetch(assetPath, { cache: "no-store" });
+    if (!res.ok) {
+      console.warn("Asset not found:", assetPath, res.status);
+      document.getElementById(containerId).innerHTML =
+        "<p>Requested asset not found: " + assetPath + "</p>";
+      return;
+    }
+    const html = await res.text();
+    // Basic sanitization strategy: inject into a sandboxed iframe to avoid executing unknown scripts.
+    const container = document.getElementById(containerId);
+    // remove previous iframe if any
+    container.innerHTML = "";
+    const iframe = document.createElement("iframe");
+    iframe.style.width = "100%";
+    iframe.style.height = "600px";
+    iframe.setAttribute("sandbox", "allow-same-origin allow-forms"); // block scripts by default
+    container.appendChild(iframe);
+
+    // write content into iframe (same-origin if hosted on same domain)
+    iframe.contentWindow.document.open();
+    iframe.contentWindow.document.write(html);
+    iframe.contentWindow.document.close();
+  } catch (err) {
+    console.error("Error loading asset:", err);
+  }
+}
+
+async function checkForCommand() {
+  const data = await fetchBin();
+  if (!data) return;
+
+  const cmd = (data.lastCommand || "").trim();
+  if (!cmd || cmd === lastSeenCommand) return;
+
+  console.log("New command:", cmd);
+  lastSeenCommand = cmd;
+
+  // Only allow commands that are in the commandsMap
+  if (cmd in commandsMap) {
+    const asset = commandsMap[cmd];
+    await loadAssetIntoContainer(asset);
+  } else {
+    console.warn("Unrecognized command:", cmd);
+    // Optionally show an error
+    document.getElementById("command-output").innerHTML =
+      "<p>Unrecognized command: " + cmd + "</p>";
+  }
+}
+
+// start polling
+setInterval(checkForCommand, POLL_INTERVAL_MS);
+// also run immediately
+checkForCommand();
+</script>
+
       <div id="webblock-frame" style="
   position: fixed;
   inset: 0;
